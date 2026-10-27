@@ -1,0 +1,26 @@
+{
+  "name": "inside-out",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "dev:https": "vite --host --mode https",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "qr": "node scripts/generate-qr.js"
+  },
+  "dependencies": {
+    "html5-qrcode": "^2.3.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "dotenv": "^16.4.5",
+    "qrcode": "^1.5.4",
+    "vite": "^5.4.11"
+  }
+}

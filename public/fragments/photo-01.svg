@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2433"/><stop offset="1" stop-color="#0e0c13"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <g fill="#17141d"><rect x="60" y="220" width="140" height="380"/><rect x="220" y="160" width="120" height="440"/><rect x="360" y="260" width="160" height="340"/><rect x="540" y="120" width="90" height="480"/><path d="M540 120 L585 40 L630 120Z"/><rect x="650" y="240" width="120" height="360"/></g>
+  <g fill="#751FFE" opacity=".8"><rect x="250" y="200" width="14" height="20"/><rect x="390" y="300" width="14" height="20"/><rect x="570" y="180" width="14" height="20"/></g>
+  <text x="400" y="560" fill="#8c8599" font-family="monospace" font-size="22" text-anchor="middle">PLACEHOLDER PHOTO — replace /public/fragments/photo-01.svg</text>
+</svg>

@@ -1,0 +1,6 @@
+node_modules
+dist
+.env
+qr-codes
+*.log
+.DS_Store
