@@ -1,5 +1,8 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { isDevEnabled, readDevFlagFromUrl } from '../dev/devSettings.js'
+
+const DevPanel = lazy(() => import('../dev/DevPanel.jsx'))
 
 const icons = {
   home: <path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
@@ -16,11 +19,17 @@ function NavIcon({ name }) {
 }
 
 export default function Layout() {
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
+  const [devEnabled, setDevEnabled] = useState(isDevEnabled)
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
+
+  useEffect(() => {
+    readDevFlagFromUrl(search)
+    setDevEnabled(isDevEnabled())
+  }, [search])
 
   return (
     <div className="app">
@@ -41,6 +50,11 @@ export default function Layout() {
           Scan
         </NavLink>
       </nav>
+      {devEnabled && (
+        <Suspense fallback={null}>
+          <DevPanel />
+        </Suspense>
+      )}
     </div>
   )
 }

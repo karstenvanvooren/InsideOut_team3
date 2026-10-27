@@ -2,59 +2,58 @@
   "meta": {
     "title": "Inside Out",
     "tagline": "The city is a book. Someone tore out the last page.",
-    "intro": "Hidden across Antwerp are traces — street-art marks with a QR code or NFC tag. Each one opens a chapter of a case nobody solved. Find them, collect the fragments, and follow the clues to the final page.",
-    "finaleChapter": "c04"
+    "intro": "Hidden across Antwerp are traces — street art with a QR code or NFC tag. Scan one, prove you're really there, and a chapter of an unsolved case opens. Follow the clues to the final page.",
+    "finaleChapter": "c03",
+    "finaleRequires": ["h01", "h02"]
   },
   "hooks": [
     {
       "id": "h01",
-      "label": "The Painted Door",
-      "location": { "name": "Grote Markt (placeholder)", "lat": 51.2211, "lng": 4.3997 },
-      "chapter": "c01"
+      "label": "Groenplaats",
+      "location": { "name": "Groenplaats", "lat": 51.21928, "lng": 4.40108, "radius": 50 },
+      "chapter": "c01",
+      "requires": [],
+      "challenge": {
+        "question": "Which famous painter stands on the statue in the middle of the square?",
+        "answers": ["rubens", "peter paul rubens", "pieter paul rubens"],
+        "hint": "He's Antwerp's most famous painter."
+      }
     },
     {
       "id": "h02",
-      "label": "The Quay Wall",
-      "location": { "name": "Scheldekaaien (placeholder)", "lat": 51.2236, "lng": 4.3965 },
-      "chapter": "c02"
-    },
-    {
-      "id": "h03",
-      "label": "The Station Clock",
-      "location": { "name": "Antwerpen-Centraal (placeholder)", "lat": 51.2172, "lng": 4.4211 },
-      "chapter": "c03"
+      "label": "Grote Markt",
+      "location": { "name": "Grote Markt", "lat": 51.22129, "lng": 4.39966, "radius": 50 },
+      "chapter": "c02",
+      "requires": ["h01"],
+      "challenge": {
+        "question": "What is the figure on top of the fountain throwing?",
+        "answers": ["hand", "a hand", "the hand", "een hand"],
+        "hint": "Antwerp's name is linked to it."
+      }
     }
   ],
   "chapters": [
     {
       "id": "c01",
       "title": "Chapter 1 — The First Page",
-      "intro": "Placeholder intro. You found the first trace. Someone left this here on purpose, hoping the right person would look closer.",
+      "intro": "Placeholder intro. You weren't supposed to find this. Someone left it here anyway.",
       "fragments": ["f01", "f02"],
-      "nextHooks": ["h02", "h03"],
-      "clue": "Placeholder clue: where the river meets stone, the wall remembers a name."
+      "nextHooks": ["h02"],
+      "clue": "Follow the river of people north. Where a giant's hand once flew, the next trace waits."
     },
     {
       "id": "c02",
-      "title": "Chapter 2 — Water Remembers",
+      "title": "Chapter 2 — The Giant's Hand",
       "intro": "Placeholder intro. The second trace. The letters are older than the paint around them.",
       "fragments": ["f03", "f04"],
-      "nextHooks": ["h03"],
-      "clue": "Placeholder clue: the hands of the big clock point to the next page."
+      "nextHooks": [],
+      "clue": "All traces now point to the museum. The final page is waiting there."
     },
     {
       "id": "c03",
-      "title": "Chapter 3 — Lost Time",
-      "intro": "Placeholder intro. Everything points to one place: a room full of frames, where the last page is hanging in plain sight.",
-      "fragments": ["f05", "f06"],
-      "nextHooks": [],
-      "clue": "Placeholder clue: go to the museum. Stand in front of the artwork and scan it to open the final chapter."
-    },
-    {
-      "id": "c04",
       "title": "Finale — Inside Out",
-      "intro": "Placeholder finale. The artwork was the last page all along. The case is closed — for now.",
-      "fragments": ["f07"],
+      "intro": "Placeholder finale. The artwork was the last page all along.",
+      "fragments": ["f05"],
       "nextHooks": [],
       "clue": "You solved the case. Claim your case card and share it.",
       "isFinale": true
@@ -65,8 +64,8 @@
       "id": "f01",
       "type": "text",
       "title": "Note on a napkin",
-      "content": "Placeholder note.\nIf you're reading this, you noticed. Most people walk past. Don't tell anyone yet.",
-      "caption": "Found folded behind the door handle."
+      "content": "Placeholder note.\nIf you're reading this, you noticed. Most people walk past.",
+      "caption": "Found folded under the statue's shadow."
     },
     {
       "id": "f02",
@@ -80,7 +79,7 @@
       "id": "f03",
       "type": "document",
       "title": "Torn letter",
-      "content": "Dear M.,\n\nPlaceholder letter text. I hid it where the water can't reach, but the clock can see. If anything happens to me, follow the pages.\n\n— J.",
+      "content": "Dear M.,\n\nPlaceholder letter. I hid it where everyone looks but no one sees. Follow the pages.\n\n— J.",
       "caption": "The bottom half is missing.",
       "meta": { "date": "14 March", "from": "J." }
     },
@@ -89,30 +88,15 @@
       "type": "audio",
       "title": "Voice memo #1",
       "src": "/fragments/memo-01.wav",
-      "caption": "Placeholder audio. Replace with a real voice memo (mp3/m4a/wav).",
+      "caption": "Placeholder audio. Replace with a real voice memo.",
       "meta": { "duration": "0:04" }
     },
     {
       "id": "f05",
-      "type": "text",
-      "title": "Scribbled timetable",
-      "content": "Placeholder note.\n09:14 — wrong platform\n09:41 — right one\nThe numbers are reversed. So is everything else.",
-      "caption": "Written on the back of a train ticket."
-    },
-    {
-      "id": "f06",
-      "type": "document",
-      "title": "Museum ticket stub",
-      "content": "ADMIT ONE\n\nPlaceholder text. Room 7. Look at it inside out.",
-      "caption": "Stamped, but never used.",
-      "meta": { "from": "Museum (placeholder)" }
-    },
-    {
-      "id": "f07",
       "type": "image",
       "title": "The last page",
       "src": "/fragments/artwork.svg",
-      "caption": "Placeholder artwork. Replace with a photo of the real piece.",
+      "caption": "Placeholder artwork.",
       "meta": { "location": "Museum (placeholder)" }
     }
   ]

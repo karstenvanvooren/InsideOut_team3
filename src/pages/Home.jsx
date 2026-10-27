@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
 import ProgressBar from '../components/ProgressBar.jsx'
 import ResetButton from '../components/ResetButton.jsx'
-import { getChapter, getHooks, meta, totalFragments } from '../lib/story.js'
+import { getChapter, getHook, meta, totalFragments } from '../lib/story.js'
 import { useProgress } from '../lib/useProgress.js'
 
 export default function Home() {
-  const { foundFragments, unlockedChapters, foundHooks, finaleUnlocked } = useProgress()
-  const started = foundHooks.length > 0
-  const allHooksFound = foundHooks.length === getHooks().length
+  const { foundFragments, unlockedChapters, completedHooks, finaleAvailable, finaleUnlocked } = useProgress()
+  const started = completedHooks.length > 0
+  const lastHook = getHook(completedHooks.at(-1))
+  const currentClue = lastHook ? getChapter(lastHook.chapter)?.clue : null
 
   return (
     <div className="page stack">
@@ -17,7 +18,7 @@ export default function Home() {
         <p className="muted">{meta.tagline}</p>
       </header>
 
-      <p>{meta.intro}</p>
+      {!started && <p>{meta.intro}</p>}
 
       <section className="card">
         <ProgressBar value={foundFragments.length} max={totalFragments()} label="Fragments found" />
@@ -25,16 +26,36 @@ export default function Home() {
 
       {!started && (
         <section className="card card-accent">
-          <h3>How to start</h3>
+          <h3>How to play</h3>
           <ol>
-            <li>Look for a street-art trace with a QR code or NFC tag.</li>
+            <li>Find a trace: street art with a QR code or NFC tag.</li>
             <li>Scan it with your phone camera, or tap your phone on the tag.</li>
-            <li>A chapter opens. Read the fragments and follow the clue.</li>
+            <li>Allow your location — you have to really be there.</li>
+            <li>Answer the question about the place to open the chapter.</li>
+            <li>Follow the clue to the next trace.</li>
           </ol>
           <Link to="/scan" className="btn btn-block">
             Open the scanner
           </Link>
         </section>
+      )}
+
+      {started && !finaleUnlocked && currentClue && (
+        <section className="card card-accent">
+          <div className="eyebrow">Your current clue</div>
+          <p className="clue">{currentClue}</p>
+          {finaleAvailable && (
+            <Link to="/finale" className="btn btn-block">
+              Go to the museum
+            </Link>
+          )}
+        </section>
+      )}
+
+      {finaleUnlocked && (
+        <Link to="/share" className="btn btn-block">
+          Get your solved case card
+        </Link>
       )}
 
       {started && (
@@ -50,39 +71,9 @@ export default function Home() {
         </section>
       )}
 
-      {allHooksFound && !finaleUnlocked && (
-        <Link to="/finale" className="btn btn-block">
-          Go to the finale
-        </Link>
-      )}
-
-      {finaleUnlocked && (
-        <Link to="/share" className="btn btn-block">
-          Get your solved case card
-        </Link>
-      )}
-
       <Link to="/collection" className="btn btn-ghost btn-block">
         View collection
       </Link>
-
-      {import.meta.env.DEV && (
-        <section className="card">
-          <div className="eyebrow">Dev only · test hooks</div>
-          <p className="muted">These links only show while running npm run dev.</p>
-          <ul className="hook-list">
-            {getHooks().map((hook) => (
-              <li key={hook.id}>
-                <Link to={`/hook/${hook.id}`}>/hook/{hook.id}</Link>
-                <span className="muted">{hook.label}</span>
-              </li>
-            ))}
-            <li>
-              <Link to="/hook/does-not-exist">/hook/does-not-exist</Link>
-            </li>
-          </ul>
-        </section>
-      )}
 
       <ResetButton />
     </div>

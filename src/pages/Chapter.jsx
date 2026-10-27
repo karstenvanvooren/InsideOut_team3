@@ -1,19 +1,18 @@
 import { Link, useLocation, useParams } from 'react-router-dom'
 import FragmentViewer from '../components/FragmentViewer.jsx'
-import { getChapter, getChapterFragments, getHookForChapter, getNextHooks } from '../lib/story.js'
+import { getChapter, getChapterFragments, getNextHooks } from '../lib/story.js'
 import { useProgress } from '../lib/useProgress.js'
 import NotFound from './NotFound.jsx'
 
 export default function Chapter() {
   const { id } = useParams()
   const { state } = useLocation()
-  const { isChapterUnlocked, foundHooks, finaleUnlocked } = useProgress()
+  const { isChapterUnlocked, completedHooks, finaleAvailable, finaleUnlocked } = useProgress()
   const chapter = getChapter(id)
 
   if (!chapter) return <NotFound />
 
   if (!isChapterUnlocked(chapter.id)) {
-    const hook = getHookForChapter(chapter.id)
     return (
       <div className="page stack center">
         <div className="eyebrow">Locked</div>
@@ -21,17 +20,11 @@ export default function Chapter() {
         <p className="muted">
           {chapter.isFinale
             ? 'The last page only opens in front of the artwork.'
-            : `Find the trace${hook ? ` “${hook.label}”` : ''} somewhere in the city to open it.`}
+            : 'Find its trace in the city, prove you’re there and solve the challenge to open it.'}
         </p>
-        {chapter.isFinale ? (
-          <Link to="/finale" className="btn btn-block">
-            Go to the finale
-          </Link>
-        ) : (
-          <Link to="/scan" className="btn btn-block">
-            Scan a trace
-          </Link>
-        )}
+        <Link to={chapter.isFinale ? '/finale' : '/'} className="btn btn-block">
+          {chapter.isFinale ? 'Go to the finale' : 'Back to my clue'}
+        </Link>
       </div>
     )
   }
@@ -41,7 +34,7 @@ export default function Chapter() {
 
   return (
     <article className="page stack">
-      {state?.isNew && <div className="toast">New trace found · {fragments.length} fragments added</div>}
+      {state?.isNew && <div className="toast">Chapter unlocked · {fragments.length} fragments added</div>}
 
       <header>
         <div className="eyebrow">{chapter.isFinale ? 'Final chapter' : 'Chapter'}</div>
@@ -54,24 +47,21 @@ export default function Chapter() {
       ))}
 
       <section className="card card-accent">
-        <div className="eyebrow">Clue</div>
+        <div className="eyebrow">{chapter.isFinale ? 'Case closed' : 'Next clue'}</div>
         <p>{chapter.clue}</p>
 
         {nextHooks.length > 0 && (
-          <>
-            <div className="eyebrow">Look for</div>
-            <ul className="hook-list">
-              {nextHooks.map((hook) => {
-                const found = foundHooks.includes(hook.id)
-                return (
-                  <li key={hook.id}>
-                    <span>{found ? hook.label : '???'}</span>
-                    <span className={`badge ${found ? 'badge-found' : ''}`}>{found ? 'found' : 'not found'}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          </>
+          <ul className="hook-list">
+            {nextHooks.map((hook) => {
+              const done = completedHooks.includes(hook.id)
+              return (
+                <li key={hook.id}>
+                  <span>{done ? hook.label : 'Unknown trace'}</span>
+                  <span className={`badge ${done ? 'badge-found' : ''}`}>{done ? 'solved' : 'to find'}</span>
+                </li>
+              )
+            })}
+          </ul>
         )}
       </section>
 
@@ -80,9 +70,10 @@ export default function Chapter() {
           Get your solved case card
         </Link>
       ) : (
+        finaleAvailable &&
         nextHooks.length === 0 && (
           <Link to="/finale" className="btn btn-block">
-            Go to the finale
+            Go to the museum
           </Link>
         )
       )}

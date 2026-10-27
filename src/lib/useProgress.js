@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  completeHook,
   deriveProgress,
   loadProgress,
-  markHookFound,
+  markHookScanned,
+  markLocationVerified,
+  recordWrongAnswer,
   resetProgress,
   subscribe,
   unlockFinale,
 } from './progress.js'
 
 /**
- * const { foundHooks, foundFragments, unlockedChapters, finaleUnlocked,
- *         isChapterUnlocked, markHookFound, unlockFinale, reset } = useProgress()
+ * const { completedHooks, foundFragments, unlockedChapters, finaleUnlocked,
+ *         hookStatus, isChapterUnlocked, completeHook, reset, ... } = useProgress()
  */
 export function useProgress() {
   const [raw, setRaw] = useState(loadProgress)
@@ -23,7 +26,10 @@ export function useProgress() {
       ...derived,
       isChapterUnlocked: (id) => derived.unlockedChapters.includes(id),
       isFragmentFound: (id) => derived.foundFragments.includes(id),
-      markHookFound,
+      markHookScanned,
+      markLocationVerified,
+      recordWrongAnswer,
+      completeHook,
       unlockFinale,
       reset: resetProgress,
     }

@@ -1,53 +1,59 @@
 // Player progress, saved in localStorage.
 //
-// Only the raw facts are stored (which hooks were found, whether the finale
-// was unlocked). Unlocked chapters and found fragments are derived from
-// story.json, so changing the story never leaves saved progress out of sync.
-import { getHook, getChapterFragments, meta } from './story.js'
+// Per hook we store the raw facts: when it was scanned, when the location was
+// verified, how many wrong answers were given and when the challenge was
+// completed. Unlocked chapters and found fragments are derived from
+// story.json, and only count once a hook's challenge is completed.
+import { getChapterFragments, getHook, getHookStatus, isFinaleAvailable, meta } from './story.js'
+import { safeGet, safeRemove, safeSet } from './storage.js'
 
-const STORAGE_KEY = 'insideout.progress.v1'
+const STORAGE_KEY = 'insideout.progress.v2'
 const CHANGE_EVENT = 'insideout:progress'
 
 const emptyProgress = () => ({
-  foundHooks: [], // [{ id, at }] in the order they were found
+  hooks: {}, // { h01: { scannedAt, locationVerifiedAt, wrongAnswers, completedAt } }
   finaleUnlocked: false,
   finaleAt: null,
 })
 
 export function loadProgress() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return emptyProgress()
-    const data = JSON.parse(raw)
-    return {
-      ...emptyProgress(),
-      ...data,
-      // Drop hooks that no longer exist in story.json
-      foundHooks: Array.isArray(data.foundHooks)
-        ? data.foundHooks.filter((h) => h && getHook(h.id))
-        : [],
-    }
-  } catch {
-    return emptyProgress()
-  }
+  const data = safeGet(STORAGE_KEY)
+  if (!data || typeof data !== 'object') return emptyProgress()
+  // Drop hooks that no longer exist in story.json
+  const hooks = Object.fromEntries(
+    Object.entries(data.hooks ?? {}).filter(([id, value]) => getHook(id) && value && typeof value === 'object'),
+  )
+  return { ...emptyProgress(), ...data, hooks }
 }
 
-function saveProgress(progress) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
-  } catch {
-    // Private mode / storage full: progress just won't persist.
-  }
+function save(progress) {
+  safeSet(STORAGE_KEY, progress)
   window.dispatchEvent(new Event(CHANGE_EVENT))
 }
 
-/** Marks a hook as found. Returns true if it was new. */
-export function markHookFound(hookId) {
-  if (!getHook(hookId)) return false
+function updateHook(hookId, update) {
+  if (!getHook(hookId)) return null
   const progress = loadProgress()
-  if (progress.foundHooks.some((h) => h.id === hookId)) return false
-  progress.foundHooks.push({ id: hookId, at: new Date().toISOString() })
-  saveProgress(progress)
+  const current = progress.hooks[hookId] ?? { wrongAnswers: 0 }
+  progress.hooks[hookId] = { ...current, ...update(current) }
+  save(progress)
+  return progress.hooks[hookId]
+}
+
+const now = () => new Date().toISOString()
+
+export const markHookScanned = (hookId) => updateHook(hookId, (h) => ({ scannedAt: h.scannedAt ?? now() }))
+
+export const markLocationVerified = (hookId) =>
+  updateHook(hookId, (h) => ({ locationVerifiedAt: h.locationVerifiedAt ?? now() }))
+
+export const recordWrongAnswer = (hookId) => updateHook(hookId, (h) => ({ wrongAnswers: (h.wrongAnswers ?? 0) + 1 }))
+
+/** Marks the challenge as done. Returns true if it was newly completed. */
+export function completeHook(hookId) {
+  const before = loadProgress().hooks[hookId]
+  if (before?.completedAt) return false
+  updateHook(hookId, (h) => ({ completedAt: now(), scannedAt: h.scannedAt ?? now() }))
   return true
 }
 
@@ -55,37 +61,43 @@ export function unlockFinale() {
   const progress = loadProgress()
   if (progress.finaleUnlocked) return false
   progress.finaleUnlocked = true
-  progress.finaleAt = new Date().toISOString()
-  saveProgress(progress)
+  progress.finaleAt = now()
+  save(progress)
   return true
 }
 
 export function resetProgress() {
-  try {
-    localStorage.removeItem(STORAGE_KEY)
-  } catch {
-    // ignore
-  }
+  safeRemove(STORAGE_KEY)
   window.dispatchEvent(new Event(CHANGE_EVENT))
 }
 
 /** Everything the UI needs, computed from the stored facts. */
 export function deriveProgress(progress) {
-  const foundHookIds = progress.foundHooks.map((h) => h.id)
-  const unlockedChapters = foundHookIds.map((id) => getHook(id).chapter)
-  if (progress.finaleUnlocked) unlockedChapters.push(meta.finaleChapter)
+  const entries = Object.entries(progress.hooks)
+  const scannedHooks = entries.filter(([, h]) => h.scannedAt).map(([id]) => id)
+  const completedHooks = entries
+    .filter(([, h]) => h.completedAt)
+    .sort(([, a], [, b]) => a.completedAt.localeCompare(b.completedAt))
+    .map(([id]) => id)
 
+  const unlockedChapters = completedHooks.map((id) => getHook(id).chapter)
+  if (progress.finaleUnlocked) unlockedChapters.push(meta.finaleChapter)
   const uniqueChapters = [...new Set(unlockedChapters)]
+
   const foundFragments = [
     ...new Set(uniqueChapters.flatMap((id) => getChapterFragments(id).map((f) => f.id))),
   ]
 
   return {
-    foundHooks: foundHookIds,
+    hookProgress: progress.hooks,
+    scannedHooks,
+    completedHooks,
     unlockedChapters: uniqueChapters,
     foundFragments,
+    finaleAvailable: isFinaleAvailable(completedHooks),
     finaleUnlocked: progress.finaleUnlocked,
     finaleAt: progress.finaleAt,
+    hookStatus: (id) => getHookStatus(id, completedHooks),
   }
 }
 

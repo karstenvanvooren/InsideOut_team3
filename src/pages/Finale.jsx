@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { createRecognizer } from '../finale/artworkRecognizer.js'
-import { getFinaleChapter, getHooks } from '../lib/story.js'
+import { getFinaleChapter } from '../lib/story.js'
 import { useProgress } from '../lib/useProgress.js'
 import { patterns, vibrate } from '../lib/vibrate.js'
 
@@ -9,12 +9,11 @@ import { patterns, vibrate } from '../lib/vibrate.js'
 // start/stop interface, so the simulator can be swapped for MindAR later.
 export default function Finale() {
   const navigate = useNavigate()
-  const { foundHooks, finaleUnlocked, unlockFinale } = useProgress()
+  const { finaleAvailable, finaleUnlocked, unlockFinale } = useProgress()
   const [status, setStatus] = useState('idle') // idle | scanning | matched
   const containerRef = useRef(null)
   const recognizerRef = useRef(null)
   const finale = getFinaleChapter()
-  const missingHooks = getHooks().length - foundHooks.length
 
   useEffect(() => () => recognizerRef.current?.stop(), [])
 
@@ -48,17 +47,25 @@ export default function Finale() {
     )
   }
 
+  if (!finaleAvailable) {
+    return (
+      <div className="page stack center">
+        <div className="eyebrow">Museum</div>
+        <h1>The last page is still sealed</h1>
+        <p className="muted">Solve every trace in the city first. Your clues will lead you here.</p>
+        <Link to="/" className="btn btn-block">
+          Back to my clue
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <div className="page stack">
       <header>
         <div className="eyebrow">Museum</div>
         <h1>The last page</h1>
         <p>Stand in front of the artwork and point your camera at it.</p>
-        {missingHooks > 0 && (
-          <p className="muted">
-            Heads up: you still have {missingHooks} trace{missingHooks === 1 ? '' : 's'} to find in the city.
-          </p>
-        )}
       </header>
 
       <div ref={containerRef} className={`artwork-frame ${status === 'scanning' ? 'scanning' : ''}`}>

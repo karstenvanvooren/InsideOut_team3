@@ -1,0 +1,169 @@
+/* Dev panel only. Deliberately plain so it never looks like part of the game. */
+
+.dev-fab {
+  position: fixed;
+  right: var(--space-3);
+  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + var(--space-3));
+  z-index: 1000;
+  padding: var(--space-2) var(--space-3);
+  border: 1px dashed #ffb020;
+  border-radius: 999px;
+  background: #1d1a10;
+  color: #ffb020;
+  font: 700 var(--text-xs) / 1 var(--font-mono);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.dev-fab-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: #ff4d6d;
+}
+
+.dev-panel {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 1000;
+  max-height: 88dvh;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom));
+  background: #121016;
+  border-top: 2px dashed #ffb020;
+  font-size: var(--text-sm);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+}
+
+@media (min-width: 720px) {
+  .dev-panel {
+    inset: var(--space-4) var(--space-4) auto auto;
+    width: 400px;
+    border: 2px dashed #ffb020;
+    border-radius: var(--radius-md);
+  }
+}
+
+.dev-panel > * + * {
+  margin-top: var(--space-3);
+}
+
+.dev-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffb020;
+  font-family: var(--font-mono);
+}
+
+.dev-close {
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  cursor: pointer;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.dev-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.dev-toggle button {
+  padding: var(--space-2);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.dev-toggle button.on {
+  background: #ffb020;
+  color: #1d1a10;
+  font-weight: 700;
+}
+
+.dev-map {
+  height: 260px;
+  border-radius: var(--radius-sm);
+  background: #222;
+}
+
+.dev-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.dev-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-xs);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dev-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.dev-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.dev-input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: var(--text-sm) var(--font-mono);
+}
+
+.dev-small {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.dev-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dev-table td {
+  padding: var(--space-2) var(--space-1);
+  border-top: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.dev-table td:nth-child(2) {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.dev-in {
+  color: #3ddc97;
+}
+
+.dev-panel .leaflet-tooltip {
+  font-size: 11px;
+}

@@ -20,6 +20,9 @@ export const getFragment = (id) => fragmentsById[id] ?? null
 
 export const getFinaleChapter = () => getChapter(story.meta.finaleChapter)
 
+/** Hook ids that must be completed before the museum finale opens. */
+export const getFinaleRequires = () => story.meta.finaleRequires ?? story.hooks.map((h) => h.id)
+
 /** Fragment objects of a chapter, in order (unknown ids are skipped). */
 export const getChapterFragments = (chapterId) =>
   (getChapter(chapterId)?.fragments ?? []).map(getFragment).filter(Boolean)
@@ -33,3 +36,18 @@ export const getHookForChapter = (chapterId) =>
   story.hooks.find((hook) => hook.chapter === chapterId) ?? null
 
 export const totalFragments = () => story.fragments.length
+
+/**
+ * 'completed' | 'open' | 'locked' for a hook, given the ids of completed hooks.
+ * A hook is open when every hook in its "requires" list is completed.
+ */
+export function getHookStatus(hookId, completedHooks) {
+  const hook = getHook(hookId)
+  if (!hook) return null
+  if (completedHooks.includes(hookId)) return 'completed'
+  const requires = hook.requires ?? []
+  return requires.every((id) => completedHooks.includes(id)) ? 'open' : 'locked'
+}
+
+export const isFinaleAvailable = (completedHooks) =>
+  getFinaleRequires().every((id) => completedHooks.includes(id))
