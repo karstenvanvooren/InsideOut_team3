@@ -71,6 +71,8 @@ Open the address it prints (usually http://localhost:5173).
 
 You don't have to walk around Antwerp to test. The yellow **DEV** button (it shows the current phase) appears **only** after you open any page with **`?dev=1`**, e.g. `http://localhost:5173/?dev=1` or `https://your-site.netlify.app/?dev=1`, also in `npm run dev`. The device remembers it; `?dev=0` hides it again. Players never see it.
 
+**No URL needed:** tap the **top-left corner of the screen 5 times quickly** (within 3 seconds) to switch dev mode on or off. Works on every screen and every address (localhost, your phone over Wi-Fi, the deployed site). `?dev`, `?dev=true` and `#dev` also work. Dev mode is remembered **per address**, so turn it on again when you open another URL.
+
 In the panel:
 
 - **Live info**: phase, current location and leg (e.g. `start→loc1`), distance to the location, nearest hook + distance, fragments and hooks collected, GPS accuracy.
@@ -327,5 +329,6 @@ The QR codes are **not** part of the website. They only contain its address. So 
 - **Media**: `public/fragments/photo-01.svg`, `artwork.svg`, `memo-01.wav` (a beep, not a voice).
 - **App icons**: `public/icons/` (simple generated placeholders).
 - **No offline mode** yet (no service worker).
-#   I n s i d e O u t _ t e a m 3  
+#   I n s i d e O u t _ t e a m 3 
+ 
  

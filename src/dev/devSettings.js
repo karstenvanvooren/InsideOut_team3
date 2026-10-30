@@ -7,14 +7,31 @@ const DEV_KEY = 'insideout.dev'
 const OPTIONS_KEY = 'insideout.devOptions'
 const CHANGE_EVENT = 'insideout:dev'
 
-export function readDevFlagFromUrl(search) {
-  const value = new URLSearchParams(search).get('dev')
-  if (value === '1') safeSet(DEV_KEY, true)
-  if (value === '0') safeRemove(DEV_KEY)
+const ON_VALUES = ['', '1', 'true', 'on', 'yes']
+const OFF_VALUES = ['0', 'false', 'off', 'no']
+
+/** ?dev, ?dev=1, ?dev=true or #dev turn dev mode on; ?dev=0 / #nodev turn it off. */
+export function readDevFlagFromUrl(search, hash = '') {
+  const params = new URLSearchParams(search)
+  if (params.has('dev')) {
+    const value = (params.get('dev') ?? '').toLowerCase()
+    if (ON_VALUES.includes(value)) safeSet(DEV_KEY, true)
+    if (OFF_VALUES.includes(value)) safeRemove(DEV_KEY)
+  }
+  const h = hash.replace(/^#/, '').toLowerCase()
+  if (h === 'dev') safeSet(DEV_KEY, true)
+  if (h === 'nodev') safeRemove(DEV_KEY)
 }
 
 export function isDevEnabled() {
   return safeGet(DEV_KEY) === true
+}
+
+/** Secret gesture (5 quick taps in the top-left corner): switch dev mode on/off. */
+export function toggleDevEnabled() {
+  if (isDevEnabled()) safeRemove(DEV_KEY)
+  else safeSet(DEV_KEY, true)
+  return isDevEnabled()
 }
 
 // ---------- Dev options (only count while dev mode is on) ----------
