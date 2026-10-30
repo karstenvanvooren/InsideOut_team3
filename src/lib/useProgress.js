@@ -5,8 +5,11 @@ import {
   loadProgress,
   markHookScanned,
   markLocationVerified,
+  markTutorialSeen,
+  recordRiddleWrongAnswer,
   recordWrongAnswer,
   resetProgress,
+  solveRiddle,
   subscribe,
   unlockFinale,
 } from './progress.js'
@@ -30,6 +33,9 @@ export function useProgress() {
       markLocationVerified,
       recordWrongAnswer,
       completeHook,
+      recordRiddleWrongAnswer,
+      solveRiddle,
+      markTutorialSeen,
       unlockFinale,
       reset: resetProgress,
     }

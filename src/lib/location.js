@@ -9,7 +9,8 @@ export const MAX_ACCURACY = 100
 
 // ---------- Fake location (dev panel) ----------
 
-const defaultFake = () => ({ enabled: false, lat: 51.2194, lng: 4.4025 })
+// heading: a fake compass (0–360), or null to use the real compass / walking direction
+const defaultFake = () => ({ enabled: false, lat: 51.2194, lng: 4.4025, heading: null })
 
 export function getFakeLocation() {
   return { ...defaultFake(), ...(safeGet(FAKE_KEY) ?? {}) }
@@ -55,13 +56,56 @@ export function getCurrentPosition() {
           accuracy: pos.coords.accuracy,
           fake: false,
         }),
-      (err) => {
-        const codes = { 1: 'denied', 2: 'unavailable', 3: 'timeout' }
-        reject(new LocationError(codes[err.code] ?? 'unavailable', err.message))
-      },
+      (err) => reject(new LocationError(geoErrorCodes[err.code] ?? 'unavailable', err.message)),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
     )
   })
+}
+
+const geoErrorCodes = { 1: 'denied', 2: 'unavailable', 3: 'timeout' }
+
+/**
+ * Live position: calls onPosition({ lat, lng, accuracy, fake }) on every update,
+ * onError(LocationError) when real GPS fails. Follows the dev panel: switching
+ * the fake location on, off or moving it takes effect immediately.
+ * Returns a function that stops watching.
+ */
+export function watchPosition(onPosition, onError) {
+  let geoId = null
+  const stopGeo = () => {
+    if (geoId !== null) navigator.geolocation.clearWatch(geoId)
+    geoId = null
+  }
+
+  const start = () => {
+    stopGeo()
+    const fake = getFakeLocation()
+    if (fake.enabled) {
+      onPosition({ lat: fake.lat, lng: fake.lng, accuracy: 0, fake: true })
+      return
+    }
+    if (!window.isSecureContext) {
+      onError(new LocationError('insecure', 'Location only works on https.'))
+      return
+    }
+    if (!('geolocation' in navigator)) {
+      onError(new LocationError('unsupported', 'This browser has no location support.'))
+      return
+    }
+    geoId = navigator.geolocation.watchPosition(
+      (pos) =>
+        onPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy, fake: false }),
+      (err) => onError(new LocationError(geoErrorCodes[err.code] ?? 'unavailable', err.message)),
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 },
+    )
+  }
+
+  start()
+  const unsubscribe = subscribeFakeLocation(start)
+  return () => {
+    unsubscribe()
+    stopGeo()
+  }
 }
 
 // ---------- Distance ----------

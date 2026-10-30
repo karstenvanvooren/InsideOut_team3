@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom'
 import ProgressBar from '../components/ProgressBar.jsx'
 import ResetButton from '../components/ResetButton.jsx'
-import { getChapter, getHook, meta, totalFragments } from '../lib/story.js'
+import { getChapter, getHook, getStartHook, meta, totalFragments } from '../lib/story.js'
 import { useProgress } from '../lib/useProgress.js'
 
 export default function Home() {
-  const { foundFragments, unlockedChapters, completedHooks, finaleAvailable, finaleUnlocked } = useProgress()
+  const { foundFragments, unlockedChapters, completedHooks, finaleAvailable, finaleUnlocked, isRiddleSolved } =
+    useProgress()
   const started = completedHooks.length > 0
   const lastHook = getHook(completedHooks.at(-1))
-  const currentClue = lastHook ? getChapter(lastHook.chapter)?.clue : null
+  const currentClue = lastHook?.chapter ? getChapter(lastHook.chapter)?.clue : null
+  const riddleHook = lastHook?.riddle ? lastHook : null
+  const startHook = getStartHook()
 
   return (
     <div className="page stack">
@@ -28,11 +31,17 @@ export default function Home() {
         <section className="card card-accent">
           <h3>How to play</h3>
           <ol>
+            {startHook && (
+              <li>
+                Start at the {startHook.location.name}
+                {startHook.location.address && ` (${startHook.location.address})`} and scan the first trace.
+              </li>
+            )}
             <li>Find a trace: street art with a QR code or NFC tag.</li>
             <li>Scan it with your phone camera, or tap your phone on the tag.</li>
             <li>Allow your location — you have to really be there.</li>
             <li>Answer the question about the place to open the chapter.</li>
-            <li>Follow the clue to the next trace.</li>
+            <li>Solve the riddle: the map shows you the way to the next trace.</li>
           </ol>
           <Link to="/scan" className="btn btn-block">
             Open the scanner
@@ -40,11 +49,16 @@ export default function Home() {
         </section>
       )}
 
-      {started && !finaleUnlocked && currentClue && (
+      {started && !finaleUnlocked && (currentClue || riddleHook) && (
         <section className="card card-accent">
           <div className="eyebrow">Your current clue</div>
-          <p className="clue">{currentClue}</p>
-          {finaleAvailable && (
+          <p className="clue">{currentClue ?? 'Solve the riddle to find your first location.'}</p>
+          {riddleHook && (
+            <Link to={`/riddle/${riddleHook.id}`} className="btn btn-block">
+              {isRiddleSolved(riddleHook.id) ? 'Show the route' : 'Solve the riddle'}
+            </Link>
+          )}
+          {finaleAvailable && !riddleHook && (
             <Link to="/finale" className="btn btn-block">
               Go to the museum
             </Link>

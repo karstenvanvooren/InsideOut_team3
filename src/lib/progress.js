@@ -4,6 +4,7 @@
 // verified, how many wrong answers were given and when the challenge was
 // completed. Unlocked chapters and found fragments are derived from
 // story.json, and only count once a hook's challenge is completed.
+// The riddle a hook gives for the next location is tracked on that same hook.
 import { getChapterFragments, getHook, getHookStatus, isFinaleAvailable, meta } from './story.js'
 import { safeGet, safeRemove, safeSet } from './storage.js'
 
@@ -11,7 +12,10 @@ const STORAGE_KEY = 'insideout.progress.v2'
 const CHANGE_EVENT = 'insideout:progress'
 
 const emptyProgress = () => ({
-  hooks: {}, // { h01: { scannedAt, locationVerifiedAt, wrongAnswers, completedAt } }
+  // { h01: { scannedAt, locationVerifiedAt, wrongAnswers, completedAt,
+  //          riddleWrongAnswers, riddleSolvedAt, riddleRevealed } }
+  hooks: {},
+  tutorialSeenAt: null,
   finaleUnlocked: false,
   finaleAt: null,
 })
@@ -57,6 +61,23 @@ export function completeHook(hookId) {
   return true
 }
 
+export const recordRiddleWrongAnswer = (hookId) =>
+  updateHook(hookId, (h) => ({ riddleWrongAnswers: (h.riddleWrongAnswers ?? 0) + 1 }))
+
+/** Marks a hook's riddle as solved (revealed = the player used "Show the answer"). */
+export const solveRiddle = (hookId, { revealed = false } = {}) =>
+  updateHook(hookId, (h) => ({
+    riddleSolvedAt: h.riddleSolvedAt ?? now(),
+    riddleRevealed: Boolean(h.riddleRevealed || revealed),
+  }))
+
+export function markTutorialSeen() {
+  const progress = loadProgress()
+  if (progress.tutorialSeenAt) return
+  progress.tutorialSeenAt = now()
+  save(progress)
+}
+
 export function unlockFinale() {
   const progress = loadProgress()
   if (progress.finaleUnlocked) return false
@@ -80,7 +101,7 @@ export function deriveProgress(progress) {
     .sort(([, a], [, b]) => a.completedAt.localeCompare(b.completedAt))
     .map(([id]) => id)
 
-  const unlockedChapters = completedHooks.map((id) => getHook(id).chapter)
+  const unlockedChapters = completedHooks.map((id) => getHook(id).chapter).filter(Boolean) // the start hook has none
   if (progress.finaleUnlocked) unlockedChapters.push(meta.finaleChapter)
   const uniqueChapters = [...new Set(unlockedChapters)]
 
@@ -97,6 +118,8 @@ export function deriveProgress(progress) {
     finaleAvailable: isFinaleAvailable(completedHooks),
     finaleUnlocked: progress.finaleUnlocked,
     finaleAt: progress.finaleAt,
+    tutorialSeen: Boolean(progress.tutorialSeenAt),
+    isRiddleSolved: (id) => Boolean(progress.hooks[id]?.riddleSolvedAt),
     hookStatus: (id) => getHookStatus(id, completedHooks),
   }
 }

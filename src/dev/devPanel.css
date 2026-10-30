@@ -122,6 +122,26 @@
   cursor: default;
 }
 
+.dev-on {
+  border-color: #ffb020;
+  color: #ffb020;
+}
+
+.dev-heading {
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.dev-heading label {
+  min-width: 9em;
+}
+
+.dev-heading input {
+  flex: 1;
+  accent-color: #ffb020;
+}
+
 .dev-danger {
   border-color: var(--color-danger);
   color: var(--color-danger);

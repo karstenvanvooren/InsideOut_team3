@@ -1,7 +1,7 @@
-// Floating test panel: fake your location on a map, skip challenges, reset.
+// Floating test panel: fake your location on a map, skip challenges and riddles, reset.
 // Loaded lazily, so normal players never download Leaflet.
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {
@@ -11,17 +11,40 @@ import {
   setFakeLocation,
   subscribeFakeLocation,
 } from '../lib/location.js'
-import { getHooks } from '../lib/story.js'
+import { getPublishedRoute, subscribeRoute } from '../lib/route.js'
+import { getHooks, meta } from '../lib/story.js'
 import { useProgress } from '../lib/useProgress.js'
+import { isWalking, startWalk, stopWalk, subscribeWalk } from './simulateWalk.js'
 import './devPanel.css'
 
 const ANTWERP = { lat: 51.2194, lng: 4.4025 }
 const FAR_AWAY = { lat: 51.2005, lng: 4.4305 } // ~3 km south-east, outside every radius
 
+/** Every place on the map: the hooks plus the museum finale. */
+const places = () => [
+  ...getHooks().map((hook) => ({ id: hook.id, location: hook.location })),
+  ...(meta.finale?.location ? [{ id: 'finale', location: meta.finale.location }] : []),
+]
+
 function useFakeLocation() {
   const [fake, setFake] = useState(getFakeLocation)
   useEffect(() => subscribeFakeLocation(() => setFake(getFakeLocation())), [])
   return fake
+}
+
+/** Is a navigation route on screen, and is "Simulate walk" running? */
+function useWalkState() {
+  const [state, setState] = useState(() => ({ hasRoute: Boolean(getPublishedRoute()), walking: isWalking() }))
+  useEffect(() => {
+    const update = () => setState({ hasRoute: Boolean(getPublishedRoute()), walking: isWalking() })
+    const offRoute = subscribeRoute(update)
+    const offWalk = subscribeWalk(update)
+    return () => {
+      offRoute()
+      offWalk()
+    }
+  }, [])
+  return state
 }
 
 /** Live real GPS position while the panel is open in "real GPS" mode. */
@@ -61,11 +84,11 @@ function DevMap({ position, onPick }) {
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(map)
 
-    for (const hook of getHooks()) {
-      const { lat, lng, radius = 50, name } = hook.location
+    for (const place of places()) {
+      const { lat, lng, radius = 50, name } = place.location
       L.circle([lat, lng], { radius, color: '#751ffe', weight: 2, fillOpacity: 0.15 }).addTo(map)
       L.circleMarker([lat, lng], { radius: 6, color: '#ffffff', weight: 2, fillColor: '#751ffe', fillOpacity: 1 })
-        .bindTooltip(`${hook.id} · ${name}`, { permanent: true, direction: 'top', offset: [0, -8] })
+        .bindTooltip(`${place.id} · ${name}`, { permanent: true, direction: 'top', offset: [0, -8] })
         .addTo(map)
     }
 
@@ -100,7 +123,8 @@ export default function DevPanel() {
   const [open, setOpen] = useState(false)
   const fake = useFakeLocation()
   const real = useRealPosition(open && !fake.enabled)
-  const { hookStatus, completeHook, markLocationVerified, reset } = useProgress()
+  const navigate = useNavigate()
+  const { hookStatus, isRiddleSolved, completeHook, markLocationVerified, solveRiddle, reset } = useProgress()
   const [latInput, setLatInput] = useState('')
   const [lngInput, setLngInput] = useState('')
 
@@ -111,7 +135,13 @@ export default function DevPanel() {
 
   const position = fake.enabled ? { lat: fake.lat, lng: fake.lng, accuracy: 0 } : real.position
 
-  const pick = (coords) => setFakeLocation({ ...coords, enabled: true })
+  const walk = useWalkState()
+  const [walkSpeed, setWalkSpeed] = useState(1)
+
+  const pick = (coords) => {
+    stopWalk()
+    setFakeLocation({ ...coords, enabled: true })
+  }
 
   const applyInputs = (e) => {
     e.preventDefault()
@@ -123,6 +153,14 @@ export default function DevPanel() {
   const skip = (hookId) => {
     markLocationVerified(hookId)
     completeHook(hookId)
+  }
+
+  // Also completes the hook itself, then jumps straight to the map
+  const skipRiddle = (hookId) => {
+    skip(hookId)
+    solveRiddle(hookId)
+    setOpen(false)
+    navigate(`/riddle/${hookId}`)
   }
 
   if (!open) {
@@ -167,14 +205,54 @@ export default function DevPanel() {
       <p className="dev-small">Tap the map to set your fake location (switches fake mode on).</p>
 
       <div className="dev-row">
-        {getHooks().map((hook) => (
-          <button key={hook.id} type="button" className="dev-btn" onClick={() => pick(hook.location)}>
-            I’m at {hook.location.name}
+        {places().map((place) => (
+          <button key={place.id} type="button" className="dev-btn" onClick={() => pick(place.location)}>
+            I’m at {place.location.name}
           </button>
         ))}
         <button type="button" className="dev-btn" onClick={() => pick(FAR_AWAY)}>
           Far away
         </button>
+      </div>
+
+      <div className="dev-row dev-heading">
+        <label htmlFor="dev-heading">Compass {fake.heading === null ? 'real' : `${Math.round(fake.heading)}°`}</label>
+        <input
+          id="dev-heading"
+          type="range"
+          min="0"
+          max="359"
+          value={fake.heading ?? 0}
+          onChange={(e) => setFakeLocation({ heading: Number(e.target.value) })}
+        />
+        <button type="button" className="dev-btn" disabled={fake.heading === null} onClick={() => setFakeLocation({ heading: null })}>
+          Real
+        </button>
+      </div>
+
+      <div className="dev-row">
+        <button
+          type="button"
+          className="dev-btn"
+          disabled={!walk.hasRoute && !walk.walking}
+          onClick={() => (walk.walking ? stopWalk() : startWalk(walkSpeed))}
+        >
+          {walk.walking ? 'Stop walking' : 'Simulate walk'}
+        </button>
+        {[1, 5].map((factor) => (
+          <button
+            key={factor}
+            type="button"
+            className={`dev-btn ${walkSpeed === factor ? 'dev-on' : ''}`}
+            onClick={() => {
+              setWalkSpeed(factor)
+              if (walk.walking) startWalk(factor) // continues from where the walker is now
+            }}
+          >
+            {factor === 1 ? '1.3 m/s' : `×${factor}`}
+          </button>
+        ))}
+        {!walk.hasRoute && !walk.walking && <span className="dev-small">Open a route map first.</span>}
       </div>
 
       <form className="dev-row" onSubmit={applyInputs}>
@@ -217,6 +295,16 @@ export default function DevPanel() {
                   >
                     Skip challenge
                   </button>
+                  {hook.riddle && (
+                    <button
+                      type="button"
+                      className="dev-btn"
+                      disabled={isRiddleSolved(hook.id)}
+                      onClick={() => skipRiddle(hook.id)}
+                    >
+                      Skip riddle
+                    </button>
+                  )}
                 </td>
               </tr>
             )

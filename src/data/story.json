@@ -2,33 +2,115 @@
   "meta": {
     "title": "Inside Out",
     "tagline": "The city is a book. Someone tore out the last page.",
-    "intro": "Hidden across Antwerp are traces — street art with a QR code or NFC tag. Scan one, prove you're really there, and a chapter of an unsolved case opens. Follow the clues to the final page.",
-    "finaleChapter": "c03",
-    "finaleRequires": ["h01", "h02"]
+    "intro": "Hidden across Antwerp are traces — street art with a QR code or NFC tag. The case starts at the Stadsfeestzaal on the Meir. Every trace hides a riddle that leads you to the next one. Follow them to the final page.",
+    "finaleChapter": "c06",
+    "finaleRequires": ["h01", "h02", "h03", "h04", "h05"],
+    "finale": {
+      "location": { "name": "KMSKA", "address": "Leopold de Waelplaats 1, 2000 Antwerpen", "lat": 51.2088, "lng": 4.3948, "radius": 60 }
+    }
   },
   "hooks": [
     {
-      "id": "h01",
-      "label": "Groenplaats",
-      "location": { "name": "Groenplaats", "lat": 51.21928, "lng": 4.40108, "radius": 50 },
-      "chapter": "c01",
+      "id": "h00",
+      "label": "Stadsfeestzaal",
+      "start": true,
+      "location": { "name": "Stadsfeestzaal", "address": "Meir 78, 2000 Antwerpen", "lat": 51.2175, "lng": 4.4097, "radius": 50 },
       "requires": [],
+      "riddle": {
+        "next": "h01",
+        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Sint-Carolus Borromeuskerk”.)",
+        "answers": ["Sint-Carolus Borromeuskerk", "Carolus Borromeuskerk", "Carolus Borromeus", "Sint-Carolus", "Borromeuskerk", "Carolus Borromeuskerk Antwerpen"],
+        "hints": ["TODO hint 1 – a church on a quiet square.", "TODO hint 2 – Hendrik Conscienceplein."]
+      }
+    },
+    {
+      "id": "h01",
+      "label": "Sint-Carolus Borromeuskerk",
+      "location": { "name": "Sint-Carolus Borromeuskerk", "address": "Hendrik Conscienceplein, 2000 Antwerpen", "lat": 51.2210, "lng": 4.4044, "radius": 50 },
+      "chapter": "c01",
+      "requires": ["h00"],
       "challenge": {
-        "question": "Which famous painter stands on the statue in the middle of the square?",
-        "answers": ["rubens", "peter paul rubens", "pieter paul rubens"],
-        "hint": "He's Antwerp's most famous painter."
+        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
+        "answers": ["test"],
+        "hint": "Type test."
+      },
+      "riddle": {
+        "next": "h02",
+        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Plantin-Moretus”.)",
+        "answers": ["Plantin-Moretus", "Plantin Moretus", "Museum Plantin-Moretus", "Plantin-Moretushuis", "Plantin"],
+        "hints": ["TODO hint 1 – the oldest printing works in the world.", "TODO hint 2 – Vrijdagmarkt."]
       }
     },
     {
       "id": "h02",
-      "label": "Grote Markt",
-      "location": { "name": "Grote Markt", "lat": 51.22129, "lng": 4.39966, "radius": 50 },
+      "label": "Plantin-Moretus",
+      "location": { "name": "Plantin-Moretus", "address": "Vrijdagmarkt 22, 2000 Antwerpen", "lat": 51.2184, "lng": 4.3982, "radius": 50 },
       "chapter": "c02",
       "requires": ["h01"],
       "challenge": {
-        "question": "What is the figure on top of the fountain throwing?",
-        "answers": ["hand", "a hand", "the hand", "een hand"],
-        "hint": "Antwerp's name is linked to it."
+        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
+        "answers": ["test"],
+        "hint": "Type test."
+      },
+      "riddle": {
+        "next": "h03",
+        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “MoMu”.)",
+        "answers": ["MoMu", "Modemuseum", "ModeMuseum Antwerpen", "Fashion Museum"],
+        "hints": ["TODO hint 1 – Antwerp is famous for six designers.", "TODO hint 2 – Nationalestraat."]
+      }
+    },
+    {
+      "id": "h03",
+      "label": "MoMu",
+      "location": { "name": "MoMu", "address": "Nationalestraat 28, 2000 Antwerpen", "lat": 51.2174, "lng": 4.3999, "radius": 50 },
+      "chapter": "c03",
+      "requires": ["h02"],
+      "challenge": {
+        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
+        "answers": ["test"],
+        "hint": "Type test."
+      },
+      "riddle": {
+        "next": "h04",
+        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Bourla”.)",
+        "answers": ["Bourla", "Bourlaschouwburg", "Bourla schouwburg", "Bourla theater", "Bourla theatre"],
+        "hints": ["TODO hint 1 – a theatre named after its architect.", "TODO hint 2 – Komedieplaats."]
+      }
+    },
+    {
+      "id": "h04",
+      "label": "Bourla",
+      "location": { "name": "Bourla", "address": "Komedieplaats 18, 2000 Antwerpen", "lat": 51.2160, "lng": 4.4074, "radius": 50 },
+      "chapter": "c04",
+      "requires": ["h03"],
+      "challenge": {
+        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
+        "answers": ["test"],
+        "hint": "Type test."
+      },
+      "riddle": {
+        "next": "h05",
+        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Maagdenhuis”.)",
+        "answers": ["Maagdenhuis", "Museum Maagdenhuis", "Maagdenhuys"],
+        "hints": ["TODO hint 1 – a former orphanage for girls.", "TODO hint 2 – Lange Gasthuisstraat."]
+      }
+    },
+    {
+      "id": "h05",
+      "label": "Maagdenhuis",
+      "location": { "name": "Maagdenhuis", "address": "Lange Gasthuisstraat 33, 2000 Antwerpen", "lat": 51.2144, "lng": 4.4054, "radius": 50 },
+      "chapter": "c05",
+      "requires": ["h04"],
+      "challenge": {
+        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
+        "answers": ["test"],
+        "hint": "Type test."
+      },
+      "riddle": {
+        "next": "finale",
+        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “KMSKA”.)",
+        "answers": ["KMSKA", "Koninklijk Museum voor Schone Kunsten", "Koninklijk Museum voor Schone Kunsten Antwerpen", "Museum voor Schone Kunsten", "Royal Museum of Fine Arts"],
+        "hints": ["TODO hint 1 – the biggest art museum in town.", "TODO hint 2 – Leopold de Waelplaats."]
       }
     }
   ],
@@ -37,20 +119,44 @@
       "id": "c01",
       "title": "Chapter 1 — The First Page",
       "intro": "Placeholder intro. You weren't supposed to find this. Someone left it here anyway.",
-      "fragments": ["f01", "f02"],
+      "fragments": ["f01"],
       "nextHooks": ["h02"],
-      "clue": "Follow the river of people north. Where a giant's hand once flew, the next trace waits."
+      "clue": "Placeholder clue. The next page is hidden in a riddle."
     },
     {
       "id": "c02",
-      "title": "Chapter 2 — The Giant's Hand",
+      "title": "Chapter 2 — Ink",
       "intro": "Placeholder intro. The second trace. The letters are older than the paint around them.",
-      "fragments": ["f03", "f04"],
-      "nextHooks": [],
-      "clue": "All traces now point to the museum. The final page is waiting there."
+      "fragments": ["f02"],
+      "nextHooks": ["h03"],
+      "clue": "Placeholder clue. The next page is hidden in a riddle."
     },
     {
       "id": "c03",
+      "title": "Chapter 3 — Seams",
+      "intro": "Placeholder intro.",
+      "fragments": ["f03"],
+      "nextHooks": ["h04"],
+      "clue": "Placeholder clue. The next page is hidden in a riddle."
+    },
+    {
+      "id": "c04",
+      "title": "Chapter 4 — Curtain",
+      "intro": "Placeholder intro.",
+      "fragments": ["f04"],
+      "nextHooks": ["h05"],
+      "clue": "Placeholder clue. The next page is hidden in a riddle."
+    },
+    {
+      "id": "c05",
+      "title": "Chapter 5 — The Orphan's Letter",
+      "intro": "Placeholder intro.",
+      "fragments": ["f06"],
+      "nextHooks": [],
+      "clue": "All traces now point to the museum. Solve the last riddle to find it."
+    },
+    {
+      "id": "c06",
       "title": "Finale — Inside Out",
       "intro": "Placeholder finale. The artwork was the last page all along.",
       "fragments": ["f05"],
@@ -65,7 +171,7 @@
       "type": "text",
       "title": "Note on a napkin",
       "content": "Placeholder note.\nIf you're reading this, you noticed. Most people walk past.",
-      "caption": "Found folded under the statue's shadow."
+      "caption": "Found folded under a church bench."
     },
     {
       "id": "f02",
@@ -92,12 +198,19 @@
       "meta": { "duration": "0:04" }
     },
     {
+      "id": "f06",
+      "type": "text",
+      "title": "Name tag",
+      "content": "Placeholder note.\nA name, stitched by hand. The last letter is missing.",
+      "caption": "Placeholder fragment."
+    },
+    {
       "id": "f05",
       "type": "image",
       "title": "The last page",
       "src": "/fragments/artwork.svg",
       "caption": "Placeholder artwork.",
-      "meta": { "location": "Museum (placeholder)" }
+      "meta": { "location": "KMSKA (placeholder)" }
     }
   ]
 }

@@ -4,12 +4,13 @@ A mystery game that turns Antwerp into a book. Players scan street-art "hooks" (
 
 **The game loop**
 
-1. A **clue** tells the player where to go.
+0. **Start:** the game starts at the Stadsfeestzaal (Meir 78), hook `h00`. Scanning it shows a short tutorial (once), then the first riddle. No location check or challenge there.
+1. A **riddle** (`/riddle/:id`) names the next location. Hint 1 after 2 wrong tries, hint 2 after 4, "Show the answer" after 6. Correct → full-screen **game map**: a clean, tilted 3D world (MapLibre + OpenFreeMap tiles, colours in `src/lib/mapTheme.js`) that follows the player and turns with their compass, a glowing trail to a purple beacon, a short turn-by-turn banner and the remaining time and distance. Players never leave the app.
 2. They find the **hook** (street art + QR code / NFC tag) and scan it → the app opens `/hook/:id`.
 3. **Location check:** the app checks their GPS. Not within the hook's radius → "You're not there yet · 240 m" + *Check again*.
 4. **Challenge:** a question about the place. Two wrong answers → the hint appears.
 5. **Reward:** correct → the chapter and its fragments unlock.
-6. The chapter shows the **next clue** → back to step 1. After the last hook, the clue leads to the museum (`/finale`).
+6. The chapter has a **"Solve the riddle"** button for the next location → back to step 1. The last riddle leads to the museum (KMSKA, `/finale`).
 
 Hooks can depend on each other (`requires`). Scanning a hook too early shows "You haven't found the trace that leads here yet".
 
@@ -48,14 +49,17 @@ You don't have to walk to Groenplaats to test. A small yellow **DEV** button flo
 In the panel:
 
 - **Use real GPS / Use fake location**: when fake is on, the whole app uses the fake position.
-- **Map** (OpenStreetMap): tap anywhere to put yourself there. Purple circles are the hooks and their radius; the red dot is you.
-- **Quick buttons**: "I'm at Groenplaats", "I'm at Grote Markt", "Far away", or type a lat/lng.
+- **Map** (OpenStreetMap): tap anywhere to put yourself there. Purple circles are the hooks (and the KMSKA finale) with their radius; the red dot is you.
+- **Quick buttons**: "I'm at Stadsfeestzaal", "I'm at MoMu", …, "Far away", or type a lat/lng.
 - **Live distance** to every hook (green ✓ = inside the radius) and the hook's status (locked / open / completed).
-- **Skip challenge**, links to open each hook, and **Reset progress**.
+- **Skip challenge**, **Skip riddle** (completes the hook, solves its riddle and opens the route map), links to open each hook, and **Reset progress**.
 
-The fake location is saved, so it survives a reload. Turn it **off** before testing real GPS.
+- **Compass slider** (0–359°): fakes the phone's compass (the navigation map rotates with it). **Real** switches back.
+- **Simulate walk**: while a navigation map is open, walks the fake location along the route at 1.3 m/s (or ×5), so you can watch the turn-by-turn banner on a laptop. It leaves the compass alone, so the heading comes from the movement like real GPS.
 
-**Other way on a PC: Chrome DevTools.** Press F12 → ⋮ (top right of DevTools) → **More tools → Sensors** → under *Location* pick "Other…" and type e.g. `51.21928` / `4.40108`. Keep DevTools open while testing. The dev panel must be on **Use real GPS** for this, otherwise the fake location wins.
+The fake location is saved, so it survives a reload. It also moves the player arrow, camera and banner on the navigation map. Turn it **off** before testing real GPS.
+
+**Other way on a PC: Chrome DevTools.** Press F12 → ⋮ (top right of DevTools) → **More tools → Sensors** → under *Location* pick "Other…" and type e.g. `51.2210` / `4.4044`. Keep DevTools open while testing. The dev panel must be on **Use real GPS** for this, otherwise the fake location wins.
 
 ---
 
@@ -134,16 +138,17 @@ The file has four parts:
 ```json
 {
   "meta":      { "title": "...", "tagline": "...", "intro": "...",
-                 "finaleChapter": "c03", "finaleRequires": ["h01", "h02"] },
+                 "finaleChapter": "c06", "finaleRequires": ["h01", "...", "h05"],
+                 "finale": { "location": { "name": "KMSKA", "lat": 51.2088, "lng": 4.3948, "radius": 60 } } },
   "hooks":     [ ... ],
   "chapters":  [ ... ],
   "fragments": [ ... ]
 }
 ```
 
-How they connect: **hook (location + challenge) → opens one chapter → chapter shows fragments + the clue to the next hooks.**
+How they connect: **hook (location + challenge) → opens one chapter → chapter shows fragments + the hook's riddle for the next location.**
 
-`finaleRequires` lists the hooks that must be completed before the museum finale opens.
+`finaleRequires` lists the hooks that must be completed before the museum finale opens. `finale.location` is where the last riddle's map leads (the KMSKA).
 
 ### Add a fragment
 
@@ -194,13 +199,19 @@ Add an object to `fragments`. The `id` must be unique.
 {
   "id": "h03",
   "label": "The Cellar Door",
-  "location": { "name": "Vleeshuis", "lat": 51.2229, "lng": 4.3988, "radius": 50 },
+  "location": { "name": "Vleeshuis", "address": "Vleeshouwersstraat 38", "lat": 51.2229, "lng": 4.3988, "radius": 50 },
   "chapter": "c05",
   "requires": ["h02"],
   "challenge": {
     "question": "What colour is the door next to the trace?",
     "answers": ["red", "rood", "dark red"],
     "hint": "Look down, not up."
+  },
+  "riddle": {
+    "next": "h04",
+    "question": "The riddle that points to the NEXT location.",
+    "answers": ["Bourla", "Bourlaschouwburg"],
+    "hints": ["Hint after 2 wrong tries.", "Hint after 4 wrong tries."]
   }
 }
 ```
@@ -211,8 +222,10 @@ Add an object to `fragments`. The `id` must be unique.
 - `requires`: hooks that must be completed first. `[]` = always open (entry hook).
 - `challenge.answers`: every accepted answer. Capitals, extra spaces, accents and punctuation are ignored, so `"rubens"` also matches `"  Rúbens!"`. Add Dutch and English versions.
 - `challenge.hint`: shown after 2 wrong answers.
+- `riddle`: shown after this hook is solved; it leads to the **next** location. `next` is a hook id, or `"finale"` for the KMSKA. Answers ignore capitals, accents, spaces, hyphens and the words "de", "het" and "the", so `"Plantin-Moretus"` also matches `"het plantin moretus"`. A player can use "Show the answer" after 6 wrong tries.
+- The start hook has `"start": true`: no location check, no challenge, no chapter — just the tutorial and its riddle.
 
-Remember to point the previous chapter's `nextHooks` and `clue` at the new hook, and add it to `meta.finaleRequires` if it must be done before the museum.
+Remember to point the previous hook's `riddle.next` (and its chapter's `nextHooks`) at the new hook, and add it to `meta.finaleRequires` if it must be done before the museum.
 
 Then run `npm run qr` again to get the new QR code.
 
@@ -233,7 +246,13 @@ src/
   lib/progress.js            ← saving/loading progress in localStorage
   lib/useProgress.js         ← React hook: completedHooks, foundFragments, unlockedChapters, finaleUnlocked, reset
   lib/location.js            ← GPS (or fake location), Haversine distance, "is the player there?"
-  lib/answers.js             ← forgiving answer check for challenges
+  lib/answers.js             ← forgiving answer check for challenges and riddles
+  lib/route.js               ← walking route with steps (OSRM), straight-line fallback
+  lib/mapTheme.js            ← colours of the game map (MAP_THEME) + the map style built from them
+  lib/navigation.js          ← turn-by-turn: position on the route, next maneuver, English instructions
+  lib/useHeading.js          ← compass (iPhone/Android), dev fake heading, or direction of movement
+  components/Tutorial.jsx, Riddle.jsx, RouteMap.jsx ← start tutorial, riddle form, 3D navigation to the next location
+  dev/simulateWalk.js        ← dev panel "Simulate walk"
   lib/storage.js             ← localStorage that never crashes
   components/LocationCheck.jsx, Challenge.jsx ← the steps of /hook/:id
   dev/                       ← dev panel (map, fake location, skip, reset)
@@ -248,7 +267,7 @@ public/fragments/            ← story media (images, audio)
 public/manifest.webmanifest  ← "add to home screen" settings
 ```
 
-Pages: `/` Home · `/hook/:id` · `/chapter/:id` · `/collection` · `/finale` · `/share` · `/scan` · anything else → 404.
+Pages: `/` Home · `/hook/:id` · `/riddle/:id` (riddle → map) · `/chapter/:id` · `/collection` · `/finale` · `/share` · `/scan` · anything else → 404.
 
 **Progress** (localStorage key `insideout.progress.v2`): per hook it saves when it was scanned, when the location was verified, the number of wrong answers and when the challenge was completed, plus whether the finale is unlocked. Chapters and fragments only count after the challenge. Unlocked chapters and found fragments are calculated from `story.json`, so editing the story doesn't break saved progress. Progress is per phone and per browser. Clearing browser data or switching browsers starts over.
 
@@ -280,7 +299,7 @@ The QR codes are **not** part of the website. They only contain its address. So 
 
 ## 9. What's still placeholder
 
-- **Story texts and fragments** in `story.json`. The 2 test locations (Groenplaats, Grote Markt), their questions and clues are real; the chapter intros and fragments are placeholder.
+- **Story texts and fragments** in `story.json`. Route 1 (Stadsfeestzaal → Sint-Carolus Borromeuskerk → Plantin-Moretus → MoMu → Bourla → Maagdenhuis → KMSKA) and its coordinates are real; every riddle and challenge is marked "TODO – team writes the real…" (placeholder challenge answer: `test`). Chapter intros and fragments are placeholder.
 - **Media**: `public/fragments/photo-01.svg`, `artwork.svg`, `memo-01.wav` (a beep, not a voice).
 - **Museum finale**: "Scan the artwork" only simulates success. Real image recognition (e.g. MindAR) can be added in `src/finale/artworkRecognizer.js`. An example outline is in the comments. The page itself doesn't need to change.
 - **Visual design**: dark theme with purple accent, intentionally minimal.

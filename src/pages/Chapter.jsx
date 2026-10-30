@@ -1,13 +1,13 @@
 import { Link, useLocation, useParams } from 'react-router-dom'
 import FragmentViewer from '../components/FragmentViewer.jsx'
-import { getChapter, getChapterFragments, getNextHooks } from '../lib/story.js'
+import { getChapter, getChapterFragments, getHookForChapter, getNextHooks } from '../lib/story.js'
 import { useProgress } from '../lib/useProgress.js'
 import NotFound from './NotFound.jsx'
 
 export default function Chapter() {
   const { id } = useParams()
   const { state } = useLocation()
-  const { isChapterUnlocked, completedHooks, finaleAvailable, finaleUnlocked } = useProgress()
+  const { isChapterUnlocked, isRiddleSolved, completedHooks, finaleAvailable, finaleUnlocked } = useProgress()
   const chapter = getChapter(id)
 
   if (!chapter) return <NotFound />
@@ -31,6 +31,8 @@ export default function Chapter() {
 
   const fragments = getChapterFragments(chapter.id)
   const nextHooks = getNextHooks(chapter.id)
+  const hook = getHookForChapter(chapter.id)
+  const hasRiddle = Boolean(hook?.riddle) && !finaleUnlocked
 
   return (
     <article className="page stack">
@@ -49,6 +51,12 @@ export default function Chapter() {
       <section className="card card-accent">
         <div className="eyebrow">{chapter.isFinale ? 'Case closed' : 'Next clue'}</div>
         <p>{chapter.clue}</p>
+
+        {hasRiddle && (
+          <Link to={`/riddle/${hook.id}`} className="btn btn-block">
+            {isRiddleSolved(hook.id) ? 'Show the route' : 'Solve the riddle'}
+          </Link>
+        )}
 
         {nextHooks.length > 0 && (
           <ul className="hook-list">
@@ -71,7 +79,8 @@ export default function Chapter() {
         </Link>
       ) : (
         finaleAvailable &&
-        nextHooks.length === 0 && (
+        nextHooks.length === 0 &&
+        !hasRiddle && (
           <Link to="/finale" className="btn btn-block">
             Go to the museum
           </Link>

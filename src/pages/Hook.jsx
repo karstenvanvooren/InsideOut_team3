@@ -2,10 +2,24 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import Challenge from '../components/Challenge.jsx'
 import LocationCheck from '../components/LocationCheck.jsx'
+import Tutorial from '../components/Tutorial.jsx'
 import { getHook } from '../lib/story.js'
 import { useProgress } from '../lib/useProgress.js'
 import { patterns, vibrate } from '../lib/vibrate.js'
 import UnknownHook from './UnknownHook.jsx'
+
+// The start hook (Stadsfeestzaal): players know the spot from the campaign,
+// so there's no location check or challenge. Tutorial once, then the first riddle.
+function StartHook({ hook }) {
+  const { tutorialSeen, markTutorialSeen, completeHook } = useProgress()
+
+  useEffect(() => {
+    completeHook(hook.id)
+  }, [hook, completeHook])
+
+  if (tutorialSeen) return <Navigate to={`/riddle/${hook.id}`} replace />
+  return <Tutorial onDone={markTutorialSeen} />
+}
 
 // Entry point for every QR code / NFC tag: /hook/:id
 // Flow: requires check → location check → challenge → chapter.
@@ -36,6 +50,8 @@ export default function Hook() {
   }
 
   if (!hook) return <UnknownHook id={id} />
+
+  if (hook.start) return <StartHook hook={hook} />
 
   if (unlocked) {
     return (

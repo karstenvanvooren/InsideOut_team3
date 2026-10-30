@@ -37,6 +37,23 @@ export const getHookForChapter = (chapterId) =>
 
 export const totalFragments = () => story.fragments.length
 
+/** The hook where the game starts (scanning it shows the tutorial). */
+export const getStartHook = () => story.hooks.find((hook) => hook.start) ?? null
+
+/**
+ * Where a hook's riddle leads: another hook, or the museum finale ("next": "finale").
+ * Returns { kind: 'hook' | 'finale', hookId, location } or null.
+ */
+export function getRiddleDestination(hook) {
+  const next = hook?.riddle?.next
+  if (next === 'finale') {
+    const location = story.meta.finale?.location
+    return location ? { kind: 'finale', hookId: null, location } : null
+  }
+  const target = getHook(next)
+  return target ? { kind: 'hook', hookId: target.id, location: target.location } : null
+}
+
 /**
  * 'completed' | 'open' | 'locked' for a hook, given the ids of completed hooks.
  * A hook is open when every hook in its "requires" list is completed.
