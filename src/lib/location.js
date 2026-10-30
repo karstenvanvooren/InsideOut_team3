@@ -10,7 +10,8 @@ export const MAX_ACCURACY = 100
 // ---------- Fake location (dev panel) ----------
 
 // heading: a fake compass (0–360), or null to use the real compass / walking direction
-const defaultFake = () => ({ enabled: false, lat: 51.2194, lng: 4.4025, heading: null })
+// accuracy: fake GPS accuracy in meters (dev panel), to test "looking for a better signal"
+const defaultFake = () => ({ enabled: false, lat: 51.2194, lng: 4.4025, heading: null, accuracy: 0 })
 
 export function getFakeLocation() {
   return { ...defaultFake(), ...(safeGet(FAKE_KEY) ?? {}) }
@@ -39,7 +40,7 @@ export class LocationError extends Error {
 export function getCurrentPosition() {
   const fake = getFakeLocation()
   if (fake.enabled) {
-    return Promise.resolve({ lat: fake.lat, lng: fake.lng, accuracy: 0, fake: true })
+    return Promise.resolve({ lat: fake.lat, lng: fake.lng, accuracy: fake.accuracy ?? 0, fake: true })
   }
   if (!window.isSecureContext) {
     return Promise.reject(new LocationError('insecure', 'Location only works on https.'))
@@ -81,7 +82,7 @@ export function watchPosition(onPosition, onError) {
     stopGeo()
     const fake = getFakeLocation()
     if (fake.enabled) {
-      onPosition({ lat: fake.lat, lng: fake.lng, accuracy: 0, fake: true })
+      onPosition({ lat: fake.lat, lng: fake.lng, accuracy: fake.accuracy ?? 0, fake: true })
       return
     }
     if (!window.isSecureContext) {
@@ -121,18 +122,21 @@ export function distanceMeters(a, b) {
 }
 
 /**
- * Is this position at the hook? GPS accuracy is given the benefit of the doubt
- * (distance minus accuracy), but accuracy is capped at MAX_ACCURACY.
+ * Location check with three outcomes, for places where GPS is hard (indoors):
+ * - 'far': not there, even giving GPS accuracy the benefit of the doubt
+ * - 'weak-signal': might be there, but accuracy is worse than location.maxAccuracy
+ * - 'there': within location.radius (distance minus accuracy)
+ * radius and maxAccuracy come from story.json.
  */
-export function checkAtHook(hook, position) {
-  const distance = distanceMeters(position, hook.location)
-  const accuracy = Math.min(position.accuracy ?? 0, MAX_ACCURACY)
-  const radius = hook.location.radius ?? 50
-  return {
-    distance: Math.round(distance),
-    accuracy: Math.round(position.accuracy ?? 0),
-    isThere: distance - accuracy <= radius,
-  }
+export function checkAtLocation(location, position) {
+  const distance = distanceMeters(position, location)
+  const accuracy = position.accuracy ?? 0
+  const radius = location.radius ?? 50
+  const maxAccuracy = location.maxAccuracy ?? MAX_ACCURACY
+  let status = 'there'
+  if (distance - accuracy > radius) status = 'far'
+  else if (accuracy > maxAccuracy) status = 'weak-signal'
+  return { status, isThere: status === 'there', distance: Math.round(distance), accuracy: Math.round(accuracy) }
 }
 
 export function formatDistance(meters) {

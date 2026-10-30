@@ -40,6 +40,27 @@ const renderers = {
   audio: AudioFragment,
 }
 
+/**
+ * Small visual of a fragment for cards (fragment unlocked, collection):
+ * its picture if it has one, otherwise a paper / note / sound tile.
+ */
+export function FragmentThumb({ fragment, className = '' }) {
+  const kind = fragment.src && fragment.type !== 'audio' ? 'picture' : fragment.type
+  return (
+    <div className={`fragment-thumb fragment-thumb-${kind} ${className}`} aria-hidden="true">
+      {kind === 'picture' && <img src={fragment.src} alt="" loading="lazy" />}
+      {(kind === 'text' || kind === 'document') && <span className="fragment-thumb-words">{fragment.content}</span>}
+      {kind === 'audio' && (
+        <span className="fragment-thumb-wave">
+          {[8, 18, 12, 26, 16, 30, 14, 22, 10, 18, 8].map((h, i) => (
+            <span key={i} style={{ height: h }} />
+          ))}
+        </span>
+      )}
+    </div>
+  )
+}
+
 export default function FragmentViewer({ fragment, locked = false }) {
   if (locked) {
     return <div className="fragment-locked">??? — fragment not found yet</div>

@@ -1,9 +1,29 @@
 /* Dev panel only. Deliberately plain so it never looks like part of the game. */
 
+/* Its own dark palette, separate from the game's design tokens */
+.dev-fab,
+.dev-panel {
+  --color-bg: var(--navy);
+  --color-surface-2: #2a3442;
+  --color-border: #3a4554;
+  --color-text: #eef0f3;
+  --color-text-muted: #9aa3b0;
+  --color-danger: #ff6b6b;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-lg: 1.25rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+}
+
 .dev-fab {
   position: fixed;
   right: var(--space-3);
-  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + var(--space-3));
+  bottom: calc(env(safe-area-inset-bottom) + var(--space-3));
   z-index: 1000;
   padding: var(--space-2) var(--space-3);
   border: 1px dashed #ffb020;
@@ -186,4 +206,36 @@
 
 .dev-panel .leaflet-tooltip {
   font-size: 11px;
+}
+
+.dev-game {
+  padding: var(--space-3);
+  border: 1px solid #ffb020;
+  border-radius: var(--radius-sm);
+}
+
+.dev-game > * + * {
+  margin-top: var(--space-2);
+}
+
+.dev-live {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.dev-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.dev-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: #ffb020;
 }

@@ -1,168 +1,365 @@
 {
   "meta": {
     "title": "Inside Out",
-    "tagline": "The city is a book. Someone tore out the last page.",
-    "intro": "Hidden across Antwerp are traces — street art with a QR code or NFC tag. The case starts at the Stadsfeestzaal on the Meir. Every trace hides a riddle that leads you to the next one. Follow them to the final page.",
-    "finaleChapter": "c06",
-    "finaleRequires": ["h01", "h02", "h03", "h04", "h05"],
-    "finale": {
-      "location": { "name": "KMSKA", "address": "Leopold de Waelplaats 1, 2000 Antwerpen", "lat": 51.2088, "lng": 4.3948, "radius": 60 }
-    }
+    "tagline": "The city is a book. Someone tore out the last page."
   },
-  "hooks": [
+  "start": {
+    "id": "start",
+    "name": "Stadsfeestzaal",
+    "address": "Meir 78, 2000 Antwerpen",
+    "lat": 51.2175,
+    "lng": 4.4097,
+    "radius": 60,
+    "maxAccuracy": 80,
+    "qrId": "start"
+  },
+  "locations": [
     {
-      "id": "h00",
-      "label": "Stadsfeestzaal",
-      "start": true,
-      "location": { "name": "Stadsfeestzaal", "address": "Meir 78, 2000 Antwerpen", "lat": 51.2175, "lng": 4.4097, "radius": 50 },
-      "requires": [],
+      "id": "loc1",
+      "name": "Sint-Carolus Borromeuskerk",
+      "address": "Hendrik Conscienceplein, 2000 Antwerpen",
+      "lat": 51.221,
+      "lng": 4.4044,
+      "radius": 50,
       "riddle": {
-        "next": "h01",
-        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Sint-Carolus Borromeuskerk”.)",
-        "answers": ["Sint-Carolus Borromeuskerk", "Carolus Borromeuskerk", "Carolus Borromeus", "Sint-Carolus", "Borromeuskerk", "Carolus Borromeuskerk Antwerpen"],
-        "hints": ["TODO hint 1 – a church on a quiet square.", "TODO hint 2 – Hendrik Conscienceplein."]
-      }
+        "question": "Find the place that was hit by lightning in the 18th century.",
+        "answers": [
+          "sint-carolus borromeuskerk",
+          "carolus borromeuskerk",
+          "borromeuskerk",
+          "sint carolus",
+          "carolus borromeus",
+          "st charles borromeo",
+          "saint charles borromeo church"
+        ],
+        "hints": [
+          "The ceilings were painted by Rubens.",
+          "Located near the Meir."
+        ]
+      },
+      "challenge": {
+        "type": "placeholder",
+        "title": "TODO – challenge at Sint-Carolus Borromeuskerk",
+        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
+      },
+      "fragments": [
+        "f01",
+        "f07"
+      ]
     },
     {
-      "id": "h01",
-      "label": "Sint-Carolus Borromeuskerk",
-      "location": { "name": "Sint-Carolus Borromeuskerk", "address": "Hendrik Conscienceplein, 2000 Antwerpen", "lat": 51.2210, "lng": 4.4044, "radius": 50 },
-      "chapter": "c01",
-      "requires": ["h00"],
-      "challenge": {
-        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
-        "answers": ["test"],
-        "hint": "Type test."
-      },
+      "id": "loc2",
+      "name": "Plantin-Moretus",
+      "address": "Vrijdagmarkt 22, 2000 Antwerpen",
+      "lat": 51.2184,
+      "lng": 4.3982,
+      "radius": 50,
       "riddle": {
-        "next": "h02",
-        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Plantin-Moretus”.)",
-        "answers": ["Plantin-Moretus", "Plantin Moretus", "Museum Plantin-Moretus", "Plantin-Moretushuis", "Plantin"],
-        "hints": ["TODO hint 1 – the oldest printing works in the world.", "TODO hint 2 – Vrijdagmarkt."]
-      }
+        "question": "Find the location in the street that has a weekday in its name.",
+        "answers": [
+          "plantin-moretus",
+          "plantin moretus",
+          "museum plantin-moretus",
+          "plantin moretus museum",
+          "plantin",
+          "moretus"
+        ],
+        "hints": [
+          "The place holds a piece of history on how books used to be made.",
+          "A family lived there for 300 years."
+        ]
+      },
+      "challenge": {
+        "type": "placeholder",
+        "title": "TODO – challenge at Plantin-Moretus",
+        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
+      },
+      "fragments": [
+        "f02",
+        "f08"
+      ]
     },
     {
-      "id": "h02",
-      "label": "Plantin-Moretus",
-      "location": { "name": "Plantin-Moretus", "address": "Vrijdagmarkt 22, 2000 Antwerpen", "lat": 51.2184, "lng": 4.3982, "radius": 50 },
-      "chapter": "c02",
-      "requires": ["h01"],
-      "challenge": {
-        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
-        "answers": ["test"],
-        "hint": "Type test."
-      },
+      "id": "loc3",
+      "name": "MoMu",
+      "address": "Nationalestraat 28, 2000 Antwerpen",
+      "lat": 51.2174,
+      "lng": 4.3999,
+      "radius": 50,
       "riddle": {
-        "next": "h03",
-        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “MoMu”.)",
-        "answers": ["MoMu", "Modemuseum", "ModeMuseum Antwerpen", "Fashion Museum"],
-        "hints": ["TODO hint 1 – Antwerp is famous for six designers.", "TODO hint 2 – Nationalestraat."]
-      }
+        "question": "Find the place that was a hotel between 1893 and 1908.",
+        "answers": [
+          "momu",
+          "modemuseum",
+          "mode museum",
+          "fashion museum",
+          "momu fashion museum",
+          "modenatie"
+        ],
+        "hints": [
+          "It got a new life in 1990.",
+          "If you’re looking for fashion, you’re on the right path…"
+        ]
+      },
+      "challenge": {
+        "type": "placeholder",
+        "title": "TODO – challenge at MoMu",
+        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
+      },
+      "fragments": [
+        "f03",
+        "f09"
+      ]
     },
     {
-      "id": "h03",
-      "label": "MoMu",
-      "location": { "name": "MoMu", "address": "Nationalestraat 28, 2000 Antwerpen", "lat": 51.2174, "lng": 4.3999, "radius": 50 },
-      "chapter": "c03",
-      "requires": ["h02"],
-      "challenge": {
-        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
-        "answers": ["test"],
-        "hint": "Type test."
-      },
+      "id": "loc4",
+      "name": "Bourla",
+      "address": "Komedieplaats 18, 2000 Antwerpen",
+      "lat": 51.216,
+      "lng": 4.4074,
+      "radius": 50,
       "riddle": {
-        "next": "h04",
-        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Bourla”.)",
-        "answers": ["Bourla", "Bourlaschouwburg", "Bourla schouwburg", "Bourla theater", "Bourla theatre"],
-        "hints": ["TODO hint 1 – a theatre named after its architect.", "TODO hint 2 – Komedieplaats."]
-      }
+        "question": "Find the building that is 37 metres wide and 80 metres long.",
+        "answers": [
+          "bourla",
+          "bourlaschouwburg",
+          "bourla schouwburg",
+          "bourla theater",
+          "bourla theatre",
+          "bourla theatre antwerp"
+        ],
+        "hints": [
+          "To enter the building, you need a ticket.",
+          "You go there to enjoy some shows."
+        ]
+      },
+      "challenge": {
+        "type": "placeholder",
+        "title": "TODO – challenge at Bourla",
+        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
+      },
+      "fragments": [
+        "f04",
+        "f10"
+      ]
     },
     {
-      "id": "h04",
-      "label": "Bourla",
-      "location": { "name": "Bourla", "address": "Komedieplaats 18, 2000 Antwerpen", "lat": 51.2160, "lng": 4.4074, "radius": 50 },
-      "chapter": "c04",
-      "requires": ["h03"],
-      "challenge": {
-        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
-        "answers": ["test"],
-        "hint": "Type test."
-      },
+      "id": "loc5",
+      "name": "Maagdenhuis",
+      "address": "Lange Gasthuisstraat 33, 2000 Antwerpen",
+      "lat": 51.2144,
+      "lng": 4.4054,
+      "radius": 50,
       "riddle": {
-        "next": "h05",
-        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “Maagdenhuis”.)",
-        "answers": ["Maagdenhuis", "Museum Maagdenhuis", "Maagdenhuys"],
-        "hints": ["TODO hint 1 – a former orphanage for girls.", "TODO hint 2 – Lange Gasthuisstraat."]
-      }
+        "question": "Where did young girls learn skills such as sewing and lace-making?",
+        "answers": [
+          "maagdenhuis",
+          "museum maagdenhuis",
+          "het maagdenhuis"
+        ],
+        "hints": [
+          "It used to be an orphanage.",
+          "It’s now a museum."
+        ]
+      },
+      "challenge": {
+        "type": "placeholder",
+        "title": "TODO – challenge at Maagdenhuis",
+        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
+      },
+      "fragments": [
+        "f06",
+        "f11"
+      ]
     },
     {
-      "id": "h05",
-      "label": "Maagdenhuis",
-      "location": { "name": "Maagdenhuis", "address": "Lange Gasthuisstraat 33, 2000 Antwerpen", "lat": 51.2144, "lng": 4.4054, "radius": 50 },
-      "chapter": "c05",
-      "requires": ["h04"],
-      "challenge": {
-        "question": "TODO – team writes the real question about this place. (Placeholder: type “test”.)",
-        "answers": ["test"],
-        "hint": "Type test."
-      },
+      "id": "loc6",
+      "name": "KMSKA",
+      "address": "Leopold de Waelplaats 1, 2000 Antwerpen",
+      "lat": 51.2088,
+      "lng": 4.3948,
+      "radius": 60,
       "riddle": {
-        "next": "finale",
-        "question": "TODO – team writes the real riddle. (Placeholder: the answer is “KMSKA”.)",
-        "answers": ["KMSKA", "Koninklijk Museum voor Schone Kunsten", "Koninklijk Museum voor Schone Kunsten Antwerpen", "Museum voor Schone Kunsten", "Royal Museum of Fine Arts"],
-        "hints": ["TODO hint 1 – the biggest art museum in town.", "TODO hint 2 – Leopold de Waelplaats."]
-      }
+        "question": "Find the place where her artwork is kept. You already know her name…",
+        "answers": [
+          "kmska",
+          "koninklijk museum voor schone kunsten",
+          "koninklijk museum voor schone kunsten antwerpen",
+          "royal museum of fine arts",
+          "royal museum of fine arts antwerp"
+        ],
+        "hints": [
+          "The renovation took 11 years.",
+          "It’s the biggest museum in Antwerp."
+        ]
+      },
+      "challenge": {
+        "type": "placeholder",
+        "title": "TODO – challenge at KMSKA",
+        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
+      },
+      "fragments": [
+        "f05",
+        "f12"
+      ]
     }
   ],
-  "chapters": [
+  "hooks": [
     {
-      "id": "c01",
-      "title": "Chapter 1 — The First Page",
-      "intro": "Placeholder intro. You weren't supposed to find this. Someone left it here anyway.",
-      "fragments": ["f01"],
-      "nextHooks": ["h02"],
-      "clue": "Placeholder clue. The next page is hidden in a riddle."
+      "id": "hook01",
+      "qrId": "hk01",
+      "lat": 51.21867,
+      "lng": 4.40793,
+      "radius": 30,
+      "leg": "start→loc1",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 01",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
     },
     {
-      "id": "c02",
-      "title": "Chapter 2 — Ink",
-      "intro": "Placeholder intro. The second trace. The letters are older than the paint around them.",
-      "fragments": ["f02"],
-      "nextHooks": ["h03"],
-      "clue": "Placeholder clue. The next page is hidden in a riddle."
+      "id": "hook02",
+      "qrId": "hk02",
+      "lat": 51.21983,
+      "lng": 4.40617,
+      "radius": 30,
+      "leg": "start→loc1",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 02",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
     },
     {
-      "id": "c03",
-      "title": "Chapter 3 — Seams",
-      "intro": "Placeholder intro.",
-      "fragments": ["f03"],
-      "nextHooks": ["h04"],
-      "clue": "Placeholder clue. The next page is hidden in a riddle."
+      "id": "hook03",
+      "qrId": "hk03",
+      "lat": 51.22013,
+      "lng": 4.40233,
+      "radius": 30,
+      "leg": "loc1→loc2",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 03",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
     },
     {
-      "id": "c04",
-      "title": "Chapter 4 — Curtain",
-      "intro": "Placeholder intro.",
-      "fragments": ["f04"],
-      "nextHooks": ["h05"],
-      "clue": "Placeholder clue. The next page is hidden in a riddle."
+      "id": "hook04",
+      "qrId": "hk04",
+      "lat": 51.21927,
+      "lng": 4.40027,
+      "radius": 30,
+      "leg": "loc1→loc2",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 04",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
     },
     {
-      "id": "c05",
-      "title": "Chapter 5 — The Orphan's Letter",
-      "intro": "Placeholder intro.",
-      "fragments": ["f06"],
-      "nextHooks": [],
-      "clue": "All traces now point to the museum. Solve the last riddle to find it."
+      "id": "hook05",
+      "qrId": "hk05",
+      "lat": 51.21807,
+      "lng": 4.39877,
+      "radius": 30,
+      "leg": "loc2→loc3",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 05",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
     },
     {
-      "id": "c06",
-      "title": "Finale — Inside Out",
-      "intro": "Placeholder finale. The artwork was the last page all along.",
-      "fragments": ["f05"],
-      "nextHooks": [],
-      "clue": "You solved the case. Claim your case card and share it.",
-      "isFinale": true
+      "id": "hook06",
+      "qrId": "hk06",
+      "lat": 51.21773,
+      "lng": 4.39933,
+      "radius": 30,
+      "leg": "loc2→loc3",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 06",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
+    },
+    {
+      "id": "hook07",
+      "qrId": "hk07",
+      "lat": 51.21693,
+      "lng": 4.4024,
+      "radius": 30,
+      "leg": "loc3→loc4",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 07",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
+    },
+    {
+      "id": "hook08",
+      "qrId": "hk08",
+      "lat": 51.21647,
+      "lng": 4.4049,
+      "radius": 30,
+      "leg": "loc3→loc4",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 08",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
+    },
+    {
+      "id": "hook09",
+      "qrId": "hk09",
+      "lat": 51.21547,
+      "lng": 4.40673,
+      "radius": 30,
+      "leg": "loc4→loc5",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 09",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
+    },
+    {
+      "id": "hook10",
+      "qrId": "hk10",
+      "lat": 51.21493,
+      "lng": 4.40607,
+      "radius": 30,
+      "leg": "loc4→loc5",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 10",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
+    },
+    {
+      "id": "hook11",
+      "qrId": "hk11",
+      "lat": 51.21253,
+      "lng": 4.40187,
+      "radius": 30,
+      "leg": "loc5→loc6",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 11",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
+    },
+    {
+      "id": "hook12",
+      "qrId": "hk12",
+      "lat": 51.21067,
+      "lng": 4.39833,
+      "radius": 30,
+      "leg": "loc5→loc6",
+      "content": {
+        "type": "placeholder",
+        "title": "Hook 12",
+        "text": "TODO – we haven’t decided yet what a hook gives."
+      }
     }
   ],
   "fragments": [
@@ -174,12 +371,28 @@
       "caption": "Found folded under a church bench."
     },
     {
+      "id": "f07",
+      "type": "document",
+      "title": "Receipt",
+      "content": "Placeholder receipt.\n1x candle — 2 fr.\n1x ??? — paid in full.",
+      "caption": "Placeholder fragment."
+    },
+    {
       "id": "f02",
       "type": "image",
       "title": "Old photograph",
       "src": "/fragments/photo-01.svg",
       "caption": "Placeholder photo. Three windows lit. One is purple.",
-      "meta": { "date": "1987 (?)" }
+      "meta": {
+        "date": "1987 (?)"
+      }
+    },
+    {
+      "id": "f08",
+      "type": "text",
+      "title": "Margin note",
+      "content": "Placeholder note.\nPage 214. Underlined twice.",
+      "caption": "Placeholder fragment."
     },
     {
       "id": "f03",
@@ -187,7 +400,17 @@
       "title": "Torn letter",
       "content": "Dear M.,\n\nPlaceholder letter. I hid it where everyone looks but no one sees. Follow the pages.\n\n— J.",
       "caption": "The bottom half is missing.",
-      "meta": { "date": "14 March", "from": "J." }
+      "meta": {
+        "date": "14 March",
+        "from": "J."
+      }
+    },
+    {
+      "id": "f09",
+      "type": "image",
+      "title": "Fabric swatch",
+      "src": "/fragments/photo-01.svg",
+      "caption": "Placeholder photo."
     },
     {
       "id": "f04",
@@ -195,7 +418,16 @@
       "title": "Voice memo #1",
       "src": "/fragments/memo-01.wav",
       "caption": "Placeholder audio. Replace with a real voice memo.",
-      "meta": { "duration": "0:04" }
+      "meta": {
+        "duration": "0:04"
+      }
+    },
+    {
+      "id": "f10",
+      "type": "document",
+      "title": "Theatre ticket",
+      "content": "Placeholder ticket.\nRow F, seat 13. Never used.",
+      "caption": "Placeholder fragment."
     },
     {
       "id": "f06",
@@ -205,12 +437,28 @@
       "caption": "Placeholder fragment."
     },
     {
+      "id": "f11",
+      "type": "text",
+      "title": "Visitor log",
+      "content": "Placeholder note.\nOne name appears twice, on the same day.",
+      "caption": "Placeholder fragment."
+    },
+    {
       "id": "f05",
       "type": "image",
       "title": "The last page",
       "src": "/fragments/artwork.svg",
       "caption": "Placeholder artwork.",
-      "meta": { "location": "KMSKA (placeholder)" }
+      "meta": {
+        "location": "KMSKA (placeholder)"
+      }
+    },
+    {
+      "id": "f12",
+      "type": "text",
+      "title": "Museum label",
+      "content": "Placeholder note.\nThe date on this label is wrong.",
+      "caption": "Placeholder fragment."
     }
   ]
 }

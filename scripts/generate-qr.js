@@ -1,6 +1,7 @@
 // npm run qr
-// Makes a printable QR code (PNG) for every hook in src/data/story.json.
-// The URL inside each code is BASE_URL + /hook/<id>. Set BASE_URL in .env.
+// Makes a printable QR code (PNG) for the start and every hook in src/data/story.json.
+// Locations have no QR (arriving there is location-based).
+// The URL inside each code is BASE_URL + /hook/<qrId>. Set BASE_URL in .env.
 import 'dotenv/config'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -26,12 +27,18 @@ const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '
 await fs.rm(outDir, { recursive: true, force: true })
 await fs.mkdir(outDir, { recursive: true })
 
+// One code per QR: the start first, then the hooks in route order
+const codes = [
+  { qrId: story.start.qrId, title: `START · ${story.start.name}`, where: story.start },
+  ...story.hooks.map((hook) => ({ qrId: hook.qrId, title: `${hook.content?.title ?? hook.id} · ${hook.leg}`, where: hook })),
+]
+
 const cards = []
-for (const hook of story.hooks) {
-  const url = `${baseUrl}/hook/${encodeURIComponent(hook.id)}`
-  await QRCode.toFile(path.join(outDir, `${hook.id}.png`), url, qrOptions)
-  cards.push({ hook, url })
-  console.log(`✔ ${hook.id}.png  →  ${url}`)
+for (const code of codes) {
+  const url = `${baseUrl}/hook/${encodeURIComponent(code.qrId)}`
+  await QRCode.toFile(path.join(outDir, `${code.qrId}.png`), url, qrOptions)
+  cards.push({ ...code, url })
+  console.log(`✔ ${code.qrId}.png  →  ${url}`)
 }
 
 // One code per printed page (open qr-codes/print.html in a browser → Print)
@@ -52,13 +59,11 @@ const html = `<!doctype html>
 </style>
 ${cards
   .map(
-    ({ hook, url }) => `<section class="sheet">
+    ({ qrId, title, where, url }) => `<section class="sheet">
   <span class="test">TEST</span>
-  <h1>${escapeHtml(hook.label)}</h1>
-  <p>${escapeHtml(hook.id)} · ${escapeHtml(hook.location?.name ?? '')}${
-    hook.location ? ` · ${hook.location.lat}, ${hook.location.lng} · radius ${hook.location.radius ?? 50} m` : ''
-  }</p>
-  <img src="${escapeHtml(hook.id)}.png" alt="QR code for ${escapeHtml(hook.label)}">
+  <h1>${escapeHtml(title)}</h1>
+  <p>${escapeHtml(qrId)} · ${where.lat}, ${where.lng} · radius ${where.radius ?? 50} m</p>
+  <img src="${escapeHtml(qrId)}.png" alt="QR code ${escapeHtml(qrId)}">
   <p class="url">${escapeHtml(url)}</p>
 </section>`,
   )

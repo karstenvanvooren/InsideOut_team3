@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { isCorrectRiddleAnswer } from '../lib/answers.js'
 
-const HINT_1_AFTER = 2 // wrong answers before hint 1
-const HINT_2_AFTER = 4 // ... hint 2
-const REVEAL_AFTER = 6 // ... the "Show the answer" button
+// A new hint after every wrong answer; after REVEAL_AFTER wrong answers the answer is shown.
+const REVEAL_AFTER = 3
 
 const wrongMessages = [
   'Not quite. Read it again, slowly.',
@@ -11,13 +10,17 @@ const wrongMessages = [
   'The city doesn’t recognise that one. Try again.',
 ]
 
-/** A riddle that points to the next location. */
-export default function Riddle({ riddle, wrongAnswers = 0, onCorrect, onWrong, onReveal }) {
+/**
+ * A riddle whose answer is the name of the next location.
+ * answerName: how to show the answer after 3 wrong tries (defaults to the first accepted answer).
+ */
+export default function Riddle({ riddle, answerName, wrongAnswers = 0, onCorrect, onWrong, onReveal }) {
   const [answer, setAnswer] = useState('')
   const [feedback, setFeedback] = useState('')
   const [shaking, setShaking] = useState(false)
-  const [revealed, setRevealed] = useState(false)
   const { question, answers, hints = [] } = riddle
+  const revealed = wrongAnswers >= REVEAL_AFTER
+  const shownHints = hints.slice(0, Math.min(wrongAnswers, REVEAL_AFTER - 1))
 
   const submit = (e) => {
     e.preventDefault()
@@ -33,59 +36,49 @@ export default function Riddle({ riddle, wrongAnswers = 0, onCorrect, onWrong, o
   }
 
   return (
-    <form
-      className={`card card-accent stack ${shaking ? 'shake' : ''}`}
-      onSubmit={submit}
-      onAnimationEnd={() => setShaking(false)}
-    >
-      <div className="eyebrow">Riddle · where to next?</div>
+    <form className={`stack riddle-form ${shaking ? 'shake' : ''}`} onSubmit={submit} onAnimationEnd={() => setShaking(false)}>
       <h2 className="riddle-question">{question}</h2>
-      <input
-        className="input"
-        type="text"
-        value={answer}
-        onChange={(e) => setAnswer(e.target.value)}
-        placeholder="Name of the place"
-        autoComplete="off"
-        autoCapitalize="off"
-        autoCorrect="off"
-        spellCheck="false"
-        enterKeyHint="done"
-        aria-label="Your answer"
-      />
-      {feedback && (
-        <p className="feedback" role="status">
-          {feedback}
+
+      {shownHints.map((hint, i) => (
+        <p key={i} className="hint">
+          <strong>Hint {i + 1}:</strong> {hint}
         </p>
-      )}
-      {wrongAnswers >= HINT_1_AFTER && hints[0] && (
-        <p className="hint">
-          <strong>Hint 1:</strong> {hints[0]}
-        </p>
-      )}
-      {wrongAnswers >= HINT_2_AFTER && hints[1] && (
-        <p className="hint">
-          <strong>Hint 2:</strong> {hints[1]}
-        </p>
-      )}
-      <button type="submit" className="btn btn-block">
-        Check
-      </button>
-      {wrongAnswers >= REVEAL_AFTER &&
-        (revealed ? (
-          <div className="hint stack">
-            <p>
-              The answer is <strong>{answers[0]}</strong>.
-            </p>
-            <button type="button" className="btn btn-block" onClick={onReveal}>
-              Show me the way
-            </button>
-          </div>
-        ) : (
-          <button type="button" className="btn btn-ghost btn-block" onClick={() => setRevealed(true)}>
-            Show the answer
+      ))}
+
+      {revealed ? (
+        <>
+          <p className="hint">
+            The answer is <strong>{answerName ?? answers[0]}</strong>.
+          </p>
+          <button type="button" className="btn btn-block" onClick={onReveal}>
+            Show me the way
           </button>
-        ))}
+        </>
+      ) : (
+        <>
+          <input
+            className="input"
+            type="text"
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            placeholder="Name of the place"
+            autoComplete="off"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck="false"
+            enterKeyHint="done"
+            aria-label="Your answer"
+          />
+          {feedback && (
+            <p className="feedback" role="status">
+              {feedback}
+            </p>
+          )}
+          <button type="submit" className="btn btn-block">
+            Check
+          </button>
+        </>
+      )}
     </form>
   )
 }

@@ -1,22 +1,50 @@
 # Inside Out
 
-A mystery game that turns Antwerp into a book. Players scan street-art "hooks" (QR code or NFC tag) around the city. Each hook opens a chapter with story fragments and a clue to the next hooks. The finale happens in a museum, in front of the artwork. At the end, players get a shareable "solved case card".
+A mystery game that turns Antwerp into a book. Players start at the Stadsfeestzaal, solve a riddle that names the next location, walk there on an in-game 3D map, and unlock story fragments with a challenge on the spot. On the way between locations they can collect **hooks**: small QR codes hidden in the street. The finale happens in a museum (KMSKA).
 
-**The game loop**
+This repo is the **engine**. All story content is placeholder and lives in `src/data/story.json` (places, riddles, challenges, fragments, hooks) and `src/data/onboarding.json` (the intro screens). Game design switches are in `src/config.js`.
 
-0. **Start:** the game starts at the Stadsfeestzaal (Meir 78), hook `h00`. Scanning it shows a short tutorial (once), then the first riddle. No location check or challenge there.
-1. A **riddle** (`/riddle/:id`) names the next location. Hint 1 after 2 wrong tries, hint 2 after 4, "Show the answer" after 6. Correct → full-screen **game map**: a clean, tilted 3D world (MapLibre + OpenFreeMap tiles, colours in `src/lib/mapTheme.js`) that follows the player and turns with their compass, a glowing trail to a purple beacon, a short turn-by-turn banner and the remaining time and distance. Players never leave the app.
-2. They find the **hook** (street art + QR code / NFC tag) and scan it → the app opens `/hook/:id`.
-3. **Location check:** the app checks their GPS. Not within the hook's radius → "You're not there yet · 240 m" + *Check again*.
-4. **Challenge:** a question about the place. Two wrong answers → the hint appears.
-5. **Reward:** correct → the chapter and its fragments unlock.
-6. The chapter has a **"Solve the riddle"** button for the next location → back to step 1. The last riddle leads to the museum (KMSKA, `/finale`).
+Tech: React + Vite, plain JavaScript, plain CSS, MapLibre (OpenFreeMap tiles). No backend, no login. Progress is saved in the browser (localStorage).
 
-Hooks can depend on each other (`requires`). Scanning a hook too early shows "You haven't found the trace that leads here yet".
+## The game
 
-This repo is the **engine**. All story content is placeholder and lives in one file: `src/data/story.json`.
+The app always opens where the player is (`src/game/gameState.js`, the single source of truth, saved in localStorage). A reload never resets a player; there is no "continue later" screen.
 
-Tech: React + Vite, plain JavaScript, plain CSS. No backend, no login. Progress is saved in the browser (localStorage).
+After the start QR, the **map is the main screen** for the rest of the game. Everything else is a **pop-up** on top of it (one `BottomSheet` component: a white sheet sliding up onto the bottom nav; the map is dimmed only for pop-ups that need focus). The current **phase decides which pop-up is open**.
+
+From the riddle phase on, a game-style **bottom nav** is always visible: **Map** (back to the current game screen) · **Scan** (scan a hook) · **Collection** (with a badge counting fragments + hooks). It is hidden on the locked screen and during the intros.
+
+```
+locked → hooksIntro → tutorial → riddleIntro → riddle → navigating → atLocation → fragmentUnlocked
+                                                 ↑                                      │
+                                                 └──────── next location ───────────────┘
+                                                            (after the last one → finale)
+```
+
+| Phase              | What the player sees (on top of the map)                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `locked`           | Black screen, pulsing lock, "Scan the QR to begin". The **Scan** button stays locked (grey, small lock, shakes when tapped) until the player is at the Stadsfeestzaal (live location + `checkAtLocation`), then it unlocks and glows. A phone-camera scan of the start QR runs the same check ("This only opens at the start."). |
+| `hooksIntro`, `tutorial`, `riddleIntro` | Step pop-ups one after another (text from `onboarding.json`), "Next" / "Start". Can't be closed by tapping outside. |
+| `riddle`           | Riddle pop-up ("Riddle 1/6"). Every wrong answer shows the next hint; after 3 wrong answers the answer is shown. Can be minimised to a pill above the nav. The map shows the player but **no destination or route** yet. |
+| `navigating`       | No pop-up: the route and the direction card at the top (next turn, then "6 min · 450 m · destination"; its "?" re-opens the solved riddle). |
+| `atLocation`       | Automatic when inside the location's radius (no QR at locations). Arrived pop-up with the challenge card → **Solve challenge** opens the challenge as a full screen (placeholder: **Solve challenge** again). |
+| `fragmentUnlocked` | Centered fragment card ("Fragments 1 & 2", counter x/12) → **Continue** → straight to the riddle pop-up for the next location (or the finale). |
+| `finale`           | Finale placeholder pop-up.                                                                                 |
+
+Only valid transitions are allowed (e.g. you can't jump from `riddle` to `atLocation`).
+
+**Hooks** are optional collectibles. They are **not** location-locked: scanning a valid hook QR (Scan button or phone camera) always collects it, in every phase after the start. Scanning never changes the phase:
+
+- new hook → "Hook collected!" → saved in the collection
+- already collected → "You already found this one."
+- game not started yet (locked or intros) → "Start the game at the Stadsfeestzaal first."
+- the start QR again → "You've already started."
+
+Hook coordinates in `story.json` are only used for `showHooksOnMap` and the dev panel. The **start QR** stays location-locked, and locations stay location-based.
+
+The **Collection** (`/collection`) has two tabs, fragments and hooks, each with a counter. Tap a found card to see it in full.
+
+**Config** (`src/config.js`): `showDistanceOnLock` (show the distance to the start on the locked screen, default off) and `showHooksOnMap` (show hooks as small map markers, default off so players look around).
 
 ---
 
@@ -37,27 +65,24 @@ Open the address it prints (usually http://localhost:5173).
 | `npm run dev:https` | Same, but with https, so the in-app camera scanner works on a phone |
 | `npm run build`     | Make the production version in `dist/`                        |
 | `npm run preview`   | Try the production version locally                            |
-| `npm run qr`        | Generate QR codes for all hooks into `qr-codes/`              |
+| `npm run qr`        | Generate QR codes for the start and all hooks into `qr-codes/` |
 
 ### The dev panel (fake your location)
 
-You don't have to walk to Groenplaats to test. A small yellow **DEV** button floats above the bottom nav:
-
-- always visible while running `npm run dev`
-- on the live site: open any page with **`?dev=1`** at the end, e.g. `https://your-site.netlify.app/?dev=1`. Your phone remembers it. `?dev=0` hides it again.
+You don't have to walk around Antwerp to test. The yellow **DEV** button (it shows the current phase) appears **only** after you open any page with **`?dev=1`**, e.g. `http://localhost:5173/?dev=1` or `https://your-site.netlify.app/?dev=1`, also in `npm run dev`. The device remembers it; `?dev=0` hides it again. Players never see it.
 
 In the panel:
 
-- **Use real GPS / Use fake location**: when fake is on, the whole app uses the fake position.
-- **Map** (OpenStreetMap): tap anywhere to put yourself there. Purple circles are the hooks (and the KMSKA finale) with their radius; the red dot is you.
-- **Quick buttons**: "I'm at Stadsfeestzaal", "I'm at MoMu", …, "Far away", or type a lat/lng.
-- **Live distance** to every hook (green ✓ = inside the radius) and the hook's status (locked / open / completed).
-- **Skip challenge**, **Skip riddle** (completes the hook, solves its riddle and opens the route map), links to open each hook, and **Reset progress**.
+- **Live info**: phase, current location and leg (e.g. `start→loc1`), distance to the location, nearest hook + distance, fragments and hooks collected, GPS accuracy.
+- **Skip to phase…**: pick a phase and a location and jump there; the right pop-up opens (bypasses the rules; dev only). **Close all pop-ups** hides them (they come back as a pill).
+- **Solve challenge** (in `atLocation`), **Reset game**, **Skip location check** (the start and every location count as reached; ignored without `?dev=1`).
+- **Teleport** to the start, any location or any hook; **Far away**.
+- **Fake scan** the start or any hook (same path as a real scan, no camera needed; hooks work from anywhere).
+- **Use real GPS / Use fake location**, the **map** (tap to put yourself there; yellow = start, purple = locations, green = hooks) and lat/lng input.
+- **Fake GPS accuracy** (±0 / ±40 / ±150 m, to test "Looking for a better GPS signal").
+- **Compass slider** (0–359°) and **Simulate walk** (while navigating: walks the fake location along the route at 1.3 m/s or ×5).
 
-- **Compass slider** (0–359°): fakes the phone's compass (the navigation map rotates with it). **Real** switches back.
-- **Simulate walk**: while a navigation map is open, walks the fake location along the route at 1.3 m/s (or ×5), so you can watch the turn-by-turn banner on a laptop. It leaves the compass alone, so the heading comes from the movement like real GPS.
-
-The fake location is saved, so it survives a reload. It also moves the player arrow, camera and banner on the navigation map. Turn it **off** before testing real GPS.
+The fake location is saved, so it survives a reload. Turn it **off** before testing real GPS.
 
 **Other way on a PC: Chrome DevTools.** Press F12 → ⋮ (top right of DevTools) → **More tools → Sensors** → under *Location* pick "Other…" and type e.g. `51.2210` / `4.4044`. Keep DevTools open while testing. The dev panel must be on **Use real GPS** for this, otherwise the fake location wins.
 
@@ -80,7 +105,7 @@ If it doesn't load: Windows may ask to allow Node.js through the firewall. Click
 **Scanning QR codes on the phone:**
 
 - **Easiest:** use the phone's normal camera app. It reads the QR code and opens the link. This always works.
-- **In-app scanner (`/scan`):** browsers only allow the camera on `https` (or `localhost`). Run `npm run dev:https` and open `https://192.168.x.x:5173`. Your phone will warn that the certificate is not trusted; that's normal for testing, so tap "Advanced" → "Continue".
+- **In-app scanner (the Scan buttons):** browsers only allow the camera on `https` (or `localhost`). Run `npm run dev:https` and open `https://192.168.x.x:5173`. Your phone will warn that the certificate is not trusted; that's normal for testing, so tap "Advanced" → "Continue".
 
 **Add to home screen:** in Safari tap Share → "Add to Home Screen"; in Chrome tap ⋮ → "Add to Home screen". The app then opens full screen like a normal app.
 
@@ -88,26 +113,18 @@ If it doesn't load: Windows may ask to allow Node.js through the firewall. Click
 
 ---
 
-## 3. How hooks, QR codes and NFC work
+## 3. How the QR codes work
 
-Every hook has its own URL:
+Only the **start** and the **hooks** have a QR code; locations don't (arriving there is location-based). Every code contains a URL with its `qrId`:
 
 ```
-https://your-site.com/hook/h01
+https://your-site.com/hook/start     ← the start (Stadsfeestzaal)
+https://your-site.com/hook/hk01      ← a hook
 ```
 
-A QR code and an NFC tag both simply contain that URL, so the app doesn't care which one was used. Opening the URL:
+Scanning with the phone camera opens that URL; the app then runs exactly the same checks as the in-app scanner (start: are you at the Stadsfeestzaal? hook: has the game started? already collected?). An unknown id shows "This QR code isn't part of Inside Out."
 
-1. checks the hook's `requires` (are the earlier hooks done?),
-2. checks the player's location,
-3. asks the challenge question,
-4. unlocks the chapter and its fragments.
-
-Once a hook is completed, scanning it again goes straight to its chapter.
-
-An unknown id (e.g. `/hook/xyz`) shows a friendly "This trace doesn't exist" page.
-
-**NFC tags:** write a "URL / URI" record with the hook URL using a free app like *NFC Tools*. iPhones and Android phones open it automatically when tapped.
+**NFC tags** work the same way: write a "URL / URI" record with the URL using a free app like *NFC Tools*.
 
 ---
 
@@ -123,7 +140,7 @@ An unknown id (e.g. `/hook/xyz`) shows a friendly "This trace doesn't exist" pag
    npm run qr
    ```
 
-You get one PNG per hook (`qr-codes/h01.png`, `qr-codes/h02.png`) plus `qr-codes/print.html`. Open it in a browser and print: one big code per page, with the hook name, location and a "TEST" label. The folder is emptied first, so codes of removed hooks disappear.
+You get one PNG per code (`qr-codes/start.png`, `qr-codes/hk01.png`, …) plus `qr-codes/print.html`. Open it in a browser and print: one big code per page, with its name, coordinates and a "TEST" label. The folder is emptied first, so codes of removed hooks disappear.
 
 ⚠️ **Generate the final QR codes only once you know the final web address.** Codes made with `localhost` or a Wi-Fi IP won't work for real players.
 
@@ -133,26 +150,63 @@ You get one PNG per hook (`qr-codes/h01.png`, `qr-codes/h02.png`) plus `qr-codes
 
 No coding needed. Just keep the JSON valid (commas, quotes). If you break it, `npm run dev` will show an error. Tip: paste it into https://jsonlint.com to check.
 
-The file has four parts:
-
 ```json
 {
-  "meta":      { "title": "...", "tagline": "...", "intro": "...",
-                 "finaleChapter": "c06", "finaleRequires": ["h01", "...", "h05"],
-                 "finale": { "location": { "name": "KMSKA", "lat": 51.2088, "lng": 4.3948, "radius": 60 } } },
+  "meta":      { "title": "...", "tagline": "..." },
+  "start":     { "id": "start", "name": "Stadsfeestzaal", "lat": 51.2175, "lng": 4.4097,
+                 "radius": 60, "maxAccuracy": 80, "qrId": "start" },
+  "locations": [ ... ],
   "hooks":     [ ... ],
-  "chapters":  [ ... ],
   "fragments": [ ... ]
 }
 ```
 
-How they connect: **hook (location + challenge) → opens one chapter → chapter shows fragments + the hook's riddle for the next location.**
+- **`start`**: where the game begins. `radius` (m) and `maxAccuracy` (m, the worst GPS accuracy we accept) are generous because the Stadsfeestzaal is indoors.
+- **`locations`**: the route, **in order**. Each location owns the riddle that leads *to* it.
+- **`hooks`**: collectibles on the way. `leg` says between which places they are.
+- **`fragments`**: the story pieces the locations unlock.
 
-`finaleRequires` lists the hooks that must be completed before the museum finale opens. `finale.location` is where the last riddle's map leads (the KMSKA).
+### A location
 
-### Add a fragment
+```json
+{
+  "id": "loc1",
+  "name": "Sint-Carolus Borromeuskerk",
+  "address": "Hendrik Conscienceplein, 2000 Antwerpen",
+  "lat": 51.221, "lng": 4.4044, "radius": 50,
+  "riddle": {
+    "question": "The riddle whose answer is THIS location.",
+    "answers": ["Sint-Carolus Borromeuskerk", "Carolus Borromeus"],
+    "hints": ["Shown after 1 wrong answer.", "Shown after 2 wrong answers."]
+  },
+  "challenge": { "type": "placeholder", "title": "...", "text": "..." },
+  "fragments": ["f01"]
+}
+```
 
-Add an object to `fragments`. The `id` must be unique.
+- `lat`/`lng`: in Google Maps right-click → click the numbers to copy them. `radius` in meters; 50 m is a good default (GPS between tall buildings can be off by 20–40 m). Optional `maxAccuracy` like the start.
+- `riddle.answers`: every accepted answer. Capitals, accents, spaces, hyphens and the words "de", "het" and "the" are ignored, so `"Plantin-Moretus"` also matches `"het plantin moretus"`.
+- `challenge`: placeholder for now (one "Solve challenge" button).
+- `fragments`: fragment ids unlocked by the challenge (two per location). Fragments are numbered by their order in the `fragments` list ("Fragment 1"), so keep that list in route order.
+
+### A hook
+
+```json
+{
+  "id": "hook01", "qrId": "hk01",
+  "lat": 51.21867, "lng": 4.40793, "radius": 30,
+  "leg": "start→loc1",
+  "content": { "type": "placeholder", "title": "Hook 01", "text": "..." }
+}
+```
+
+- `qrId` is what goes in the QR URL (`/hook/hk01`). Keep it short, lowercase, no spaces. **Don't change a qrId after its QR code is printed.**
+- `lat`/`lng`/`radius`: only used to show it on the map (`showHooksOnMap`) and to teleport in the dev panel. Collecting works anywhere.
+- `content`: what the hook gives (not decided yet; shown in the collection).
+
+After adding hooks, run `npm run qr` again.
+
+### A fragment
 
 ```json
 {
@@ -172,68 +226,23 @@ Add an object to `fragments`. The `id` must be unique.
 | `image`    | photo                     | `src`                                 |
 | `audio`    | audio player (voice memo) | `src` (mp3, m4a or wav)               |
 
-`caption` and `meta` are optional. Every value inside `meta` is shown in small text under the fragment.
+`caption` and `meta` are optional. **Media files** go in `public/fragments/`; refer to them as `"/fragments/my-file.jpg"`. Keep images small (under ~500 KB).
 
-**Media files** go in `public/fragments/`. Refer to them as `"/fragments/my-file.jpg"` (no `public` in the path). Keep images small (under ~500 KB) for players on mobile data.
+### The intro screens (`src/data/onboarding.json`)
 
-### Add a chapter
-
-```json
-{
-  "id": "c05",
-  "title": "Chapter 5 — The Cellar",
-  "intro": "Short text shown at the top.",
-  "fragments": ["f08"],
-  "nextHooks": ["h01"],
-  "clue": "The clue that points to the next hook(s)."
-}
-```
-
-- `fragments`: the fragment ids shown in this chapter, in order.
-- `nextHooks`: hook ids the player should look for next (can be `[]`).
-- The finale chapter has `"isFinale": true` and its id is set in `meta.finaleChapter`. It is unlocked in the museum, not by a hook.
-
-### Add a hook
-
-```json
-{
-  "id": "h03",
-  "label": "The Cellar Door",
-  "location": { "name": "Vleeshuis", "address": "Vleeshouwersstraat 38", "lat": 51.2229, "lng": 4.3988, "radius": 50 },
-  "chapter": "c05",
-  "requires": ["h02"],
-  "challenge": {
-    "question": "What colour is the door next to the trace?",
-    "answers": ["red", "rood", "dark red"],
-    "hint": "Look down, not up."
-  },
-  "riddle": {
-    "next": "h04",
-    "question": "The riddle that points to the NEXT location.",
-    "answers": ["Bourla", "Bourlaschouwburg"],
-    "hints": ["Hint after 2 wrong tries.", "Hint after 4 wrong tries."]
-  }
-}
-```
-
-- `id` is what goes in the URL (`/hook/h03`). Keep it short, lowercase, no spaces. **Don't change an id after its QR code is printed.**
-- `location`: `lat`/`lng` of the spot (in Google Maps: right-click → click the numbers to copy them) and `radius` in meters. 50 m is a good default; GPS between tall buildings can be off by 20–40 m.
-- `chapter`: the chapter this hook opens.
-- `requires`: hooks that must be completed first. `[]` = always open (entry hook).
-- `challenge.answers`: every accepted answer. Capitals, extra spaces, accents and punctuation are ignored, so `"rubens"` also matches `"  Rúbens!"`. Add Dutch and English versions.
-- `challenge.hint`: shown after 2 wrong answers.
-- `riddle`: shown after this hook is solved; it leads to the **next** location. `next` is a hook id, or `"finale"` for the KMSKA. Answers ignore capitals, accents, spaces, hyphens and the words "de", "het" and "the", so `"Plantin-Moretus"` also matches `"het plantin moretus"`. A player can use "Show the answer" after 6 wrong tries.
-- The start hook has `"start": true`: no location check, no challenge, no chapter — just the tutorial and its riddle.
-
-Remember to point the previous hook's `riddle.next` (and its chapter's `nextHooks`) at the new hook, and add it to `meta.finaleRequires` if it must be done before the museum.
-
-Then run `npm run qr` again to get the new QR code.
+`hooksIntro`, `tutorial` and `riddleIntro` each have a list of `steps`: `{ "title": "...", "text": "...", "image": "/fragments/optional.jpg" }`. Add, remove or reorder steps freely.
 
 ---
 
 ## 6. Change the look
 
-All colors, fonts and spacing are CSS variables in **`src/styles/variables.css`**. Change `--color-accent` and the whole app (and the share card) follows. Everything else is in `src/styles/global.css`.
+The hi-fi style ("Hi-fi – chosen style" in Figma) lives in **`src/styles/tokens.css`**: the palette (navy, burgundy, olive, cream, rose, blue, sage, white), their opacity variants, type sizes, radii and shadows. Components never use raw colours; change a token and the whole app follows. Everything else is in `src/styles/global.css`.
+
+- **Two modes.** The start/locked phase is dark (`.theme-dark`: navy background, cream text). Everything after the start is light (white, navy text, burgundy buttons). Components use the semantic tokens (`--bg`, `--text`, `--primary`, ...), so they follow the mode they're in.
+- **Fonts:** Syne Bold for titles, riddles and big numbers, Inter for everything else (npm packages `@fontsource/syne` and `@fontsource/inter`, imported in `src/main.jsx`).
+- **Shared components** in `src/components/ui/`: `BottomSheet`, `Toast`, `Eyebrow`, `PrimaryButton`, `Chip`, icons (incl. the lock).
+- **The map** reads its colours from the `--map-*` tokens (`src/map/mapTheme.js` only sets how strong each one is).
+- **Mobile first:** the app is a 430px column, centered on desktop.
 
 ---
 
@@ -241,35 +250,47 @@ All colors, fonts and spacing are CSS variables in **`src/styles/variables.css`*
 
 ```
 src/
-  data/story.json            ← ALL story content
-  lib/story.js               ← helpers to read the story (getHook, getChapter, ...)
-  lib/progress.js            ← saving/loading progress in localStorage
-  lib/useProgress.js         ← React hook: completedHooks, foundFragments, unlockedChapters, finaleUnlocked, reset
-  lib/location.js            ← GPS (or fake location), Haversine distance, "is the player there?"
-  lib/answers.js             ← forgiving answer check for challenges and riddles
+  config.js                  ← game design switches (showDistanceOnLock, showHooksOnMap)
+  data/story.json            ← ALL story content: start, locations, hooks, fragments
+  data/onboarding.json       ← text of the intro step screens
+  game/                      ← THE GAME
+    gameState.js             ← phases + transitions, location, riddle attempts, hooks, fragments (localStorage)
+    GameProvider.jsx         ← React context: useGame()
+    PhaseScreen.jsx          ← "/": the locked screen, or MainScreen after the start
+    MainScreen.jsx           ← the map + the pop-up for the current phase
+    GameWorld.jsx            ← the map under the pop-ups: route, banner, info strip
+    popups/                  ← Steps (intros), RiddlePopup, Arrived pop-up + challenge screen, Fragment/Finale pop-ups
+    scans.js                 ← what a scanned QR means (start / hook, location check)
+    ScanProvider.jsx         ← in-app scanner + scan results on top of every screen
+    BottomNav.jsx            ← Map · Scan · Collection (from the riddle phase on)
+    screens/                 ← LockedScreen, UnlockAnimation
+  map/                       ← the MapLibre game map
+    GameMap.jsx              ← player, beacon, trail, off-screen pointer, optional hook markers
+    mapTheme.js              ← the map style, built from the --map-* design tokens
+    useGameScreen.js         ← full-screen plumbing (banner/sheet refs, no page scroll)
+  lib/story.js               ← helpers to read story.json (getStart, getLocation, getHooks, findQr, ...)
+  lib/location.js            ← GPS (or fake location), Haversine, checkAtLocation (far / weak-signal / there)
+  lib/usePosition.js         ← live position hook with retry
+  lib/answers.js             ← forgiving answer check for riddles
   lib/route.js               ← walking route with steps (OSRM), straight-line fallback
-  lib/mapTheme.js            ← colours of the game map (MAP_THEME) + the map style built from them
   lib/navigation.js          ← turn-by-turn: position on the route, next maneuver, English instructions
   lib/useHeading.js          ← compass (iPhone/Android), dev fake heading, or direction of movement
-  components/Tutorial.jsx, Riddle.jsx, RouteMap.jsx ← start tutorial, riddle form, 3D navigation to the next location
-  dev/simulateWalk.js        ← dev panel "Simulate walk"
-  lib/storage.js             ← localStorage that never crashes
-  components/LocationCheck.jsx, Challenge.jsx ← the steps of /hook/:id
-  dev/                       ← dev panel (map, fake location, skip, reset)
-  lib/shareCard.js           ← draws the solved case card on a canvas
-  lib/vibrate.js             ← vibration (only if supported)
-  finale/artworkRecognizer.js← museum artwork scan (simulated for now)
-  components/                ← Layout (bottom nav), ProgressBar, FragmentViewer, ResetButton
-  pages/                     ← one file per page
-  styles/                    ← variables.css + global.css
-scripts/generate-qr.js       ← npm run qr
+  lib/storage.js, vibrate.js
+  components/QrScanner.jsx   ← in-app QR scanner (html5-qrcode) + camera-denied help
+  components/Riddle.jsx      ← riddle form (hints, answer after 3 wrong tries)
+  components/ui/             ← BottomSheet (every pop-up), Toast, Eyebrow, PrimaryButton, Chip, icons
+  components/                ← Layout, FragmentViewer, ProgressBar
+  dev/                       ← dev panel (only with ?dev=1), dev options, simulate walk
+  pages/                     ← Collection, Hook (deep link /hook/:qrId), NotFound
+  parked/                    ← code kept for later, not in the build (finale + share card)
+  styles/                    ← tokens.css (design tokens) + global.css
+scripts/generate-qr.js       ← npm run qr (start + hooks)
 public/fragments/            ← story media (images, audio)
-public/manifest.webmanifest  ← "add to home screen" settings
 ```
 
-Pages: `/` Home · `/hook/:id` · `/riddle/:id` (riddle → map) · `/chapter/:id` · `/collection` · `/finale` · `/share` · `/scan` · anything else → 404.
+Routes: `/` the game (current phase) · `/hook/:qrId` QR deep link · `/collection` · anything else → 404.
 
-**Progress** (localStorage key `insideout.progress.v2`): per hook it saves when it was scanned, when the location was verified, the number of wrong answers and when the challenge was completed, plus whether the finale is unlocked. Chapters and fragments only count after the challenge. Unlocked chapters and found fragments are calculated from `story.json`, so editing the story doesn't break saved progress. Progress is per phone and per browser. Clearing browser data or switching browsers starts over.
+**Game state** (localStorage key `insideout.game.v2`): phase, location index, riddle attempts, collected hooks and unlocked fragments. It's per phone and per browser; clearing browser data starts over. **Reset game** in the dev panel clears it.
 
 ---
 
@@ -277,7 +298,7 @@ Pages: `/` Home · `/hook/:id` · `/riddle/:id` (riddle → map) · `/chapter/:i
 
 Any static host works (Netlify, Vercel, GitHub Pages...). Build with `npm run build` and upload `dist/`.
 
-Important: URLs like `/hook/h01` must serve `index.html`. This is already set up for **Netlify** (`public/_redirects`) and **Vercel** (`vercel.json`). For other hosts, look up "SPA fallback".
+Important: URLs like `/hook/hk01` must serve `index.html`. This is already set up for **Netlify** (`public/_redirects`) and **Vercel** (`vercel.json`). For other hosts, look up "SPA fallback".
 
 The real site must use **https** (all of the hosts above do this automatically). Without https, GPS doesn't work.
 
@@ -291,20 +312,20 @@ The QR codes are **not** part of the website. They only contain its address. So 
 4. Optional: *Site configuration → Change site name* → e.g. `insideout-team3` → your URL becomes `https://insideout-team3.netlify.app`. **Do this before step 5.**
 5. In `.env` set `BASE_URL=https://insideout-team3.netlify.app` (no slash at the end).
 6. `npm run qr` → print `qr-codes/print.html`.
-7. Test: scan a code with your phone camera. It should open the Netlify site at `/hook/h01`.
+7. Test: scan a code with your phone camera. It should open the Netlify site at `/hook/start` or `/hook/hk01`.
 
-**Updating the site later** (story or code changed): `npm run build`, then open your site in Netlify → **Deploys** → drag the new `dist` folder onto the "drag and drop" area there. The URL stays the same, so printed codes keep working. You only need `npm run qr` again if you added hooks or changed the address.
+**Updating the site later** (story or code changed): `npm run build`, then open your site in Netlify → **Deploys** → drag the new `dist` folder onto the "drag and drop" area there. The URL stays the same, so printed codes keep working. You only need `npm run qr` again if you added hooks, changed a `qrId` or changed the address.
 
 ---
 
 ## 9. What's still placeholder
 
-- **Story texts and fragments** in `story.json`. Route 1 (Stadsfeestzaal → Sint-Carolus Borromeuskerk → Plantin-Moretus → MoMu → Bourla → Maagdenhuis → KMSKA) and its coordinates are real; every riddle and challenge is marked "TODO – team writes the real…" (placeholder challenge answer: `test`). Chapter intros and fragments are placeholder.
+- **Story content** in `story.json` and `onboarding.json`: route 1 (Stadsfeestzaal → Sint-Carolus Borromeuskerk → Plantin-Moretus → MoMu → Bourla → Maagdenhuis → KMSKA), its coordinates and the **riddles** are real; challenges, hooks, fragments and intro texts are still marked "TODO" / placeholder.
+- **Hooks**: 2 placeholder hooks per leg, on the straight line between two places (some are inside buildings). Their `content` isn't decided yet.
+- **Challenges**: one "Solve challenge" button per location.
+- **Finale**: phase `finale` is a placeholder screen. The old museum test (simulated artwork scan + share card) is parked in `src/parked/finale/`.
 - **Media**: `public/fragments/photo-01.svg`, `artwork.svg`, `memo-01.wav` (a beep, not a voice).
-- **Museum finale**: "Scan the artwork" only simulates success. Real image recognition (e.g. MindAR) can be added in `src/finale/artworkRecognizer.js`. An example outline is in the comments. The page itself doesn't need to change.
-- **Visual design**: dark theme with purple accent, intentionally minimal.
 - **App icons**: `public/icons/` (simple generated placeholders).
-- **Share card layout**: `src/lib/shareCard.js`.
 - **No offline mode** yet (no service worker).
 #   I n s i d e O u t _ t e a m 3  
  

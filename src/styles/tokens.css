@@ -1,0 +1,147 @@
+/*
+ * Design tokens (hi-fi "chosen style"). Change the look of the whole app here;
+ * components only use these variables, never raw colours.
+ *
+ * Two modes:
+ *   light (default) — everything after the game has started: white, navy text, burgundy actions
+ *   .theme-dark     — the start/locked phase: navy background, cream text
+ * Components use the semantic tokens (--bg, --text, ...), so they follow the mode they're in.
+ */
+:root {
+  /* ---------- Palette ---------- */
+  --navy: #1c2430;
+  --burgundy: #4b1e23;
+  --olive: #6b6f4e;
+  --cream: #e6e0d6;
+  --rose: #c29095;
+  --blue: #647c9f;
+  --sage: #929677;
+  --white: #ffffff;
+
+  /* Opacity variants used across the design */
+  --navy-8: color-mix(in srgb, var(--navy) 8%, transparent);
+  --navy-10: color-mix(in srgb, var(--navy) 10%, transparent);
+  --navy-15: color-mix(in srgb, var(--navy) 15%, transparent);
+  --navy-20: color-mix(in srgb, var(--navy) 20%, transparent);
+  --navy-30: color-mix(in srgb, var(--navy) 30%, transparent);
+  --navy-45: color-mix(in srgb, var(--navy) 45%, transparent);
+  --navy-50: color-mix(in srgb, var(--navy) 50%, transparent);
+  --navy-55: color-mix(in srgb, var(--navy) 55%, transparent);
+  --navy-60: color-mix(in srgb, var(--navy) 60%, transparent);
+  --navy-70: color-mix(in srgb, var(--navy) 70%, transparent);
+  --cream-7: color-mix(in srgb, var(--cream) 7%, transparent);
+  --cream-10: color-mix(in srgb, var(--cream) 10%, transparent);
+  --cream-15: color-mix(in srgb, var(--cream) 15%, transparent);
+  --cream-20: color-mix(in srgb, var(--cream) 20%, transparent);
+  --cream-35: color-mix(in srgb, var(--cream) 35%, transparent);
+  --cream-40: color-mix(in srgb, var(--cream) 40%, transparent);
+  --cream-50: color-mix(in srgb, var(--cream) 50%, transparent);
+  --cream-55: color-mix(in srgb, var(--cream) 55%, transparent);
+  --cream-60: color-mix(in srgb, var(--cream) 60%, transparent);
+  --cream-85: color-mix(in srgb, var(--cream) 85%, transparent);
+  --burgundy-15: color-mix(in srgb, var(--burgundy) 15%, transparent);
+  --rose-35: color-mix(in srgb, var(--rose) 35%, transparent);
+  --sage-35: color-mix(in srgb, var(--sage) 35%, transparent);
+
+  /* ---------- Semantic (light mode) ---------- */
+  --bg: var(--white);
+  --text: var(--navy);
+  --text-muted: var(--navy-60);
+  --text-soft: var(--navy-70);
+  --text-faint: var(--navy-45);
+  --divider: var(--navy-8);
+  --border: var(--navy-10);
+  --border-strong: var(--navy-15);
+  --tint: var(--cream-35); /* inputs, hints, locked cards */
+  --tint-strong: var(--cream-50); /* segmented tabs track */
+  --surface: var(--white); /* floating cards */
+  --primary: var(--burgundy);
+  --on-primary: var(--white);
+  --secondary: var(--navy);
+  --on-secondary: var(--white);
+  --eyebrow: var(--burgundy);
+  --danger: var(--burgundy);
+  --dim: color-mix(in srgb, var(--navy) 30%, transparent); /* behind pop-ups that need focus (arrived) */
+  --dim-strong: var(--navy-45); /* behind the centered fragment card */
+  --page-outside: color-mix(in srgb, var(--cream) 45%, var(--white)); /* desktop, around the 430px frame */
+
+  /* Map (read by src/map/mapTheme.js) */
+  --map-land: #f4f2ee;
+  --map-road: var(--white);
+  --map-road-edge: #e7e3dc;
+  --map-building: var(--cream);
+  --map-park: var(--sage);
+  --map-water: var(--blue);
+  --map-label: var(--navy);
+  --map-route: var(--burgundy);
+
+  /* ---------- Type ---------- */
+  --font-display: 'Syne', 'Inter', system-ui, sans-serif; /* Bold 700 only */
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-hand: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+  --font-serif: Georgia, 'Times New Roman', serif;
+
+  --fs-screen-title: 32px;
+  --fs-popup-title: 24px;
+  --fs-riddle: 22px;
+  --lh-riddle: 28px;
+  --fs-banner-title: 20px;
+  --fs-body: 15px;
+  --fs-body-lg: 16px;
+  --fs-secondary: 13px;
+  --fs-eyebrow: 12px;
+  --fs-label: 11px;
+  --fs-button: 17px;
+  --tracking-eyebrow: 0.12em;
+
+  /* ---------- Spacing / shape / shadow ---------- */
+  --side: 24px; /* screen side padding */
+  --card-pad: 16px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --radius-input: 14px;
+  --radius-option: 16px;
+  --radius-card: 18px;
+  --radius-card-lg: 22px;
+  --radius-sheet: 28px;
+  --radius-pill: 999px;
+  --button-height: 54px;
+
+  --shadow-card: 0 8px 24px rgba(28, 36, 48, 0.12);
+  --shadow-sheet: 0 -8px 24px rgba(28, 36, 48, 0.12);
+
+  --frame-width: 430px; /* mobile first; centered on desktop */
+  --frame-x: max(0px, calc((100vw - var(--frame-width)) / 2));
+  --nav-height: 64px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-sheet: 230ms;
+  --transition: 180ms ease;
+}
+
+/* Start / locked phase */
+.theme-dark {
+  --bg: var(--navy);
+  --text: var(--cream);
+  --text-muted: var(--cream-60);
+  --text-soft: var(--cream-85);
+  --text-faint: var(--cream-55);
+  --divider: var(--cream-15);
+  --border: var(--cream-15);
+  --border-strong: var(--cream-20);
+  --tint: var(--cream-7);
+  --tint-strong: var(--cream-10);
+  --surface: var(--cream-7);
+  --primary: var(--cream);
+  --on-primary: var(--navy);
+  --eyebrow: var(--rose);
+  --danger: var(--rose);
+  background: var(--bg);
+  color: var(--text);
+}

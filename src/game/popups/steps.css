@@ -1,0 +1,69 @@
+/* Swipeable steps inside a pop-up (hooks intro, tutorial, riddle intro). */
+
+.tutorial-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.tutorial-track::-webkit-scrollbar {
+  display: none;
+}
+
+.tutorial-slide {
+  flex: 0 0 100%;
+  min-height: 24dvh;
+  padding: 0 var(--space-1);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tutorial-number {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: var(--space-4);
+}
+
+.tutorial-dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.tutorial-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--navy-15);
+  transition: width var(--transition), background var(--transition);
+}
+
+.tutorial-dots span.on {
+  width: 24px;
+  background: var(--primary);
+}
+
+.tutorial-slide img {
+  width: 100%;
+  max-height: 30dvh;
+  object-fit: contain;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-card);
+}
+
+.tutorial-slide h2 {
+  margin-bottom: var(--space-2);
+}
+
+.tutorial-slide p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: var(--fs-body);
+}

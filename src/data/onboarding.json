@@ -1,0 +1,43 @@
+{
+  "hooksIntro": {
+    "steps": [
+      {
+        "title": "TODO – What are hooks?",
+        "text": "Placeholder. Hidden around Antwerp are hooks: small QR codes in the streets between the locations."
+      },
+      {
+        "title": "TODO – Collect them on the way",
+        "text": "Placeholder. Keep your eyes open while you walk. Scan a hook to add it to your collection. You don’t need them to finish the case, but they tell you more."
+      }
+    ]
+  },
+  "tutorial": {
+    "steps": [
+      {
+        "title": "TODO – The map",
+        "text": "Placeholder. The map shows where you are and the trail to the next location."
+      },
+      {
+        "title": "TODO – Your collection",
+        "text": "Placeholder. Everything you find – fragments and hooks – ends up in your collection. Open it any time with the Collection button."
+      },
+      {
+        "title": "TODO – Scanning",
+        "text": "Placeholder. Found a hook? Tap Scan hook and point your camera at the QR code.",
+        "image": ""
+      }
+    ]
+  },
+  "riddleIntro": {
+    "steps": [
+      {
+        "title": "TODO – How riddles work",
+        "text": "Placeholder. Every riddle hides the name of a place in Antwerp. Type the name to find out where to go next."
+      },
+      {
+        "title": "TODO – Stuck?",
+        "text": "Placeholder. Every wrong answer gives you a hint. After three wrong answers we show you the answer, so you can keep playing."
+      }
+    ]
+  }
+}
