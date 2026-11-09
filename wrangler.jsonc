@@ -1,0 +1,11 @@
+// Cloudflare (Workers static assets): serves the built app from dist/.
+// Build: npm run build · Deploy: npx wrangler deploy (Cloudflare does both after every push)
+{
+  "name": "insideout-team3",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    // every unknown path (e.g. /scan, /collection) opens the app, React Router does the rest
+    "not_found_handling": "single-page-application"
+  }
+}
