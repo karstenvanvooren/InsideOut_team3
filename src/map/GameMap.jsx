@@ -1,59 +1,94 @@
-// The game map, built with Leaflet (https://leafletjs.com). The map itself is the
-// calm vector style from mapTheme.js (street names, buildings, stage colours), drawn
-// inside Leaflet as one layer (@maplibre/maplibre-gl-leaflet). Leaflet handles the
-// view, gestures, the route line and the markers. On top: the player (with a
-// direction cone), optionally the destination beacon, the route line, hook markers
-// and an arrow on the screen edge when the destination is off-screen.
-// Leaflet keeps north up (no tilt/rotation); the cone shows where you look.
+// The game map. Leaflet (https://leafletjs.com) is the base: it owns the map
+// container, the view (centre + zoom) and the credits. Inside it, one Leaflet layer
+// (@maplibre/maplibre-gl-leaflet) draws our calm vector style from mapTheme.js in
+// 3D: tilted, first person, turning with the player's heading, with buildings.
+// Leaflet itself can only show a flat map, so the 3D camera, the route line and the
+// markers live in that layer; every time the camera stops, Leaflet's view is synced
+// to it. Routes come from BRouter (src/lib/route.js).
+// On top: the player (halo + direction cone on the ground, dot on top), optionally
+// the destination beacon, the route line, hook markers and an arrow on the screen
+// edge when the destination is off-screen.
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import '@maplibre/maplibre-gl-leaflet'
 import { distanceMeters, formatDistance } from '../lib/location.js'
 import { bearing } from '../lib/navigation.js'
-import { MAP_ATTRIBUTION, applyMapTheme, buildMapStyle } from './mapTheme.js'
+import { MAP_ATTRIBUTION, applyMapTheme, buildMapStyle, getMapTheme } from './mapTheme.js'
 import { STAGE_EVENT } from '../game/colourStage.js'
 
 const ANTWERP = { lat: 51.2194, lng: 4.4025 }
-const START_ZOOM = 17
-const FOLLOW_ZOOM = 18
-const MAX_ZOOM = 20
-const PAN_SECONDS = 0.5
+const START_ZOOM = 17 // MapLibre zoom (Leaflet's zoom is always 1 higher)
+const FOLLOW_ZOOM = 18.6
+const FOLLOW_PITCH = 60
+const EASE_MS = 500
+const LAYER_PADDING = 0.1 // the 3D layer is drawn 10% larger than the screen on every side
 
 const BEACON_LABEL_WITHIN = 250 // m: show the location name when this close
 const SCAN_BUTTON_LIFT = 44 // px: the round Scan button sticks out above the nav into the map
 
-const divIcon = (className, html, size) =>
-  L.divIcon({ className: `game-leaflet-icon ${className}`, html, iconSize: [size, size], iconAnchor: [size / 2, size / 2] })
+// ---------- Map pieces ----------
 
-const playerIcon = () =>
-  divIcon(
-    'game-player',
-    '<span class="game-player-halo"></span><span class="game-player-cone"></span><span class="game-player-dot"></span>',
-    86,
-  )
+const empty = { type: 'FeatureCollection', features: [] }
 
-function beaconIcon(name) {
-  const icon = divIcon('game-beacon-marker', '<span class="game-beacon-label"></span><span class="game-beacon-halo"></span><span class="game-beacon-dot"></span>', 24)
-  icon.options.html = icon.options.html.replace('<span class="game-beacon-label"></span>', `<span class="game-beacon-label">${escapeHtml(name)}</span>`)
-  return icon
+const lineData = (coords) => ({
+  type: 'Feature',
+  properties: {},
+  geometry: { type: 'LineString', coordinates: coords.map(([lat, lng]) => [lng, lat]) },
+})
+
+function addGameLayers(gl, theme) {
+  gl.addSource('route', { type: 'geojson', data: empty })
+  gl.addLayer({
+    id: 'route',
+    type: 'line',
+    source: 'route',
+    layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': theme.route, 'line-width': 6 },
+  })
 }
 
-const escapeHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
+const routeColour = () => getComputedStyle(document.documentElement).getPropertyValue('--map-route').trim()
+
+// Player: a soft halo with a direction cone on the ground (turns with the heading)...
+function playerGroundElement() {
+  const el = document.createElement('div')
+  el.className = 'game-player'
+  el.innerHTML = '<span class="game-player-halo"></span><span class="game-player-cone"></span>'
+  return el
+}
+
+// ...and the navy dot on top of it
+function playerDotElement() {
+  const el = document.createElement('div')
+  el.className = 'game-player-dot'
+  return el
+}
+
+// Destination: dot with a halo, the name above it when close
+function destinationElement(name) {
+  const el = document.createElement('div')
+  el.className = 'game-beacon-marker'
+  el.innerHTML = '<span class="game-beacon-label"></span><span class="game-beacon-halo"></span><span class="game-beacon-dot"></span>'
+  el.querySelector('.game-beacon-label').textContent = name
+  return el
+}
 
 /**
- * Where the map should be centred so the player sits ~70% down the visible strip
- * between the top banner and the bottom of the screen (above the nav).
+ * Camera padding (in the 3D layer's pixels) that puts the player ~70% down the
+ * visible strip between the top banner and the bottom of the screen.
  */
-function followCenter(map, latLng, overlayRefs) {
-  const size = map.getSize()
-  const visibleTop = overlayRefs?.top.current?.getBoundingClientRect().bottom ?? size.y * 0.15
-  const visibleBottom = size.y - (overlayRefs?.sheet.current?.offsetHeight ?? 0)
-  const targetY = visibleTop + (visibleBottom - visibleTop) * 0.7
-  const zoom = map.getZoom()
-  const point = map.project(latLng, zoom).subtract([0, targetY - size.y / 2])
-  return map.unproject(point, zoom)
+function followPadding(gl, wrap, overlayRefs) {
+  const h = wrap.clientHeight
+  const H = gl.getContainer().clientHeight // the layer is taller than the screen
+  const extra = (H - h) / 2
+  const visibleTop = (overlayRefs?.top.current?.getBoundingClientRect().bottom ?? h * 0.15) - wrap.getBoundingClientRect().top
+  const visibleBottom = h - (overlayRefs?.sheet.current?.offsetHeight ?? 0)
+  const target = extra + visibleTop + (visibleBottom - visibleTop) * 0.7
+  const top = Math.round(2 * target - H)
+  return top >= 0 ? { top, bottom: 0, left: 0, right: 0 } : { top: 0, bottom: -top, left: 0, right: 0 }
 }
 
 /**
@@ -81,8 +116,8 @@ export default function GameMap({
   const wrapRef = useRef(null)
   const elRef = useRef(null)
   const pointerRef = useRef(null)
-  const mapRef = useRef(null)
-  const layersRef = useRef({})
+  const glRef = useRef(null)
+  const markersRef = useRef({})
   const [ready, setReady] = useState(false)
   const [mapProblem, setMapProblem] = useState(false)
   const live = useRef({}) // latest props for event handlers
@@ -91,71 +126,115 @@ export default function GameMap({
 
   useEffect(() => {
     const start = destination ?? center ?? ANTWERP
+    // Leaflet: the base map. Its own gestures are off; the 3D layer handles them.
     const map = L.map(elRef.current, {
       center: [start.lat, start.lng],
-      zoom: START_ZOOM,
-      maxZoom: MAX_ZOOM,
+      zoom: START_ZOOM + 1,
+      minZoom: 2,
+      maxZoom: 23,
+      zoomSnap: 0,
       zoomControl: false,
       attributionControl: true,
-      zoomSnap: 0.25,
-      fadeAnimation: true,
+      dragging: false,
+      touchZoom: false,
+      doubleClickZoom: false,
+      scrollWheelZoom: false,
+      boxZoom: false,
+      keyboard: false,
+      zoomAnimation: false,
+      fadeAnimation: false,
     })
-    mapRef.current = map
     map.attributionControl.setPrefix(false)
 
-    // The map style in its own pane, below the route and markers
-    // (z-index set here: Leaflet's own CSS gives every pane 400 and loads after ours)
-    const tilesPane = map.createPane('gameTiles')
-    tilesPane.classList.add('game-tiles-pane')
-    tilesPane.style.zIndex = 200
-    const base = L.maplibreGL({ style: buildMapStyle(), pane: 'gameTiles', attribution: MAP_ATTRIBUTION }).addTo(map)
-    const gl = base.getMaplibreMap()
+    const pane = map.createPane('gameTiles')
+    pane.classList.add('game-tiles-pane')
+    pane.style.zIndex = 200
+
+    // The 3D layer (MapLibre inside Leaflet)
+    const layer = L.maplibreGL({
+      style: buildMapStyle(),
+      pane: 'gameTiles',
+      attribution: MAP_ATTRIBUTION,
+      interactive: true,
+      padding: LAYER_PADDING,
+      pitch: FOLLOW_PITCH,
+      maxPitch: 70,
+      dragRotate: true,
+      touchPitch: true,
+    }).addTo(map)
+    const gl = layer.getMaplibreMap()
+    glRef.current = gl
+
+    // When the 3D camera stops, Leaflet's view follows (so Leaflet always knows where we are)
+    const syncLeaflet = () => {
+      const c = gl.getCenter()
+      const z = gl.getZoom() + 1
+      const now = map.getCenter()
+      if (Math.abs(now.lat - c.lat) < 1e-7 && Math.abs(now.lng - c.lng) < 1e-7 && Math.abs(map.getZoom() - z) < 1e-4) return
+      map.setView([c.lat, c.lng], z, { animate: false })
+    }
+    gl.on('moveend', syncLeaflet)
+
+    gl.on('load', () => {
+      addGameLayers(gl, { ...getMapTheme(), route: routeColour() })
+      applyMapTheme(gl)
+      gl.setPaintProperty('route', 'line-color', routeColour())
+      setReady(true)
+    })
     let problems = 0
-    gl.on('error', () => {
+    gl.on('error', (e) => {
+      console.error('[Inside Out map] map error:', e.error?.message ?? e.error ?? e)
       problems += 1
       if (problems > 6) setMapProblem(true)
     })
-    gl.on('data', (e) => {
-      if (e.dataType === 'source' && e.isSourceLoaded) setMapProblem(false)
-    })
+
     // New colour stage (begin → middle → end): repaint the map in place
-    const repaint = () => applyMapTheme(gl)
-    gl.on('load', repaint)
+    const repaint = () => {
+      applyMapTheme(gl)
+      if (gl.getLayer('route')) gl.setPaintProperty('route', 'line-color', routeColour())
+    }
     window.addEventListener(STAGE_EVENT, repaint)
 
-    // Route: one line in the stage colour (CSS: .game-route)
-    layersRef.current.route = L.polyline([], { className: 'game-route', interactive: false }).addTo(map)
+    // Only the player's own gestures have an originalEvent (not our easeTo calls)
+    const userMoved = (e) => e.originalEvent && live.current.onUserMove?.()
+    gl.on('dragstart', userMoved)
+    gl.on('rotatestart', userMoved)
+    gl.on('pitchstart', userMoved)
 
-    // Only the player's own gestures stop "follow me" (not our own panTo calls)
-    map.on('dragstart', () => live.current.onUserMove?.())
-    setReady(true)
-
-    // Leaflet needs to know when the container changes size (rotation, address bar)
+    // Leaflet (and with it the 3D layer) needs to know when the container changes size
     const resizeObserver = new ResizeObserver(() => map.invalidateSize({ pan: false }))
     resizeObserver.observe(wrapRef.current)
 
     // Off-screen pointer: an arrow on the screen edge towards the beacon
     const updatePointer = () => {
       const el = pointerRef.current
+      const wrap = wrapRef.current
       const { position: me, destination } = live.current
-      if (!el) return
+      if (!el || !wrap) return
       if (!me || !destination || distanceMeters(me, destination) <= (destination.radius ?? 50)) {
         el.hidden = true
         return
       }
-      const { x: w, y: h } = map.getSize()
-      const top = (overlayRefs.top.current?.getBoundingClientRect().bottom ?? 120) + 36
+      const w = wrap.clientWidth
+      const h = wrap.clientHeight
+      const wrapBox = wrap.getBoundingClientRect()
+      const glBox = gl.getContainer().getBoundingClientRect()
+      const toScreen = (lng, lat) => {
+        const p = gl.project([lng, lat])
+        return { x: p.x + glBox.left - wrapBox.left, y: p.y + glBox.top - wrapBox.top }
+      }
+      const top = (overlayRefs.top.current?.getBoundingClientRect().bottom ?? 120) - wrapBox.top + 36
       const bottom = h - (overlayRefs.sheet.current?.offsetHeight ?? 0) - 36 - SCAN_BUTTON_LIFT
       const rect = { left: 36, right: w - 36, top, bottom }
-      const target = map.latLngToContainerPoint([destination.lat, destination.lng])
+      const target = toScreen(destination.lng, destination.lat)
       if (target.x >= rect.left && target.x <= rect.right && target.y >= rect.top && target.y <= rect.bottom) {
         el.hidden = true
         return
       }
-      const angle = bearing(me, destination)
+      const angle = bearing(me, destination) - gl.getBearing()
       const dx = Math.sin((angle * Math.PI) / 180)
       const dy = -Math.cos((angle * Math.PI) / 180)
-      const from = map.latLngToContainerPoint([me.lat, me.lng])
+      const from = toScreen(me.lng, me.lat)
       const x0 = Math.min(Math.max(from.x, rect.left), rect.right)
       const y0 = Math.min(Math.max(from.y, rect.top), rect.bottom)
       let t = Infinity
@@ -170,14 +249,15 @@ export default function GameMap({
       el.querySelector('.game-pointer-distance').textContent = formatDistance(distanceMeters(me, destination))
     }
     live.current.updatePointer = updatePointer
-    map.on('move zoom resize', updatePointer)
+    gl.on('move', updatePointer)
+    gl.on('resize', updatePointer)
 
     return () => {
       window.removeEventListener(STAGE_EVENT, repaint)
       resizeObserver.disconnect()
       map.remove()
-      mapRef.current = null
-      layersRef.current = {}
+      glRef.current = null
+      markersRef.current = {}
       wasFollowingRef.current = false
       setReady(false)
     }
@@ -187,35 +267,35 @@ export default function GameMap({
 
   // The destination marker follows the destination (or disappears without one)
   useEffect(() => {
-    const map = mapRef.current
-    if (!map || !ready) return
-    layersRef.current.beacon?.remove()
-    layersRef.current.beacon = destination
-      ? L.marker([destination.lat, destination.lng], { icon: beaconIcon(destination.name), interactive: false, keyboard: false, zIndexOffset: 500 }).addTo(map)
+    const gl = glRef.current
+    if (!gl || !ready) return
+    markersRef.current.label?.remove()
+    markersRef.current.label = destination
+      ? new maplibregl.Marker({ element: destinationElement(destination.name) }).setLngLat([destination.lng, destination.lat]).addTo(gl)
       : null
     live.current.updatePointer?.()
   }, [ready, destination])
 
-  // Player: halo + direction cone + dot
+  // Player: halo + direction cone on the ground, the dot on top
   useEffect(() => {
-    const map = mapRef.current
-    const layers = layersRef.current
-    if (!map || !ready) return
+    const gl = glRef.current
+    const marks = markersRef.current
+    if (!gl || !ready) return
     if (!position) {
-      layers.player?.remove()
-      layers.player = null
+      marks.ground?.remove()
+      marks.avatar?.remove()
+      marks.ground = marks.avatar = null
     } else {
-      if (!layers.player) {
-        layers.player = L.marker([position.lat, position.lng], { icon: playerIcon(), interactive: false, keyboard: false, zIndexOffset: 1000 }).addTo(map)
+      const lngLat = [position.lng, position.lat]
+      if (!marks.ground) {
+        marks.ground = new maplibregl.Marker({ element: playerGroundElement(), rotationAlignment: 'map', pitchAlignment: 'map' }).setLngLat(lngLat).addTo(gl)
+        marks.avatar = new maplibregl.Marker({ element: playerDotElement() }).setLngLat(lngLat).addTo(gl)
       }
-      layers.player.setLatLng([position.lat, position.lng])
-      const cone = layers.player.getElement()?.querySelector('.game-player-cone')
-      if (cone) {
-        cone.style.transform = `rotate(${heading ?? 0}deg)`
-        cone.style.opacity = heading == null ? '0' : '1'
-      }
+      marks.ground.setLngLat(lngLat).setRotation(heading ?? 0)
+      marks.ground.getElement().classList.toggle('no-heading', heading == null)
+      marks.avatar.setLngLat(lngLat)
     }
-    const beacon = layers.beacon?.getElement()
+    const beacon = marks.label?.getElement()
     if (beacon) {
       const near = position && destination && distanceMeters(position, destination) < BEACON_LABEL_WITHIN
       beacon.classList.toggle('is-visible', Boolean(near || arrived))
@@ -224,42 +304,49 @@ export default function GameMap({
     live.current.updatePointer?.()
   }, [position, heading, destination, arrived, ready])
 
-  // Follow mode camera
+  // Follow mode camera: behind the player, looking where they look
   useEffect(() => {
-    const map = mapRef.current
-    if (!map || !ready || !following || !position) {
+    const gl = glRef.current
+    if (!gl || !ready || !following || !position) {
       wasFollowingRef.current = following && wasFollowingRef.current
       return
     }
     const entering = !wasFollowingRef.current
     wasFollowingRef.current = true
-    if (entering && map.getZoom() < FOLLOW_ZOOM - 0.5) map.setZoom(FOLLOW_ZOOM, { animate: false }) // pinch-zoom is kept while following
-    map.panTo(followCenter(map, [position.lat, position.lng], overlayRefs), { animate: true, duration: PAN_SECONDS, easeLinearity: 0.4 })
-  }, [position, following, ready, overlayRefs])
+    gl.easeTo({
+      center: [position.lng, position.lat],
+      bearing: heading ?? gl.getBearing(),
+      pitch: FOLLOW_PITCH,
+      padding: followPadding(gl, wrapRef.current, overlayRefs),
+      duration: EASE_MS,
+      ...(entering ? { zoom: FOLLOW_ZOOM } : {}), // pinch-zoom is kept while following
+    })
+  }, [position, heading, following, ready, overlayRefs])
 
   // Small extra markers (hooks)
   useEffect(() => {
-    const map = mapRef.current
-    if (!map || !ready || !markers?.length) return
-    const added = markers.map((m) =>
-      L.marker([m.lat, m.lng], { icon: divIcon(`game-hook-marker${m.done ? ' is-done' : ''}`, '', 16), interactive: false, keyboard: false }).addTo(map),
-    )
+    const gl = glRef.current
+    if (!gl || !ready || !markers?.length) return
+    const added = markers.map((m) => {
+      const el = document.createElement('div')
+      el.className = `game-hook-marker${m.done ? ' is-done' : ''}`
+      return new maplibregl.Marker({ element: el }).setLngLat([m.lng, m.lat]).addTo(gl)
+    })
     return () => added.forEach((marker) => marker.remove())
   }, [markers, ready])
 
-  // Trail
+  // Trail (dashed when it's only a straight line because BRouter failed)
   useEffect(() => {
-    const route = layersRef.current.route
-    if (!route || !ready) return
-    route.setLatLngs(trail ?? [])
-    route.getElement()?.classList.toggle('is-straight', trailIsStraight)
+    const gl = glRef.current
+    if (!gl || !ready || !gl.getSource('route')) return
+    gl.getSource('route').setData(trail ? lineData(trail) : empty)
+    gl.setPaintProperty('route', 'line-dasharray', trailIsStraight ? [0.2, 2] : undefined)
   }, [ready, trail, trailIsStraight])
 
   return (
     <>
       <div ref={wrapRef} className="nav-map">
         <div ref={elRef} className="nav-map-canvas" role="region" aria-label={destination ? `Map to ${destination.name}` : 'Map'} />
-        <div className="nav-map-fog" aria-hidden="true" />
       </div>
       <div ref={pointerRef} className="game-pointer" hidden aria-hidden="true">
         <span className="game-pointer-arrow">
@@ -269,7 +356,7 @@ export default function GameMap({
         </span>
         <span className="game-pointer-distance" />
       </div>
-      {mapProblem && <div className="nav-map-problem">The map couldn’t load. Check your internet connection.</div>}
+      {mapProblem && !ready && <div className="nav-map-problem">The map couldn’t load. Check your internet connection.</div>}
     </>
   )
 }

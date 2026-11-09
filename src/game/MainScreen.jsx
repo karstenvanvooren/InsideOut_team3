@@ -6,7 +6,7 @@
 //   navigating        → no pop-up: route + banner + info strip ("?" re-opens the solved riddle)
 //   atLocation        → arrived pop-up (what the challenge is) → "Start challenge" → full-screen challenge
 //   fragmentUnlocked  → fragment pop-up → "Continue" → challenge 2 here, or the riddle for the next location
-//   finale            → finale placeholder pop-up
+//   finale            → the finale screen: the artwork completes itself, the reveal, the collection
 import { lazy, Suspense, useEffect, useState } from 'react'
 import BottomSheet from '../components/ui/BottomSheet.jsx'
 import onboarding from '../data/onboarding.json'
@@ -15,7 +15,8 @@ import { getLocations, getStart, isLastLocation } from '../lib/story.js'
 import { patterns, vibrate } from '../lib/vibrate.js'
 import { useGame } from './GameProvider.jsx'
 import Challenge from './challenges/index.jsx'
-import { ArrivedPopup, FinalePopup, FragmentPopup } from './popups/LocationPopups.jsx'
+import { ArrivedPopup, FragmentPopup } from './popups/LocationPopups.jsx'
+import FinaleScreen from './screens/FinaleScreen.jsx'
 import RiddlePopup, { SolvedRiddle } from './popups/RiddlePopup.jsx'
 import Steps from './popups/Steps.jsx'
 import { useHookMarkers } from './screens/useHookMarkers.js'
@@ -37,7 +38,7 @@ const popupFor = {
   navigating: null,
   atLocation: 'challenge',
   fragmentUnlocked: 'fragment',
-  finale: 'finale',
+  finale: null, // its own screen (FinaleScreen)
 }
 
 export default function MainScreen() {
@@ -158,9 +159,7 @@ export default function MainScreen() {
         />
       </BottomSheet>
 
-      <BottomSheet open={isOpen('finale')} dim label="Finale">
-        <FinalePopup />
-      </BottomSheet>
+      {phase === 'finale' && <FinaleScreen key={phaseSince} />}
 
       {minimised && popup && (
         <button type="button" className="popup-pill" onClick={() => setMinimised(false)}>

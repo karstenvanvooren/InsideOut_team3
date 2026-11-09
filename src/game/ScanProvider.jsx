@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import QrScanner, { hookIdFromText } from '../components/QrScanner.jsx'
 import { HookThumb } from '../components/ui/HookThumb.jsx'
 import { Icon } from '../components/ui/icons.jsx'
-import Toast from '../components/ui/Toast.jsx'
+import BottomSheet from '../components/ui/BottomSheet.jsx'
 import { vibrate, patterns } from '../lib/vibrate.js'
 import { useGame } from './GameProvider.jsx'
 import { resolveScan } from './scans.js'
@@ -88,13 +88,26 @@ export function ScanProvider({ children }) {
         />
       )}
 
-      <Toast
-        open={result?.kind === 'hook-collected'}
-        onClose={() => setResult(null)}
-        thumbnail={<HookThumb />}
-        title="Hook collected!"
-        subtitle={`Hooks ${hooksCollected}/${hooksTotal} · saved in your collection`}
-      />
+      {/* A hook is a chapter of her story: read it right away (and later in the collection) */}
+      <BottomSheet open={result?.kind === 'hook-collected'} dim label="Hook collected" className="hook-story">
+        {result?.hook && (
+          <>
+            <span className="hook-story-thumb" aria-hidden="true">
+              <HookThumb />
+            </span>
+            <p className="eyebrow">
+              Hook {hooksCollected}/{hooksTotal}
+              {result.hook.content?.chapter ? ` · chapter ${result.hook.content.chapter}` : ''}
+            </p>
+            <h2 className="sheet-title">{result.hook.content?.title ?? 'Hook collected!'}</h2>
+            {result.hook.content?.text && <p className="hook-story-text">{result.hook.content.text}</p>}
+            <button type="button" className="btn btn-block" onClick={() => setResult(null)}>
+              Keep walking
+            </button>
+            <p className="permissions-note">Saved in your collection.</p>
+          </>
+        )}
+      </BottomSheet>
 
       {result?.kind === 'message' && (
         <div className={`scan-result ${theme}`} role="alertdialog" aria-modal="true" aria-label={result.title}>

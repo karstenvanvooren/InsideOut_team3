@@ -12,6 +12,7 @@ import { getStart, meta } from '../../lib/story.js'
 import { usePosition } from '../../lib/usePosition.js'
 import { patterns, vibrate } from '../../lib/vibrate.js'
 import { useScanner } from '../ScanProvider.jsx'
+import PermissionsPopup, { permissionsSeen } from '../popups/PermissionsPopup.jsx'
 
 const otherLocationProblems = {
   insecure: 'Location only works on a secure (https) page.',
@@ -54,6 +55,7 @@ export default function LockedScreen() {
   const [locationAllowed, allowLocation] = useLocationAccess()
   const { position, error, retry } = usePosition({ enabled: locationAllowed })
   const [shaking, setShaking] = useState(false)
+  const [askPermissions, setAskPermissions] = useState(() => !permissionsSeen())
   const start = getStart()
 
   const check = position ? checkAtLocation(start, position) : null
@@ -102,6 +104,7 @@ export default function LockedScreen() {
   }
 
   return (
+    <>
     <div className="locked-screen theme-dark">
       {/* Logo for now (Figma style guide: Logo). public/brand/sfumato-logo.png */}
       <img className="locked-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="520" height="465" />
@@ -141,5 +144,13 @@ export default function LockedScreen() {
         </button>
       </div>
     </div>
+    <PermissionsPopup
+      open={askPermissions}
+      onDone={(locationGranted) => {
+        setAskPermissions(false)
+        if (locationGranted) allowLocation()
+      }}
+    />
+    </>
   )
 }

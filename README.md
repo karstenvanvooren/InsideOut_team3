@@ -322,11 +322,10 @@ The QR codes are **not** part of the website. They only contain its address. So 
 
 ## 9. What's still placeholder
 
-- **Story content** in `story.json` and `onboarding.json`: route 1 (Stadsfeestzaal → Sint-Carolus Borromeuskerk → Plantin-Moretus → MoMu → Bourla → Maagdenhuis → KMSKA), its coordinates and the **riddles** are real; challenges, hooks, fragments and intro texts are still marked "TODO" / placeholder.
-- **Hooks**: 2 placeholder hooks per leg, on the straight line between two places (some are inside buildings). Their `content` isn't decided yet.
-- **Challenges**: one "Solve challenge" button per location.
-- **Finale**: phase `finale` is a placeholder screen. The old museum test (simulated artwork scan + share card) is parked in `src/parked/finale/`.
-- **Media**: `public/fragments/photo-01.svg`, `artwork.svg`, `memo-01.wav` (a beep, not a voice).
+- **Story content** in `story.json` and `onboarding.json`: route 1 (Stadsfeestzaal → Sint-Carolus Borromeuskerk → Plantin-Moretus → MoMu → Bourla → Maagdenhuis → KMSKA), its coordinates and the **riddles** are real; some challenge options and the intro texts are still marked "TODO".
+- **Hooks**: 2 per leg, each one chapter (1–12) of Louise Bourgeois' story, told without her name before the MoMu or the artwork before the KMSKA. Their positions are still on the straight line between two places (some are inside buildings).
+- **Fragments + finale picture**: torn fabric pieces, 6 real (`"real": true`) and 6 fake, cut from a **stand-in page** in the style of *Ode à l'oubli* (`node scripts/generate-fragments.js`). Replace with pieces of our own photo of the artwork and update `"place"` of the real ones (see `finale._todo` in `story.json`).
+- **Finale**: the real pieces fly into the page, the reveal (Louise Bourgeois, *Ode à l'oubli*), the player's numbers and a closing line; the collection then shows real/fake. Texts in `story.json` → `finale`. The old museum test is parked in `src/parked/finale/`.
 - **App icons**: `public/icons/` (simple generated placeholders).
 - **No offline mode** yet (no service worker).
 #   I n s i d e O u t _ t e a m 3 
@@ -354,7 +353,9 @@ Still to do (marked `_todo` in story.json): answer options for the two multiple-
 
 ## Map & routes
 
-- **Leaflet** is the map: view, gestures, route line and markers. The map itself is our own calm vector style (`src/map/mapTheme.js`, OpenFreeMap tiles, no API key) drawn inside Leaflet with `@maplibre/maplibre-gl-leaflet`, so it looks like the original design: street names, buildings, colours per stage. Leaflet keeps north up (no tilt).
+- **Leaflet** is the base map (container, view, credits). Leaflet itself can only show a flat map, so the 3D first-person view (tilted, turning with your heading, buildings) is one Leaflet layer made with `@maplibre/maplibre-gl-leaflet`: our own calm vector style (`src/map/mapTheme.js`, OpenFreeMap tiles, no API key). The route line and markers are drawn in that layer; when the camera stops, Leaflet's view is synced to it.
 - **Optional mystery blur:** `--map-blur` in `src/styles/tokens.css` (now 0 = sharp). Route, player, beacon and the edge arrow always stay sharp.
 - **BRouter** (`https://brouter.de/brouter`, profile in `src/config.js` → `routeProfile`, default `hiking-mountain`, backup `shortest`) gives the walking route. The turn banner ("in 190 m · Turn left") is worked out from the shape of that route (`stepsFromLine` in `src/lib/navigation.js`). If BRouter can't be reached, a dashed straight line to the destination is shown.
-- All pop-ups are centered cards (like the fragment pop-up); they move up when the phone keyboard opens.
+- All pop-ups are centered cards on one fixed baseline. The phone keyboard slides over the app: the bottom nav and pop-ups don't move (`src/lib/appHeight.js` keeps the screen height in `--app-h`).
+- **Riddle answers** are forgiving (`src/lib/answers.js`): capitals, accents, dashes, spaces and small words don't matter, and a small typo is fine (1 for names of 5–9 letters, 2 for longer ones; shorter names must be exact). Extra spellings are in each riddle's `answers`.
+- **Permissions**: on the first start a pop-up asks for location, camera (and compass on iPhone), `src/game/popups/PermissionsPopup.jsx`.

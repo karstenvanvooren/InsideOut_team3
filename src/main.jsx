@@ -10,6 +10,9 @@ import '@fontsource/inter/700.css'
 import '@fontsource/syne/700.css'
 import './styles/tokens.css'
 import './styles/global.css'
+import { trackAppHeight } from './lib/appHeight.js'
+
+trackAppHeight()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

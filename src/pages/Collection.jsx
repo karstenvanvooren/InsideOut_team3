@@ -8,6 +8,7 @@ import { LockIcon } from '../components/ui/icons.jsx'
 import { useGame } from '../game/GameProvider.jsx'
 import { STARTED_PHASES } from '../game/gameState.js'
 import { fragmentNumber, getFragments, getHooks } from '../lib/story.js'
+import story from '../data/story.json'
 
 function LockedCard() {
   return (
@@ -27,6 +28,14 @@ export default function Collection() {
   const [open, setOpen] = useState(null) // { kind: 'fragment' | 'hook', item }
   const allFragments = getFragments()
   const hooks = getHooks()
+  const finished = phase === 'finale' // after the finale: real or fake is revealed
+  const finale = story.finale ?? {}
+  const verdict = (fragment) =>
+    finished ? (
+      <span className={`collect-card-sub ${fragment.real ? 'is-real' : 'is-fake'}`}>{fragment.real ? 'Real' : 'Fake'}</span>
+    ) : (
+      <span className="collect-card-sub">Real or fake?</span>
+    )
 
   return (
     <div className="page collection">
@@ -49,6 +58,16 @@ export default function Collection() {
         </button>
       </div>
 
+      {tab === 'fragments' && finished && (
+        <button type="button" className="collect-artwork" onClick={() => setOpen({ kind: 'artwork', item: { title: finale.title } })}>
+          <img src={finale.image ?? '/fragments/artwork.svg'} alt="" />
+          <span>
+            <strong>{finale.title}</strong>
+            <span>{finale.subtitle}</span>
+          </span>
+        </button>
+      )}
+
       {tab === 'fragments' ? (
         <ul className="collect-grid">
           {allFragments.map((fragment) =>
@@ -57,7 +76,7 @@ export default function Collection() {
                 <button type="button" className="collect-card" onClick={() => setOpen({ kind: 'fragment', item: fragment })}>
                   <FragmentThumb fragment={fragment} className="collect-card-image" />
                   <span className="collect-card-name">Fragment {fragmentNumber(fragment.id)}</span>
-                  <span className="collect-card-sub">Real or fake?</span>
+                  {verdict(fragment)}
                 </button>
               </li>
             ) : (
@@ -75,7 +94,7 @@ export default function Collection() {
                     <HookThumb />
                   </span>
                   <span className="collect-card-name">{hook.content?.title ?? hook.id}</span>
-                  <span className="collect-card-sub">Hook</span>
+                  <span className="collect-card-sub">Chapter {hook.content?.chapter ?? '–'}</span>
                 </button>
               </li>
             ) : (
@@ -90,15 +109,26 @@ export default function Collection() {
       <BottomSheet open={Boolean(open)} onClose={() => setOpen(null)} label={open?.item.title ?? 'Hook'}>
         {open?.kind === 'fragment' && (
           <div className="stack">
-            <Eyebrow>Fragment {fragmentNumber(open.item.id)} · real or fake?</Eyebrow>
+            <Eyebrow>
+              Fragment {fragmentNumber(open.item.id)} · {finished ? (open.item.real ? 'real' : 'fake') : 'real or fake?'}
+            </Eyebrow>
             <FragmentViewer fragment={open.item} />
+          </div>
+        )}
+        {open?.kind === 'artwork' && (
+          <div className="stack">
+            <Eyebrow>The artwork</Eyebrow>
+            <h2 className="sheet-title">{finale.title}</h2>
+            <img className="collect-artwork-full" src={finale.image ?? '/fragments/artwork.svg'} alt={finale.alt ?? ''} />
+            <p className="muted">{finale.subtitle}</p>
+            {finale.text && <p className="hook-story-text">{finale.text}</p>}
           </div>
         )}
         {open?.kind === 'hook' && (
           <div className="stack">
-            <Eyebrow>Hook</Eyebrow>
+            <Eyebrow>Hook{open.item.content?.chapter ? ` · chapter ${open.item.content.chapter}` : ''}</Eyebrow>
             <h2 className="sheet-title">{open.item.content?.title ?? open.item.id}</h2>
-            {open.item.content?.text && <p className="muted">{open.item.content.text}</p>}
+            {open.item.content?.text && <p className="hook-story-text">{open.item.content.text}</p>}
           </div>
         )}
       </BottomSheet>

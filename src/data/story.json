@@ -30,7 +30,17 @@
           "sint carolus",
           "carolus borromeus",
           "st charles borromeo",
-          "saint charles borromeo church"
+          "saint charles borromeo church",
+          "sint-carolus-borromeuskerk",
+          "carolus borromeuskerk antwerpen",
+          "carolus borromeus kerk",
+          "borromeus kerk",
+          "sint-carolus borromeus",
+          "carolus",
+          "charles borromeo",
+          "st charles borromeo church",
+          "karel borromeus",
+          "sint-karel-borromeuskerk"
         ],
         "hints": [
           "The ceilings were painted by Rubens.",
@@ -95,7 +105,15 @@
           "museum plantin-moretus",
           "plantin moretus museum",
           "plantin",
-          "moretus"
+          "moretus",
+          "plantin-moretusmuseum",
+          "plantin moretus museum antwerpen",
+          "museum plantin moretus",
+          "plantijn",
+          "plantijn moretus",
+          "plantijn-moretus",
+          "plantin moretus house",
+          "drukkerij plantin"
         ],
         "hints": [
           "The place holds a piece of history on how books used to be made.",
@@ -170,7 +188,14 @@
           "mode museum",
           "fashion museum",
           "momu fashion museum",
-          "modenatie"
+          "modenatie",
+          "mo mu",
+          "modemuseum antwerpen",
+          "mode museum antwerpen",
+          "momu antwerpen",
+          "momu antwerp",
+          "fashion museum antwerp",
+          "momu modemuseum"
         ],
         "hints": [
           "It got a new life in 1990.",
@@ -227,7 +252,13 @@
           "bourla schouwburg",
           "bourla theater",
           "bourla theatre",
-          "bourla theatre antwerp"
+          "bourla theatre antwerp",
+          "de bourla",
+          "bourla schouwburg antwerpen",
+          "theater bourla",
+          "bourlatheater",
+          "toneelhuis",
+          "het toneelhuis"
         ],
         "hints": [
           "To enter the building, you need a ticket.",
@@ -283,7 +314,11 @@
         "answers": [
           "maagdenhuis",
           "museum maagdenhuis",
-          "het maagdenhuis"
+          "het maagdenhuis",
+          "museum het maagdenhuis",
+          "maagdenhuismuseum",
+          "maagdenhuis museum",
+          "maagdenhuis antwerpen"
         ],
         "hints": [
           "It used to be an orphanage.",
@@ -352,7 +387,15 @@
           "koninklijk museum voor schone kunsten",
           "koninklijk museum voor schone kunsten antwerpen",
           "royal museum of fine arts",
-          "royal museum of fine arts antwerp"
+          "royal museum of fine arts antwerp",
+          "km ska",
+          "k.m.s.k.a.",
+          "kmska antwerpen",
+          "museum voor schone kunsten",
+          "museum voor schone kunsten antwerpen",
+          "koninklijk museum",
+          "royal museum",
+          "royal museum of fine arts antwerp kmska"
         ],
         "hints": [
           "The renovation took 11 years.",
@@ -394,7 +437,6 @@
           "question": "Select the fragments that belong to the artwork",
           "text": "Compare your fragments with the artwork in front of you.",
           "reward": "the reveal",
-          "_todo": "Mark the real fragments with \"real\": true in the fragments list. While none is marked, every choice is accepted.",
           "fragments": []
         }
       ]
@@ -409,9 +451,10 @@
       "radius": 30,
       "leg": "start→loc1",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 01",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 1,
+        "title": "A house full of thread",
+        "text": "Paris, Christmas Day 1911. A girl is born into a family that lives among old tapestries. Her parents buy them, repair them and sell them."
       }
     },
     {
@@ -422,9 +465,10 @@
       "radius": 30,
       "leg": "start→loc1",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 02",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 2,
+        "title": "The workshop",
+        "text": "Below the family’s home is a workshop where worn tapestries are mended. When part of a design has faded away, the girl draws it back in."
       }
     },
     {
@@ -435,9 +479,10 @@
       "radius": 30,
       "leg": "loc1→loc2",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 03",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 3,
+        "title": "Her mother’s needle",
+        "text": "Her mother runs the workshop. She is patient and precise, and she repairs what is torn instead of throwing it away. The girl never forgets that."
       }
     },
     {
@@ -448,9 +493,10 @@
       "radius": 30,
       "leg": "loc1→loc2",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 04",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 4,
+        "title": "What nobody says",
+        "text": "An English tutor comes to live with the family. For ten years everyone knows what nobody says: the father is in love with her. The girl keeps quiet, and remembers everything."
       }
     },
     {
@@ -461,9 +507,10 @@
       "radius": 30,
       "leg": "loc2→loc3",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 05",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 5,
+        "title": "Rules that never change",
+        "text": "Looking for order, she studies mathematics at the Sorbonne. Geometry feels safe: its rules never change."
       }
     },
     {
@@ -474,9 +521,10 @@
       "radius": 30,
       "leg": "loc2→loc3",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 06",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 6,
+        "title": "1932",
+        "text": "Her mother dies while she is still a student. She leaves mathematics behind and turns to art. From now on, she wants to make things with her hands."
       }
     },
     {
@@ -487,9 +535,10 @@
       "radius": 30,
       "leg": "loc3→loc4",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 07",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 7,
+        "title": "A new city",
+        "text": "Louise marries an American art historian, and in 1938 they settle in New York. She takes her past with her, and keeps almost everything."
       }
     },
     {
@@ -500,9 +549,10 @@
       "radius": 30,
       "leg": "loc3→loc4",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 08",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 8,
+        "title": "Late, but not too late",
+        "text": "For decades she makes art that few people notice. She keeps going. In 1982, at seventy, the Museum of Modern Art in New York gives her a first retrospective."
       }
     },
     {
@@ -513,9 +563,10 @@
       "radius": 30,
       "leg": "loc4→loc5",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 09",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 9,
+        "title": "Mother spider",
+        "text": "Her best-known animal is a spider, many metres tall. For Louise it stands for her mother: a weaver who repairs, protects and is patient."
       }
     },
     {
@@ -526,9 +577,10 @@
       "radius": 30,
       "leg": "loc4→loc5",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 10",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 10,
+        "title": "The cupboard",
+        "text": "Late in life she opens her cupboards: nightgowns, scarves, table napkins and hand towels from her wedding trousseau, some kept since the 1920s. Then she starts to cut them up."
       }
     },
     {
@@ -539,9 +591,10 @@
       "radius": 30,
       "leg": "loc5→loc6",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 11",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 11,
+        "title": "A book without paper",
+        "text": "From that cloth she sews a book. Every page is fabric: stripes, checks, circles and grids, pieced together with needle and thread."
       }
     },
     {
@@ -552,109 +605,150 @@
       "radius": 30,
       "leg": "loc5→loc6",
       "content": {
-        "type": "placeholder",
-        "title": "Hook 12",
-        "text": "TODO – we haven’t decided yet what a hook gives."
+        "type": "story",
+        "chapter": 12,
+        "title": "The last page",
+        "text": "She once wrote: “I had a flashback of something that never existed.” Her book is closer than you think. You have been carrying its pieces."
       }
     }
   ],
   "fragments": [
     {
       "id": "f01",
-      "type": "text",
-      "title": "Note on a napkin",
-      "content": "Placeholder note.\nIf you're reading this, you noticed. Most people walk past.",
-      "caption": "Found folded under a church bench."
+      "type": "image",
+      "title": "Burgundy stripes",
+      "src": "/fragments/real-1.svg",
+      "caption": "Earned at Sint-Carolus Borromeuskerk.",
+      "real": true,
+      "place": [
+        58,
+        58,
+        244,
+        214
+      ]
     },
     {
       "id": "f07",
-      "type": "document",
-      "title": "Receipt",
-      "content": "Placeholder receipt.\n1x candle — 2 fr.\n1x ??? — paid in full.",
-      "caption": "Placeholder fragment."
+      "type": "image",
+      "title": "Pink circles",
+      "src": "/fragments/fake-1.svg",
+      "caption": "Earned at Sint-Carolus Borromeuskerk."
     },
     {
       "id": "f02",
       "type": "image",
-      "title": "Old photograph",
-      "src": "/fragments/photo-01.svg",
-      "caption": "Placeholder photo. Three windows lit. One is purple.",
-      "meta": {
-        "date": "1987 (?)"
-      }
+      "title": "Burgundy band",
+      "src": "/fragments/fake-2.svg",
+      "caption": "Earned at Plantin-Moretus."
     },
     {
       "id": "f08",
-      "type": "text",
-      "title": "Margin note",
-      "content": "Placeholder note.\nPage 214. Underlined twice.",
-      "caption": "Placeholder fragment."
+      "type": "image",
+      "title": "Pink check",
+      "src": "/fragments/real-2.svg",
+      "caption": "Earned at Plantin-Moretus.",
+      "real": true,
+      "place": [
+        328,
+        108,
+        224,
+        224
+      ]
     },
     {
       "id": "f03",
-      "type": "document",
-      "title": "Torn letter",
-      "content": "Dear M.,\n\nPlaceholder letter. I hid it where everyone looks but no one sees. Follow the pages.\n\n— J.",
-      "caption": "The bottom half is missing.",
-      "meta": {
-        "date": "14 March",
-        "from": "J."
-      }
+      "type": "image",
+      "title": "Blue circles",
+      "src": "/fragments/real-3.svg",
+      "caption": "Earned at MoMu.",
+      "real": true,
+      "place": [
+        68,
+        318,
+        224,
+        224
+      ]
     },
     {
       "id": "f09",
       "type": "image",
-      "title": "Fabric swatch",
-      "src": "/fragments/photo-01.svg",
-      "caption": "Placeholder photo."
+      "title": "Blue stripes",
+      "src": "/fragments/fake-3.svg",
+      "caption": "Earned at MoMu."
     },
     {
       "id": "f04",
-      "type": "audio",
-      "title": "Voice memo #1",
-      "src": "/fragments/memo-01.wav",
-      "caption": "Placeholder audio. Replace with a real voice memo.",
-      "meta": {
-        "duration": "0:04"
-      }
+      "type": "image",
+      "title": "Dots and blue weave",
+      "src": "/fragments/fake-4.svg",
+      "caption": "Earned at Bourla."
     },
     {
       "id": "f10",
-      "type": "document",
-      "title": "Theatre ticket",
-      "content": "Placeholder ticket.\nRow F, seat 13. Never used.",
-      "caption": "Placeholder fragment."
+      "type": "image",
+      "title": "Linen grid",
+      "src": "/fragments/real-4.svg",
+      "caption": "Earned at Bourla.",
+      "real": true,
+      "place": [
+        288,
+        368,
+        254,
+        194
+      ]
     },
     {
       "id": "f06",
-      "type": "text",
-      "title": "Name tag",
-      "content": "Placeholder note.\nA name, stitched by hand. The last letter is missing.",
-      "caption": "Placeholder fragment."
+      "type": "image",
+      "title": "Dark band with stitches",
+      "src": "/fragments/real-5.svg",
+      "caption": "Earned at Maagdenhuis.",
+      "real": true,
+      "place": [
+        48,
+        548,
+        324,
+        154
+      ]
     },
     {
       "id": "f11",
-      "type": "text",
-      "title": "Visitor log",
-      "content": "Placeholder note.\nOne name appears twice, on the same day.",
-      "caption": "Placeholder fragment."
+      "type": "image",
+      "title": "Green check",
+      "src": "/fragments/fake-5.svg",
+      "caption": "Earned at Maagdenhuis."
     },
     {
       "id": "f05",
       "type": "image",
-      "title": "The last page",
-      "src": "/fragments/artwork.svg",
-      "caption": "Placeholder artwork.",
-      "meta": {
-        "location": "KMSKA (placeholder)"
-      }
+      "title": "Dots and weave",
+      "src": "/fragments/real-6.svg",
+      "caption": "Hidden in the KMSKA.",
+      "real": true,
+      "place": [
+        238,
+        638,
+        324,
+        144
+      ]
     },
     {
       "id": "f12",
-      "type": "text",
-      "title": "Museum label",
-      "content": "Placeholder note.\nThe date on this label is wrong.",
-      "caption": "Placeholder fragment."
+      "type": "image",
+      "title": "Pink grid",
+      "src": "/fragments/fake-6.svg",
+      "caption": "Hidden in the KMSKA."
     }
-  ]
+  ],
+  "_fragments_note": "Fragments are torn pieces of cloth. \"real\": true = cut from the artwork (KMSKA). Pictures: scripts/generate-fragments.js. For now a stand-in page in the style of Ode à l'oubli; replace with pieces of our own photo of the artwork.",
+  "_hooks_note": "Hooks tell Louise Bourgeois' story in order (chapter 1–12), without giving away her name before the MoMu challenge or the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
+  "finale": {
+    "image": "/fragments/artwork.svg",
+    "alt": "A page of fabric pieces: stripes, checks, circles and grids, stitched together.",
+    "title": "Louise Bourgeois",
+    "subtitle": "Ode à l’oubli (Ode to forgetting), 2002",
+    "text": "A book without paper. Every page is sewn from cloth she kept for most of her life: nightgowns, scarves, table napkins and hand towels from her wedding trousseau. The girl who grew up in a tapestry workshop mended her memories with needle and thread.",
+    "closing": "She repaired what was torn. Today, piece by piece, so did you.",
+    "_todo": "The picture is a stand-in (scripts/generate-fragments.js). Replace it with our own photo of the artwork, and update \"place\" of the real fragments to where each piece sits on that photo (in a 600 × 800 frame)."
+  }
 }
