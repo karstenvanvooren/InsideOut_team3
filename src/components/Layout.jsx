@@ -2,6 +2,8 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { isDevEnabled, readDevFlagFromUrl, toggleDevEnabled } from '../dev/devSettings.js'
 import BottomNav from '../game/BottomNav.jsx'
+import { useColourStage } from '../game/colourStage.js'
+import { useGame } from '../game/GameProvider.jsx'
 import { ScanProvider } from '../game/ScanProvider.jsx'
 
 const DevPanel = lazy(() => import('../dev/DevPanel.jsx'))
@@ -11,6 +13,8 @@ const DevPanel = lazy(() => import('../dev/DevPanel.jsx'))
 export default function Layout() {
   const { pathname, search, hash } = useLocation()
   const [devEnabled, setDevEnabled] = useState(isDevEnabled)
+  // The colour of the whole app follows the progress (dark → begin → middle → end)
+  useColourStage(useGame())
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -28,7 +32,9 @@ export default function Layout() {
   useEffect(() => {
     let taps = []
     const onDown = (e) => {
-      if (e.clientX > 60 || e.clientY > 60) return
+      // 90×140 px: big enough to reach below the status bar / notch when the game
+      // runs as a home-screen app (there the very top belongs to the phone).
+      if (e.clientX > 90 || e.clientY > 140) return
       const now = Date.now()
       taps = [...taps.filter((t) => now - t < 3000), now]
       if (taps.length >= 5) {

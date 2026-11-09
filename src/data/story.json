@@ -37,14 +37,47 @@
           "Located near the Meir."
         ]
       },
-      "challenge": {
-        "type": "placeholder",
-        "title": "TODO – challenge at Sint-Carolus Borromeuskerk",
-        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
-      },
       "fragments": [
         "f01",
         "f07"
+      ],
+      "challenges": [
+        {
+          "id": "loc1-c1",
+          "type": "choice",
+          "title": "Ask inside",
+          "intro": "Go inside the church and ask someone this question. Then pick the right answer.",
+          "question": "Go inside and ask: which museum can you visit on Wednesday?",
+          "options": [
+            "Option A (to decide)",
+            "Option B (to decide)",
+            "Option C (to decide)",
+            "Option D (to decide)"
+          ],
+          "answer": null,
+          "_todo": "Answer options still to decide. While answer is null, every option counts as correct.",
+          "fragments": [
+            "f01"
+          ]
+        },
+        {
+          "id": "loc1-c2",
+          "type": "choice",
+          "title": "The oldest book",
+          "intro": "Find the library and look for the oldest book.",
+          "question": "What’s the oldest book in the library?",
+          "options": [
+            "Option A (to decide)",
+            "Option B (to decide)",
+            "Option C (to decide)",
+            "Option D (to decide)"
+          ],
+          "answer": null,
+          "_todo": "Answer options still to decide. While answer is null, every option counts as correct.",
+          "fragments": [
+            "f07"
+          ]
+        }
       ]
     },
     {
@@ -69,14 +102,57 @@
           "A family lived there for 300 years."
         ]
       },
-      "challenge": {
-        "type": "placeholder",
-        "title": "TODO – challenge at Plantin-Moretus",
-        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
-      },
       "fragments": [
         "f02",
         "f08"
+      ],
+      "challenges": [
+        {
+          "id": "loc2-c1",
+          "type": "memory",
+          "title": "Memory – easy",
+          "intro": "Turn the cards and find the pairs. One pair is the fragment, the others are things they used in the printing house.",
+          "level": "easy",
+          "pairs": 6,
+          "objects": [
+            "Printing press",
+            "Lead letters",
+            "Ink ball",
+            "Composing stick",
+            "Paper",
+            "Quill",
+            "Punch",
+            "Matrix",
+            "Globe"
+          ],
+          "_todo": "Object names are placeholders: replace them with photos of real objects from the museum.",
+          "fragments": [
+            "f02"
+          ]
+        },
+        {
+          "id": "loc2-c2",
+          "type": "memory",
+          "title": "Memory – hard",
+          "intro": "Same game, more cards. Find all the pairs.",
+          "level": "hard",
+          "pairs": 10,
+          "objects": [
+            "Printing press",
+            "Lead letters",
+            "Ink ball",
+            "Composing stick",
+            "Paper",
+            "Quill",
+            "Punch",
+            "Matrix",
+            "Globe"
+          ],
+          "_todo": "Object names are placeholders: replace them with photos of real objects from the museum.",
+          "fragments": [
+            "f08"
+          ]
+        }
       ]
     },
     {
@@ -101,14 +177,39 @@
           "If you’re looking for fashion, you’re on the right path…"
         ]
       },
-      "challenge": {
-        "type": "placeholder",
-        "title": "TODO – challenge at MoMu",
-        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
-      },
       "fragments": [
         "f03",
         "f09"
+      ],
+      "challenges": [
+        {
+          "id": "loc3-c1",
+          "type": "letters",
+          "title": "Find the word",
+          "intro": "Tap the letters in the right order to spell the name.",
+          "question": "What’s the name of the French artist who worked with fabric?",
+          "answer": "Louise Bourgeois",
+          "fragments": [
+            "f03"
+          ]
+        },
+        {
+          "id": "loc3-c2",
+          "type": "type",
+          "title": "Use the word",
+          "intro": "The name you just found is the key to the next piece.",
+          "question": "Use this word to get the next piece",
+          "hint": "Type the name you just found.",
+          "placeholder": "Type the name…",
+          "answers": [
+            "louise bourgeois",
+            "bourgeois"
+          ],
+          "button": "Unlock",
+          "fragments": [
+            "f09"
+          ]
+        }
       ]
     },
     {
@@ -133,14 +234,41 @@
           "You go there to enjoy some shows."
         ]
       },
-      "challenge": {
-        "type": "placeholder",
-        "title": "TODO – challenge at Bourla",
-        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
-      },
       "fragments": [
         "f04",
         "f10"
+      ],
+      "challenges": [
+        {
+          "id": "loc4-c1",
+          "type": "count",
+          "title": "Count the heads",
+          "intro": "Look closely at the front of the building and count all the heads you can find.",
+          "question": "Count the heads",
+          "text": "Look closely at the building. How many heads can you find?",
+          "answer": 17,
+          "fragments": [
+            "f04"
+          ]
+        },
+        {
+          "id": "loc4-c2",
+          "type": "type",
+          "title": "Name the statue",
+          "intro": "Find the statue near the theatre and work out who it is.",
+          "question": "What’s the name of the man in this statue?",
+          "placeholder": "Type the name…",
+          "answers": [
+            "victor driessens",
+            "driessens",
+            "victor drissens",
+            "drissens"
+          ],
+          "button": "Check",
+          "fragments": [
+            "f10"
+          ]
+        }
       ]
     },
     {
@@ -162,14 +290,52 @@
           "It’s now a museum."
         ]
       },
-      "challenge": {
-        "type": "placeholder",
-        "title": "TODO – challenge at Maagdenhuis",
-        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
-      },
       "fragments": [
         "f06",
         "f11"
+      ],
+      "challenges": [
+        {
+          "id": "loc5-c1",
+          "type": "catch",
+          "title": "Catch the right utensils",
+          "intro": "The girls here learned to sew and make lace. Catch only their tools – move the basket left and right.",
+          "question": "Catch the right utensils",
+          "text": "Only catch the sewing and lace-making tools.",
+          "target": 5,
+          "good": [
+            "Needle",
+            "Thread",
+            "Bobbin",
+            "Scissors",
+            "Thimble",
+            "Pins"
+          ],
+          "bad": [
+            "Fork",
+            "Spoon",
+            "Knife",
+            "Cup",
+            "Plate"
+          ],
+          "fragments": [
+            "f06"
+          ]
+        },
+        {
+          "id": "loc5-c2",
+          "type": "puzzle",
+          "title": "Puzzle the picture",
+          "intro": "Put the picture back together, piece by piece.",
+          "question": "Puzzle the picture together",
+          "text": "Tap a piece, then tap where it goes.",
+          "image": "/challenges/puzzle-placeholder.svg",
+          "size": 3,
+          "_todo": "Picture is a placeholder: choose the real image.",
+          "fragments": [
+            "f11"
+          ]
+        }
       ]
     },
     {
@@ -193,14 +359,44 @@
           "It’s the biggest museum in Antwerp."
         ]
       },
-      "challenge": {
-        "type": "placeholder",
-        "title": "TODO – challenge at KMSKA",
-        "text": "Placeholder: the team designs the real challenge. For now, tap “Solve challenge”."
-      },
       "fragments": [
         "f05",
         "f12"
+      ],
+      "challenges": [
+        {
+          "id": "loc6-c1",
+          "type": "scan",
+          "title": "The hidden fragments",
+          "intro": "The last two fragments are hidden somewhere in the museum. Find them and scan them.",
+          "question": "Find the last two fragments hidden in the museum",
+          "text": "Point your camera at a hidden fragment.",
+          "codes": [
+            {
+              "qrId": "hidden1",
+              "fragment": "f05"
+            },
+            {
+              "qrId": "hidden2",
+              "fragment": "f12"
+            }
+          ],
+          "fragments": [
+            "f05",
+            "f12"
+          ]
+        },
+        {
+          "id": "loc6-c2",
+          "type": "select",
+          "title": "Which fragments are real?",
+          "intro": "Stand in front of the artwork. Compare your fragments with it and pick the ones that belong to it.",
+          "question": "Select the fragments that belong to the artwork",
+          "text": "Compare your fragments with the artwork in front of you.",
+          "reward": "the reveal",
+          "_todo": "Mark the real fragments with \"real\": true in the fragments list. While none is marked, every choice is accepted.",
+          "fragments": []
+        }
       ]
     }
   ],

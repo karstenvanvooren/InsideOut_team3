@@ -4,7 +4,7 @@ A mystery game that turns Antwerp into a book. Players start at the Stadsfeestza
 
 This repo is the **engine**. All story content is placeholder and lives in `src/data/story.json` (places, riddles, challenges, fragments, hooks) and `src/data/onboarding.json` (the intro screens). Game design switches are in `src/config.js`.
 
-Tech: React + Vite, plain JavaScript, plain CSS, MapLibre (OpenFreeMap tiles). No backend, no login. Progress is saved in the browser (localStorage).
+Tech: React + Vite, plain JavaScript, plain CSS, **Leaflet** (map, CARTO/OpenStreetMap tiles without labels) and **BRouter** (walking routes, brouter.de). No backend, no login. Progress is saved in the browser (localStorage).
 
 ## The game
 
@@ -71,7 +71,7 @@ Open the address it prints (usually http://localhost:5173).
 
 You don't have to walk around Antwerp to test. The yellow **DEV** button (it shows the current phase) appears **only** after you open any page with **`?dev=1`**, e.g. `http://localhost:5173/?dev=1` or `https://your-site.netlify.app/?dev=1`, also in `npm run dev`. The device remembers it; `?dev=0` hides it again. Players never see it.
 
-**No URL needed:** tap the **top-left corner of the screen 5 times quickly** (within 3 seconds) to switch dev mode on or off. Works on every screen and every address (localhost, your phone over Wi-Fi, the deployed site). `?dev`, `?dev=true` and `#dev` also work. Dev mode is remembered **per address**, so turn it on again when you open another URL.
+**No URL needed:** tap the **top-left corner of the screen 5 times quickly** (within 3 seconds; anywhere in the top-left 90×140 px, so just below the clock is fine) to switch dev mode on or off. Works on every screen and every address (localhost, your phone over Wi-Fi, the deployed site). `?dev`, `?dev=true` and `#dev` also work. Dev mode is remembered **per address**, so turn it on again when you open another URL. The home-screen app always opens `/` (without `?dev=1`) and has its own storage, so use the 5 taps there.
 
 In the panel:
 
@@ -266,7 +266,7 @@ src/
     ScanProvider.jsx         ← in-app scanner + scan results on top of every screen
     BottomNav.jsx            ← Map · Scan · Collection (from the riddle phase on)
     screens/                 ← LockedScreen, UnlockAnimation
-  map/                       ← the MapLibre game map
+  map/                       ← the Leaflet game map (blurred tiles, stage tint, route, markers)
     GameMap.jsx              ← player, beacon, trail, off-screen pointer, optional hook markers
     mapTheme.js              ← the map style, built from the --map-* design tokens
     useGameScreen.js         ← full-screen plumbing (banner/sheet refs, no page scroll)
@@ -274,7 +274,7 @@ src/
   lib/location.js            ← GPS (or fake location), Haversine, checkAtLocation (far / weak-signal / there)
   lib/usePosition.js         ← live position hook with retry
   lib/answers.js             ← forgiving answer check for riddles
-  lib/route.js               ← walking route with steps (OSRM), straight-line fallback
+  lib/route.js               ← walking route from BRouter (turns worked out from the line), straight-line fallback
   lib/navigation.js          ← turn-by-turn: position on the route, next maneuver, English instructions
   lib/useHeading.js          ← compass (iPhone/Android), dev fake heading, or direction of movement
   lib/storage.js, vibrate.js
@@ -332,3 +332,29 @@ The QR codes are **not** part of the website. They only contain its address. So 
 #   I n s i d e O u t _ t e a m 3 
  
  
+
+## Challenges (2 per location)
+
+Flow per location: riddle → walk → **arrived pop-up** (what the challenge is) → **challenge 1** → fragment → **challenge 2** → fragment → riddle for the next location. At KMSKA the last challenge has no fragment and leads to the finale.
+
+All challenges live in `src/data/story.json` → `locations[].challenges` (type, texts, answers, reward fragments). The screens are in `src/game/challenges/`.
+
+| Location | Challenge 1 | Challenge 2 |
+| --- | --- | --- |
+| Sint-Carolus Borromeuskerk | `choice` – ask inside (answer options still to decide) | `choice` – oldest book (options still to decide) |
+| Plantin-Moretus | `memory` easy (6 pairs) | `memory` hard (10 pairs) |
+| MoMu | `letters` – Louise Bourgeois | `type` – use the word |
+| Bourla | `count` – 17 heads | `type` – Victor Driessens (Drissens also accepted) |
+| Maagdenhuis | `catch` – catch 5 tools | `puzzle` – 3×3 (placeholder picture) |
+| KMSKA | `scan` – 2 hidden QR codes (`hidden1`, `hidden2`) | `select` – pick the real fragments |
+
+Still to do (marked `_todo` in story.json): answer options for the two multiple-choice questions, photos for the memory cards, the puzzle picture, and which fragments are real (`"real": true`). While a multiple-choice `answer` is `null` every option counts; while no fragment is marked real every choice counts.
+
+`npm run qr` now also makes the two hidden KMSKA codes. In dev mode the scan challenge has "Dev: fake scan" buttons, and the dev panel can jump to a location **and** a challenge (1 or 2).
+
+## Map & routes
+
+- **Leaflet** draws the map. Tiles: CARTO Voyager without labels (OpenStreetMap data) — no street names, on purpose.
+- **Mystery blur:** the tiles are blurred and washed in the stage colour. The blur gets weaker per colour stage (`--map-blur` and `--map-tint` in `src/styles/tokens.css`): begin 2.6px → middle 1.6px → end 0.6px. Route, player, beacon and the edge arrow stay sharp.
+- **BRouter** (`https://brouter.de/brouter`, profile in `src/config.js` → `routeProfile`, default `hiking-mountain`, backup `shortest`) gives the walking route. The turn banner ("in 190 m · Turn left") is worked out from the shape of that route (`stepsFromLine` in `src/lib/navigation.js`). If BRouter can't be reached, a dashed straight line to the destination is shown.
+- All pop-ups are centered cards (like the fragment pop-up); they move up when the phone keyboard opens.

@@ -103,6 +103,8 @@ export default function LockedScreen() {
 
   return (
     <div className="locked-screen theme-dark">
+      {/* Logo for now (Figma style guide: Logo). public/brand/sfumato-logo.png */}
+      <img className="locked-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="520" height="465" />
       <div className="locked-hero">
         <div className="locked-glow" aria-hidden="true">
           <span className="locked-glow-burgundy" />

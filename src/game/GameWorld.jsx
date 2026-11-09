@@ -217,6 +217,7 @@ export default function GameWorld({ destination = null, mode = 'free', onArrive,
         position={position}
         heading={effectiveHeading}
         trail={nav && !arrived ? nav.trail : null}
+        trailIsStraight={Boolean(nav?.fallback)}
         arrived={mode === 'arrived' || arrived}
         markers={markers}
         following={following}

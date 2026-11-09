@@ -2,10 +2,15 @@
  * Design tokens (hi-fi "chosen style"). Change the look of the whole app here;
  * components only use these variables, never raw colours.
  *
- * Two modes:
- *   light (default) — everything after the game has started: white, navy text, burgundy actions
- *   .theme-dark     — the start/locked phase: navy background, cream text
- * Components use the semantic tokens (--bg, --text, ...), so they follow the mode they're in.
+ * The app changes colour while you play: it starts dark and mysterious and ends
+ * in the colours of the artwork (Figma: variables "Inside Out · Theme", 4 modes).
+ *   .theme-dark                 — the locked start: navy background, cream text
+ *   :root / html.stage-begin    — locations 1–2: white, navy, burgundy (start palette)
+ *   html.stage-middle           — locations 3–4: warm off-white, olive
+ *   html.stage-end              — locations 5–6 + finale: cream, blue, rose, sage (artwork)
+ * The stage class is set on <html> by useColourStage() (src/game/colourStage.js).
+ * Components only use the semantic tokens (--bg, --text, --primary, ...), so they
+ * follow the stage automatically – and so does the map (src/map/mapTheme.js).
  */
 :root {
   /* ---------- Palette ---------- */
@@ -42,6 +47,8 @@
   --burgundy-15: color-mix(in srgb, var(--burgundy) 15%, transparent);
   --rose-35: color-mix(in srgb, var(--rose) 35%, transparent);
   --sage-35: color-mix(in srgb, var(--sage) 35%, transparent);
+  --white-60: color-mix(in srgb, var(--white) 60%, transparent);
+  --white-80: color-mix(in srgb, var(--white) 80%, transparent);
 
   /* ---------- Semantic (light mode) ---------- */
   --bg: var(--white);
@@ -60,20 +67,25 @@
   --secondary: var(--navy);
   --on-secondary: var(--white);
   --eyebrow: var(--burgundy);
+  --accent-label: var(--olive); /* small labels like "CHALLENGE 1/2", location name in challenges */
+  --reward: color-mix(in srgb, var(--olive) 20%, transparent); /* reward chip */
+  --primary-15: color-mix(in srgb, var(--primary) 15%, transparent); /* halos */
   --danger: var(--burgundy);
   --dim: color-mix(in srgb, var(--navy) 30%, transparent); /* behind pop-ups that need focus (arrived) */
   --dim-strong: var(--navy-45); /* behind the centered fragment card */
   --page-outside: color-mix(in srgb, var(--cream) 45%, var(--white)); /* desktop, around the 430px frame */
 
-  /* Map (read by src/map/mapTheme.js) */
-  --map-land: #f4f2ee;
+  /* Map (Leaflet, see src/map/mapTheme.js and "Game map" in global.css) – begin stage: blurred, cool grey */
+  --map-blur: 2.6px; /* mystery: the map is soft at the start and gets sharper towards the end */
+  --map-tint: #dcdcdc; /* multiplied over the tiles */
+  --map-land: #f2f1ee;
   --map-road: var(--white);
-  --map-road-edge: #e7e3dc;
-  --map-building: var(--cream);
-  --map-park: var(--sage);
-  --map-water: var(--blue);
+  --map-road-edge: #e4e2de;
+  --map-building: #d6d4d0;
+  --map-park: var(--olive);
+  --map-water: var(--navy);
   --map-label: var(--navy);
-  --map-route: var(--burgundy);
+  --map-route: var(--primary);
 
   /* ---------- Type ---------- */
   --font-display: 'Syne', 'Inter', system-ui, sans-serif; /* Bold 700 only */
@@ -119,6 +131,8 @@
   --frame-width: 430px; /* mobile first; centered on desktop */
   --frame-x: max(0px, calc((100vw - var(--frame-width)) / 2));
   --nav-height: 64px;
+  --nav-scan-size: 68px; /* round Scan button in the bottom nav */
+  --nav-scan-lift: 38px; /* how far it sticks out above the bar */
 
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --t-sheet: 230ms;
@@ -144,4 +158,65 @@
   --danger: var(--rose);
   background: var(--bg);
   color: var(--text);
+}
+
+/* ---------- Colour stages (set on <html>, see src/game/colourStage.js) ---------- */
+
+/* Locations 1–2: the start palette (same as :root, written out for clarity) */
+.stage-begin {
+  --bg: var(--white);
+  --primary: var(--burgundy);
+  --eyebrow: var(--burgundy);
+  --danger: var(--burgundy);
+  --accent-label: var(--olive);
+  --reward: color-mix(in srgb, var(--olive) 20%, transparent);
+}
+
+/* Locations 3–4: warming up – off-white, olive, sage */
+.stage-middle {
+  --bg: #faf7f2;
+  --map-blur: 1.6px;
+  --map-tint: #efe3cf;
+  --tint: color-mix(in srgb, var(--cream) 45%, transparent);
+  --tint-strong: var(--cream-60);
+  --primary: var(--olive);
+  --eyebrow: var(--olive);
+  --danger: var(--olive);
+  --accent-label: var(--blue);
+  --reward: color-mix(in srgb, var(--sage) 30%, transparent);
+  --page-outside: color-mix(in srgb, var(--sage) 18%, var(--white));
+
+  --map-land: #f4f1ea;
+  --map-road: var(--white);
+  --map-road-edge: #e9e3d8;
+  --map-building: var(--cream);
+  --map-park: var(--sage);
+  --map-water: var(--blue);
+}
+
+/* Locations 5–6 and the finale: the colours of the artwork */
+.stage-end {
+  --bg: #efe9e0;
+  --map-blur: 0.6px;
+  --map-tint: #ead1cb;
+  --text-muted: color-mix(in srgb, var(--navy) 65%, transparent);
+  --text-faint: var(--navy-50);
+  --divider: var(--navy-10);
+  --border: color-mix(in srgb, var(--navy) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--navy) 18%, transparent);
+  --tint: var(--white-60);
+  --tint-strong: var(--white-80);
+  --primary: var(--blue);
+  --eyebrow: var(--blue);
+  --danger: var(--blue);
+  --accent-label: var(--blue);
+  --reward: color-mix(in srgb, var(--rose) 45%, transparent);
+  --page-outside: color-mix(in srgb, var(--rose) 25%, var(--cream));
+
+  --map-land: #ece4d8;
+  --map-road: #f8f4ee;
+  --map-road-edge: #e0d4c3;
+  --map-building: var(--rose);
+  --map-park: var(--sage);
+  --map-water: var(--blue);
 }

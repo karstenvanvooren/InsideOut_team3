@@ -13,6 +13,24 @@
 html {
   -webkit-text-size-adjust: 100%;
   background: var(--page-outside);
+  transition: background-color 600ms ease;
+}
+
+/*
+ * On a phone the page itself must have the screen colour: iOS Safari shows the
+ * page under fixed elements (the strip below the bottom nav where its toolbar
+ * hides). Otherwise the nav looks like it floats above a different colour.
+ */
+@media (max-width: 480px) {
+  html,
+  body {
+    background: var(--bg);
+  }
+
+  html.is-locked,
+  html.is-locked body {
+    background: var(--navy);
+  }
 }
 
 body {
@@ -144,7 +162,7 @@ button {
 }
 
 .eyebrow-blue {
-  color: var(--blue);
+  color: var(--accent-label);
 }
 
 .btn {
@@ -226,14 +244,14 @@ button {
 }
 
 .chip-reward {
-  background: var(--rose-35);
-  color: var(--navy);
+  background: var(--reward);
+  color: var(--text);
 }
 
 .chip-counter {
   height: 28px;
-  background: var(--navy);
-  color: var(--white);
+  background: var(--secondary);
+  color: var(--on-secondary);
 }
 
 .chip-row {
@@ -325,7 +343,7 @@ button {
   border-radius: 50%;
   background: var(--primary);
   color: var(--on-primary);
-  box-shadow: 0 0 0 10px var(--burgundy-15);
+  box-shadow: 0 0 0 10px var(--primary-15);
   animation: pop 500ms cubic-bezier(0.2, 1.6, 0.4, 1);
 }
 
@@ -347,7 +365,7 @@ button {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 var(--burgundy-15);
+    box-shadow: 0 0 0 0 var(--primary-15);
     transform: scale(0.9);
   }
   70% {
@@ -404,8 +422,8 @@ body.has-game-nav .sheet-layer {
   overscroll-behavior: contain;
   padding: var(--space-3) var(--side) var(--space-5);
   border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   box-shadow: var(--shadow-sheet);
   pointer-events: auto;
   animation: sheet-up var(--t-sheet) var(--ease-out);
@@ -435,7 +453,7 @@ body:not(.has-game-nav) .sheet {
   border: 0;
   border-radius: 50%;
   background: var(--tint-strong);
-  color: var(--navy);
+  color: var(--text);
   cursor: pointer;
 }
 
@@ -450,11 +468,31 @@ body:not(.has-game-nav) .sheet {
   margin: 0;
 }
 
-/* Centered card (fragment unlocked) */
+/* Centered card: every pop-up in the game (riddle, intro, arrived, fragment, finale, …) */
 .sheet-layer.is-centered {
   display: grid;
   place-items: center;
-  padding: var(--space-4);
+  padding: calc(env(safe-area-inset-top) + var(--space-4)) var(--space-4) var(--space-4);
+}
+
+/* With the nav: stay clear of the round Scan button; with the keyboard open: sit above it */
+body.has-game-nav .sheet-layer.is-centered {
+  bottom: max(calc(var(--nav-height) + env(safe-area-inset-bottom)), var(--keyboard, 0px));
+  padding-bottom: calc(var(--space-4) + var(--nav-scan-lift));
+}
+
+body:not(.has-game-nav) .sheet-layer.is-centered {
+  bottom: var(--keyboard, 0px);
+}
+
+body:not(.has-game-nav) .sheet-layer.is-centered .sheet,
+body.has-game-nav .sheet-layer.is-centered .sheet {
+  padding-bottom: var(--space-5);
+}
+
+.sheet-layer.is-centered .sheet-close {
+  top: var(--space-3);
+  right: var(--space-3);
 }
 
 .sheet-layer.is-centered .sheet {
@@ -532,8 +570,8 @@ body:not(.has-game-nav) .sheet {
   transform: translateX(-50%);
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
@@ -543,14 +581,14 @@ body:not(.has-game-nav) .sheet {
 }
 
 body.has-game-nav .popup-pill {
-  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 92px);
+  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + var(--nav-scan-lift) + 92px);
 }
 
 .popup-pill-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--burgundy);
+  background: var(--primary);
   animation: pulse 1.6s ease-out infinite;
 }
 
@@ -589,8 +627,8 @@ body.has-game-nav .popup-pill {
   z-index: 26; /* a full screen: above the bottom nav */
   display: flex;
   flex-direction: column;
-  background: var(--white);
-  color: var(--navy);
+  background: var(--bg);
+  color: var(--text);
   animation: fade-in var(--t-sheet) ease-out;
 }
 
@@ -630,15 +668,15 @@ body.has-game-nav .popup-pill {
   padding: var(--space-4);
   border: 1px solid var(--border);
   border-radius: var(--radius-option);
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   text-align: left;
   font-size: var(--fs-body-lg);
   cursor: pointer;
 }
 
 .option-card[aria-pressed='true'] {
-  border: 3px solid var(--navy);
+  border: 3px solid var(--secondary);
   padding: calc(var(--space-4) - 2px);
 }
 
@@ -657,7 +695,7 @@ body.has-game-nav .popup-pill {
 }
 
 .select-tile[aria-pressed='true'] {
-  border-color: var(--burgundy);
+  border-color: var(--primary);
 }
 
 .select-tile-check {
@@ -669,8 +707,8 @@ body.has-game-nav .popup-pill {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--burgundy);
-  color: var(--white);
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 /* ---------- Fragment unlocked ---------- */
@@ -882,8 +920,8 @@ body.has-game-nav .popup-pill {
 }
 
 .tab[aria-selected='true'] {
-  background: var(--navy);
-  color: var(--white);
+  background: var(--secondary);
+  color: var(--on-secondary);
 }
 
 .collect-grid {
@@ -904,8 +942,8 @@ body.has-game-nav .popup-pill {
   padding: var(--space-2) var(--space-2) 14px;
   border: 0;
   border-radius: var(--radius-card);
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   text-align: left;
   box-shadow: var(--shadow-card);
   cursor: pointer;
@@ -1001,15 +1039,15 @@ body:not(.has-game-nav) .page-fade {
   gap: 14px;
   padding: var(--space-4);
   border-radius: var(--radius-card-lg);
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   box-shadow: var(--shadow-card);
   cursor: pointer;
   animation: toast-in 240ms var(--ease-out);
 }
 
 body.has-game-nav .toast {
-  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + var(--space-4));
+  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + var(--nav-scan-lift) + var(--space-3));
 }
 
 .toast.is-closing {
@@ -1059,8 +1097,20 @@ body.has-game-nav .toast {
   grid-template-columns: repeat(3, 1fr);
   height: calc(var(--nav-height) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
-  border-top: 1px solid var(--navy-8);
-  background: var(--white);
+  border-top: 1px solid var(--divider);
+  background: var(--bg);
+  transition: background-color 600ms ease;
+}
+
+/* The nav's colour continues below the screen edge (iOS toolbar area, overscroll) */
+.game-nav::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: inherit;
 }
 
 .game-nav-item {
@@ -1080,13 +1130,58 @@ body.has-game-nav .toast {
 }
 
 .game-nav-item.active {
-  color: var(--burgundy);
+  color: var(--primary);
   font-weight: 600;
 }
 
 .game-nav-icon-wrap {
   position: relative;
   display: inline-flex;
+}
+
+/* Scan: big round button in the middle that sticks out above the bar (mid-fi) */
+.game-nav-scan {
+  position: relative;
+  padding-top: calc(var(--space-2) + 26px); /* label on the same line as Map / Collection, under the button */
+  color: var(--navy-70);
+  font-weight: 600;
+}
+
+.game-nav-scan-btn {
+  position: absolute;
+  top: calc(-1 * var(--nav-scan-lift));
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nav-scan-size);
+  height: var(--nav-scan-size);
+  border: 5px solid var(--white);
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: 0 6px 18px rgba(75, 30, 35, 0.35);
+  transform: translateX(-50%);
+  transition: transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out);
+}
+
+.game-nav-scan:active .game-nav-scan-btn {
+  transform: translateX(-50%) scale(0.94);
+  box-shadow: 0 3px 10px rgba(75, 30, 35, 0.3);
+}
+
+.game-nav-scan:focus-visible {
+  outline: none;
+}
+
+.game-nav-scan:focus-visible .game-nav-scan-btn {
+  outline: 3px solid var(--navy-30);
+  outline-offset: 2px;
+}
+
+/* Things that sit on top of the nav keep clear of the round Scan button */
+body.has-game-nav .sheet {
+  padding-bottom: calc(var(--space-5) + var(--nav-scan-lift));
 }
 
 .game-nav-badge {
@@ -1097,13 +1192,13 @@ body.has-game-nav .toast {
   height: 16px;
   padding: 0 4px;
   border-radius: var(--radius-pill);
-  background: var(--burgundy);
-  color: var(--white);
+  background: var(--primary);
+  color: var(--on-primary);
   font-size: 10px;
   font-weight: 700;
   line-height: 16px;
   text-align: center;
-  box-shadow: 0 0 0 2px var(--white);
+  box-shadow: 0 0 0 2px var(--bg);
 }
 
 /* Screens make room for the nav */
@@ -1146,11 +1241,80 @@ body.game-fullscreen {
 .nav-map {
   position: absolute;
   inset: 0;
+  z-index: 0;
+  isolation: isolate; /* Leaflet's own z-indexes (400–1000) stay inside the map, below the banner and pop-ups */
 }
 
 .nav-map-canvas {
   width: 100%;
   height: 100%;
+}
+
+/* ---------- Game map (Leaflet) ---------- */
+
+.nav-map-canvas.leaflet-container {
+  background: var(--map-land);
+  font-family: var(--font-body);
+  transition: background-color 600ms ease;
+}
+
+/* Mystery: the map tiles are blurred (less and less per stage, see --map-blur) */
+.leaflet-pane.game-tiles-pane {
+  z-index: 200;
+  filter: blur(var(--map-blur)) saturate(0.75);
+  transition: filter 900ms ease;
+}
+
+/* Colour wash of the current stage over the tiles; route and markers stay sharp above it */
+.leaflet-pane.game-tint-pane {
+  z-index: 250;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.game-map-tint {
+  fill: var(--map-tint);
+  fill-opacity: 1;
+  transition: fill 900ms ease;
+}
+
+.game-route {
+  stroke: var(--map-route);
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: stroke 600ms ease;
+}
+
+.game-route.is-straight {
+  stroke-dasharray: 2 12;
+}
+
+/* Soft fog at the edges of the screen */
+.nav-map-fog {
+  position: absolute;
+  inset: 0;
+  z-index: 450;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 70% at 50% 55%, transparent 55%, color-mix(in srgb, var(--bg) 65%, transparent) 100%);
+  transition: background 900ms ease;
+}
+
+/* Leaflet wraps our markers in its own div: no white box, no default size rules */
+.game-leaflet-icon {
+  background: none;
+  border: 0;
+}
+
+.leaflet-container .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--bg) 75%, transparent);
+  color: var(--text-faint);
+  font-size: 10px;
+}
+
+.leaflet-container .leaflet-control-attribution a {
+  color: var(--text-muted);
 }
 
 .nav-map-problem {
@@ -1160,7 +1324,7 @@ body.game-fullscreen {
   right: var(--side);
   padding: var(--space-4);
   border-radius: var(--radius-card);
-  background: var(--white);
+  background: var(--surface);
   box-shadow: var(--shadow-card);
   text-align: center;
 }
@@ -1177,8 +1341,8 @@ body.game-fullscreen {
 .nav-card {
   padding: var(--space-4);
   border-radius: var(--radius-card-lg);
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   box-shadow: var(--shadow-card);
   pointer-events: auto;
 }
@@ -1202,8 +1366,8 @@ body.game-fullscreen {
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: var(--burgundy);
-  color: var(--white);
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .nav-turn-icon svg {
@@ -1257,7 +1421,7 @@ body.game-fullscreen {
   border: 0;
   border-radius: 50%;
   background: var(--cream-50);
-  color: var(--navy);
+  color: var(--text);
   font-size: var(--fs-eyebrow);
   font-weight: 700;
   cursor: pointer;
@@ -1304,8 +1468,8 @@ body:not(.has-game-nav) .nav-floating {
   padding: 0 var(--space-4);
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   font-size: var(--fs-secondary);
   font-weight: 600;
   box-shadow: var(--shadow-card);
@@ -1319,15 +1483,15 @@ body:not(.has-game-nav) .nav-floating {
   height: 48px;
   border: 0;
   border-radius: 50%;
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   box-shadow: var(--shadow-card);
   cursor: pointer;
 }
 
 /* Player: soft halo + faint direction cone on the ground... */
 .game-player {
-  /* no position here: MapLibre makes markers position: absolute */
+  /* no position here: Leaflet makes markers position: absolute */
   width: 86px;
   height: 86px;
   pointer-events: none;
@@ -1349,6 +1513,17 @@ body:not(.has-game-nav) .nav-floating {
 }
 
 /* ...and the navy dot on top */
+.game-player .game-player-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.game-player-cone {
+  transition: transform 300ms ease, opacity 300ms ease;
+}
+
 .game-player-dot {
   width: 26px;
   height: 26px;
@@ -1374,7 +1549,7 @@ body:not(.has-game-nav) .nav-floating {
 
 .game-beacon-halo {
   inset: -12px;
-  background: var(--burgundy-15);
+  background: var(--primary-15);
 }
 
 .game-beacon-marker.is-arrived .game-beacon-halo {
@@ -1395,7 +1570,7 @@ body:not(.has-game-nav) .nav-floating {
 .game-beacon-dot {
   inset: 0;
   border: 4px solid var(--white);
-  background: var(--burgundy);
+  background: var(--primary);
   box-shadow: 0 2px 6px var(--navy-30);
 }
 
@@ -1406,8 +1581,8 @@ body:not(.has-game-nav) .nav-floating {
   padding: 6px var(--space-3);
   transform: translateX(-50%);
   border-radius: var(--radius-pill);
-  background: var(--white);
-  color: var(--navy);
+  background: var(--surface);
+  color: var(--text);
   font-size: var(--fs-secondary);
   font-weight: 600;
   white-space: nowrap;
@@ -1447,7 +1622,7 @@ body:not(.has-game-nav) .nav-floating {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--burgundy);
+  background: var(--primary);
   box-shadow: 0 0 0 3px var(--white), var(--shadow-card);
 }
 
@@ -1483,8 +1658,8 @@ body:not(.has-game-nav) .nav-floating {
 }
 
 /* Map credits stay above anything at the bottom of the map */
-.nav .maplibregl-ctrl-bottom-right,
-.nav .maplibregl-ctrl-bottom-left {
+.nav .leaflet-control-container .leaflet-bottom.leaflet-right,
+.nav .leaflet-control-container .leaflet-bottom.leaflet-left {
   bottom: var(--sheet-height, 0px);
 }
 
@@ -1508,6 +1683,14 @@ body.game-fullscreen .dev-fab {
   overflow: hidden;
   padding: calc(env(safe-area-inset-top) + var(--space-6)) var(--space-6) calc(env(safe-area-inset-bottom) + var(--space-6));
   text-align: center;
+}
+
+.locked-logo {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  width: 108px;
+  height: auto;
 }
 
 .locked-hero {
@@ -1894,6 +2077,105 @@ body.game-fullscreen .dev-fab {
   border-radius: inherit;
   background: var(--primary);
   transition: width 600ms ease;
+}
+
+
+/* ---------- Subtle motion through the game ---------- */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* The colour stage changes softly instead of jumping (begin → middle → end) */
+.app,
+.sheet,
+.challenge-screen,
+.toast,
+.nav-card,
+.chip,
+.btn,
+.tab {
+  transition-property: background-color, color, border-color, box-shadow, transform;
+  transition-duration: 600ms, 600ms, 600ms, 200ms, 120ms;
+  transition-timing-function: ease;
+}
+
+/* Collected count on the nav pops when it goes up */
+.game-nav-badge {
+  animation: pop 360ms cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+/* The round Scan button breathes very softly while a hook could be near */
+.game-nav-scan-btn {
+  animation: scan-breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes scan-breathe {
+  50% {
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 35%, transparent), 0 0 0 7px var(--primary-15);
+  }
+}
+
+/* Fragment unlocked: the pieces are dealt onto the card */
+.fragment-card-thumb {
+  animation: deal-in 560ms cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.fragment-card-thumb + .fragment-card-thumb {
+  animation-delay: 140ms;
+}
+
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px) rotate(-14deg) scale(0.8);
+  }
+}
+
+.fragment-card-title,
+.fragment-card-text {
+  animation: rise-in 420ms 200ms var(--ease-out) both;
+}
+
+/* Collection: cards rise in one after the other */
+.collect-card {
+  animation: rise-in 380ms var(--ease-out) both;
+}
+
+.collect-card:nth-child(2) { animation-delay: 40ms; }
+.collect-card:nth-child(3) { animation-delay: 80ms; }
+.collect-card:nth-child(4) { animation-delay: 120ms; }
+.collect-card:nth-child(5) { animation-delay: 160ms; }
+.collect-card:nth-child(n + 6) { animation-delay: 200ms; }
+
+/* Start screen: the logo floats in, the lock rocks gently while locked */
+.locked-logo {
+  animation: rise-in 700ms var(--ease-out) both;
+}
+
+.locked-screen:not(:has(.is-unlocked)) .locked-lock {
+  animation: lock-rock 4s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes lock-rock {
+  0%, 84%, 100% { transform: rotate(0); }
+  88% { transform: rotate(-4deg); }
+  92% { transform: rotate(3deg); }
+  96% { transform: rotate(-1.5deg); }
+}
+
+/* Riddle / arrived pop-up content rises in after the sheet */
+.sheet .stack > * {
+  animation: rise-in 360ms 80ms var(--ease-out) both;
+}
+
+/* Wrong answer: the whole riddle shakes (already), the feedback slides in */
+.feedback {
+  animation: rise-in 240ms var(--ease-out) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

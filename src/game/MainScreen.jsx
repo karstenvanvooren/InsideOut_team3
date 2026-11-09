@@ -4,8 +4,8 @@
 //   hooksIntro / tutorial / riddleIntro → step pop-ups (can't be closed)
 //   riddle            → riddle pop-up (can be minimised to a pill; no destination on the map yet)
 //   navigating        → no pop-up: route + banner + info strip ("?" re-opens the solved riddle)
-//   atLocation        → arrived pop-up → "Solve challenge" → full-screen challenge
-//   fragmentUnlocked  → fragment pop-up → "Continue" → riddle for the next location
+//   atLocation        → arrived pop-up (what the challenge is) → "Start challenge" → full-screen challenge
+//   fragmentUnlocked  → fragment pop-up → "Continue" → challenge 2 here, or the riddle for the next location
 //   finale            → finale placeholder pop-up
 import { lazy, Suspense, useEffect, useState } from 'react'
 import BottomSheet from '../components/ui/BottomSheet.jsx'
@@ -14,7 +14,8 @@ import { CLOSE_POPUPS_EVENT } from '../dev/devSettings.js'
 import { getLocations, getStart, isLastLocation } from '../lib/story.js'
 import { patterns, vibrate } from '../lib/vibrate.js'
 import { useGame } from './GameProvider.jsx'
-import { ArrivedPopup, ChallengeScreen, FinalePopup, FragmentPopup } from './popups/LocationPopups.jsx'
+import Challenge from './challenges/index.jsx'
+import { ArrivedPopup, FinalePopup, FragmentPopup } from './popups/LocationPopups.jsx'
 import RiddlePopup, { SolvedRiddle } from './popups/RiddlePopup.jsx'
 import Steps from './popups/Steps.jsx'
 import { useHookMarkers } from './screens/useHookMarkers.js'
@@ -41,7 +42,7 @@ const popupFor = {
 
 export default function MainScreen() {
   const game = useGame()
-  const { phase, phaseSince, location, locationIndex, riddle } = game
+  const { phase, phaseSince, location, locationIndex, riddle, challenge, challengeIndex, challengeTotal } = game
   const markers = useHookMarkers()
   const [minimised, setMinimised] = useState(false)
   const [showSolvedRiddle, setShowSolvedRiddle] = useState(false)
@@ -53,7 +54,7 @@ export default function MainScreen() {
     setMinimised(false)
     setShowSolvedRiddle(false)
     setChallengeOpen(false)
-  }, [phase, phaseSince, locationIndex])
+  }, [phase, phaseSince, locationIndex, challengeIndex])
 
   // Dev panel: "Close all pop-ups" (they come back as a pill, or with the next phase)
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function MainScreen() {
   const pillLabel = {
     intro: 'Continue the intro',
     riddle: `Riddle ${locationIndex + 1}/${getLocations().length}`,
-    challenge: 'Challenge',
+    challenge: `Challenge ${challengeIndex + 1}/${challengeTotal}`,
     fragment: 'Fragment unlocked',
     finale: 'Finale',
   }[popup]
@@ -121,26 +122,39 @@ export default function MainScreen() {
       </BottomSheet>
 
       <BottomSheet open={isOpen('challenge') && !challengeOpen} dim label="You’ve arrived">
-        <ArrivedPopup location={location} index={locationIndex} onOpenChallenge={() => setChallengeOpen(true)} />
+        <ArrivedPopup
+          key={`${locationIndex}-${challengeIndex}`}
+          location={location}
+          index={locationIndex}
+          challenge={challenge}
+          number={challengeIndex + 1}
+          total={challengeTotal}
+          onOpenChallenge={() => setChallengeOpen(true)}
+        />
       </BottomSheet>
 
       {challengeOpen && phase === 'atLocation' && (
-        <ChallengeScreen
+        <Challenge
           location={location}
+          challenge={challenge}
+          number={challengeIndex + 1}
+          total={challengeTotal}
           onClose={() => setChallengeOpen(false)}
-          onSolve={() => {
-            vibrate(patterns.unlock)
-            game.completeChallenge()
-          }}
+          onSolve={game.completeChallenge}
         />
       )}
 
-      <BottomSheet open={isOpen('fragment')} dim centered label="Fragment unlocked">
+      <BottomSheet open={isOpen('fragment') && game.lastFragments?.length > 0} dim label="Fragment unlocked">
         <FragmentPopup
-          location={location}
+          fragmentIds={game.lastFragments ?? []}
           found={game.fragments.length}
-          last={isLastLocation(locationIndex)}
-          onContinue={game.nextLocation}
+          nextLabel={
+            challengeIndex + 1 < challengeTotal ? 'Next challenge' : isLastLocation(locationIndex) ? 'To the finale' : 'Next riddle'
+          }
+          onContinue={() => {
+            vibrate(patterns.tap)
+            game.continueAfterFragment()
+          }}
         />
       </BottomSheet>
 

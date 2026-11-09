@@ -134,7 +134,7 @@ export default function DevPanel() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const game = useGame()
-  const { phase, location, locationIndex, fragments, hooksCollected, hooksTotal, completeChallenge, resetGame } = game
+  const { phase, location, locationIndex, challengeIndex, challengeTotal, fragments, hooksCollected, hooksTotal, completeChallenge, resetGame } = game
   const { skipLocationCheck } = useDevOptions()
   const fake = useFakeLocation()
   const real = useRealPosition(open && !fake.enabled)
@@ -146,6 +146,7 @@ export default function DevPanel() {
   const [scanQr, setScanQr] = useState(getStart().qrId)
   const [jumpPhase, setJumpPhase] = useState(phase)
   const [jumpLocation, setJumpLocation] = useState(locationIndex)
+  const [jumpChallenge, setJumpChallenge] = useState(challengeIndex ?? 0)
 
   useEffect(() => {
     setLatInput(String(round(fake.lat)))
@@ -155,7 +156,8 @@ export default function DevPanel() {
   useEffect(() => {
     setJumpPhase(phase)
     setJumpLocation(locationIndex)
-  }, [phase, locationIndex])
+    setJumpChallenge(challengeIndex ?? 0)
+  }, [phase, locationIndex, challengeIndex])
 
   const position = fake.enabled ? { lat: fake.lat, lng: fake.lng, accuracy: fake.accuracy ?? 0 } : real.position
 
@@ -187,7 +189,7 @@ export default function DevPanel() {
 
   const jump = () => {
     stopWalk()
-    devSetPhase(jumpPhase, Number(jumpLocation))
+    devSetPhase(jumpPhase, Number(jumpLocation), Number(jumpChallenge))
     navigate('/')
   }
 
@@ -222,7 +224,7 @@ export default function DevPanel() {
             Phase <strong>{phase}</strong>
           </span>
           <span>
-            {location ? `${location.id} · ${location.name}` : '—'} · leg {legTo(locationIndex)}
+            {location ? `${location.id} · ${location.name}` : '—'} · challenge {(challengeIndex ?? 0) + 1}/{challengeTotal} · leg {legTo(locationIndex)}
           </span>
           <span>To location: {toLocation === null ? '—' : formatDistance(toLocation)}</span>
           <span className={nearestHook && nearestHook.distance <= nearestHook.hook.radius ? 'dev-in' : ''}>
@@ -249,6 +251,13 @@ export default function DevPanel() {
             {getLocations().map((loc, i) => (
               <option key={loc.id} value={i}>
                 {loc.id} · {loc.name}
+              </option>
+            ))}
+          </select>
+          <select className="dev-input" value={jumpChallenge} onChange={(e) => setJumpChallenge(e.target.value)} aria-label="Challenge">
+            {(getLocations()[Number(jumpLocation)]?.challenges ?? []).map((c, i) => (
+              <option key={c.id} value={i}>
+                Challenge {i + 1} · {c.title}
               </option>
             ))}
           </select>

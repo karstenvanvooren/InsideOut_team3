@@ -6,7 +6,8 @@ import { STARTED_PHASES } from './gameState.js'
 import { useScanner } from './ScanProvider.jsx'
 
 /**
- * The game's bottom nav: Map · Scan · Collection (with a counter).
+ * The game's bottom nav (like the mid-fi): Map · big round Scan button in the
+ * middle that sticks out above the bar · Collection (stacked cards + counter).
  * Only once the game has started; hidden on the locked screen and the intros.
  */
 export default function BottomNav() {
@@ -30,16 +31,18 @@ export default function BottomNav() {
         Map
       </NavLink>
 
-      <button type="button" className="game-nav-item" onClick={openScanner} aria-label="Scan a hook">
-        <Icon name="scan" size={22} />
+      <button type="button" className="game-nav-item game-nav-scan" onClick={openScanner} aria-label="Scan a hook">
+        <span className="game-nav-scan-btn">
+          <Icon name="qr" size={26} strokeWidth={2.2} />
+        </span>
         Scan
       </button>
 
       <NavLink to="/collection" className="game-nav-item">
         <span className="game-nav-icon-wrap">
-          <Icon name="collection" size={22} />
+          <Icon name="cards" size={22} />
           {count > 0 && (
-            <span className="game-nav-badge" aria-label={`${count} collected`}>
+            <span key={count} className="game-nav-badge" aria-label={`${count} collected`}>
               {count}
             </span>
           )}

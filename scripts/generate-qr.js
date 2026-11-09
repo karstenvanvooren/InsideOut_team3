@@ -31,6 +31,12 @@ await fs.mkdir(outDir, { recursive: true })
 const codes = [
   { qrId: story.start.qrId, title: `START · ${story.start.name}`, where: story.start },
   ...story.hooks.map((hook) => ({ qrId: hook.qrId, title: `${hook.content?.title ?? hook.id} · ${hook.leg}`, where: hook })),
+  // Fragments hidden inside a museum (scan challenge, e.g. KMSKA): scanned in the challenge screen
+  ...story.locations.flatMap((location) =>
+    (location.challenges ?? []).flatMap((challenge) =>
+      (challenge.codes ?? []).map((code) => ({ qrId: code.qrId, title: `HIDDEN FRAGMENT · ${location.name}`, where: location })),
+    ),
+  ),
 ]
 
 const cards = []

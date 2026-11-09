@@ -1,0 +1,566 @@
+/*
+ * The challenge screens (hi-fi H1–H12). Colours only through tokens, so every
+ * challenge follows the colour stage (begin → middle → end).
+ */
+
+.challenge-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.challenge-head .eyebrow {
+  margin: 0;
+}
+
+.challenge-chips {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.challenge-counter {
+  animation: chip-bump 320ms var(--ease-out);
+}
+
+@keyframes chip-bump {
+  40% {
+    transform: scale(1.12);
+  }
+}
+
+.challenge-text {
+  margin: var(--space-2) 0 0;
+}
+
+.challenge-photo {
+  width: 100%;
+  border-radius: var(--radius-card);
+}
+
+.stack-sm > * + * {
+  margin-top: var(--space-2);
+}
+
+/* Every block in a challenge rises in, one after the other */
+.challenge-screen-body > * {
+  animation: rise-in 380ms var(--ease-out) both;
+}
+
+.challenge-screen-body > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.challenge-screen-body > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.challenge-screen-body > *:nth-child(n + 4) {
+  animation-delay: 180ms;
+}
+
+/* ---------- Success moment ---------- */
+
+.challenge-success {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-4);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(3px);
+  animation: fade-in 200ms ease-out;
+}
+
+.challenge-success-check {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: 0 0 0 12px var(--primary-15);
+  animation: pop 520ms cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+.challenge-success-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-popup-title);
+  font-weight: 700;
+  animation: rise-in 420ms 120ms var(--ease-out) both;
+}
+
+/* ---------- Multiple choice ---------- */
+
+.option-card.option-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.option-radio:active {
+  transform: scale(0.98);
+}
+
+.option-dot {
+  flex: none;
+  box-sizing: border-box;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-strong);
+  border-radius: 50%;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.option-radio[aria-pressed='true'] .option-dot {
+  border-color: var(--secondary);
+  box-shadow: inset 0 0 0 4px var(--surface), inset 0 0 0 10px var(--secondary);
+}
+
+/* ---------- Memory ---------- */
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.memory-grid.memory-hard {
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.memory-hard .memory-card {
+  aspect-ratio: 1 / 1.15;
+}
+
+.memory-hard .memory-front {
+  padding: 3px;
+  font-size: 10px;
+}
+
+.memory-card {
+  aspect-ratio: 1 / 1.05;
+  padding: 0;
+  border: 0;
+  background: none;
+  perspective: 600px;
+  cursor: pointer;
+}
+
+.memory-card-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 380ms var(--ease-out);
+}
+
+.memory-card.is-up .memory-card-inner {
+  transform: rotateY(180deg);
+}
+
+.memory-back,
+.memory-front {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.memory-back {
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--white) 10%, transparent) 2px, transparent 3px) 0 0 / 14px 14px,
+    var(--secondary);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.memory-front {
+  padding: 6px;
+  border: 1px solid var(--border);
+  background: var(--tint-strong);
+  color: var(--text);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  transform: rotateY(180deg);
+}
+
+.memory-fragment {
+  background: repeating-linear-gradient(90deg, var(--rose) 0 9px, var(--cream) 9px 18px);
+  color: var(--navy);
+}
+
+.memory-fragment span {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--navy) 85%, transparent);
+  color: var(--cream);
+}
+
+.memory-card.is-found .memory-front {
+  box-shadow: inset 0 0 0 3px var(--primary);
+  animation: found-pop 420ms var(--ease-out);
+}
+
+@keyframes found-pop {
+  50% {
+    transform: rotateY(180deg) scale(1.08);
+  }
+}
+
+/* ---------- Find the word ---------- */
+
+.letter-slots {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+}
+
+.letter-word {
+  display: flex;
+  gap: 5px;
+}
+
+.letter-slot {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--tint);
+  box-shadow: inset 0 -2px 0 var(--border-strong);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.letter-slot.is-filled {
+  background: var(--secondary);
+  box-shadow: none;
+  color: var(--on-secondary);
+  animation: pop 260ms var(--ease-out);
+}
+
+.letter-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, 56px);
+  justify-content: center;
+  gap: 10px;
+}
+
+.letter-tile {
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 3px 8px rgba(28, 36, 48, 0.08);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 200ms ease;
+}
+
+.letter-tile:active {
+  transform: scale(0.92);
+}
+
+.letter-tile:disabled {
+  opacity: 0.2;
+  box-shadow: none;
+  cursor: default;
+}
+
+/* ---------- Count ---------- */
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding: var(--space-5) 0;
+}
+
+.stepper-btn {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--tint-strong);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.stepper-btn:active {
+  transform: scale(0.9);
+}
+
+.stepper-btn:disabled {
+  opacity: 0.4;
+}
+
+.stepper-plus {
+  background: var(--secondary);
+  color: var(--on-secondary);
+}
+
+.stepper-value {
+  min-width: 2ch;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  animation: pop 200ms var(--ease-out);
+}
+
+/* ---------- Catch ---------- */
+
+.catch-area {
+  position: relative;
+  height: min(52vh, 440px);
+  overflow: hidden;
+  border-radius: var(--radius-card-lg);
+  background: var(--tint);
+  touch-action: none;
+  user-select: none;
+  transition: box-shadow 200ms ease;
+}
+
+.catch-area.flash-good {
+  box-shadow: inset 0 0 0 3px var(--primary);
+}
+
+.catch-area.flash-bad {
+  box-shadow: inset 0 0 0 3px var(--rose);
+}
+
+.catch-item {
+  position: absolute;
+  top: 0;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  color: var(--text);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.catch-basket {
+  position: absolute;
+  bottom: 16px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px 16px 22px 22px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.catch-basket.pop {
+  animation: basket-pop 300ms var(--ease-out);
+}
+
+@keyframes basket-pop {
+  50% {
+    transform: translateX(-50%) scale(1.12);
+  }
+}
+
+.catch-basket.shake {
+  animation: basket-shake 360ms ease;
+}
+
+@keyframes basket-shake {
+  25%,
+  75% {
+    transform: translateX(calc(-50% - 6px));
+  }
+  50% {
+    transform: translateX(calc(-50% + 6px));
+  }
+}
+
+.catch-oops {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--secondary);
+  color: var(--on-secondary);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  transform: translateX(-50%);
+  animation: fade-in 150ms ease-out;
+  pointer-events: none;
+}
+
+/* ---------- Puzzle ---------- */
+
+.puzzle-board {
+  display: grid;
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--tint);
+}
+
+.puzzle-spot {
+  border: 1.5px dashed var(--border-strong);
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+
+.puzzle-spot.is-target {
+  background-color: var(--primary-15);
+}
+
+.puzzle-spot.is-placed {
+  border: 0;
+  cursor: default;
+  animation: pop 260ms var(--ease-out);
+}
+
+.puzzle-tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.puzzle-piece {
+  width: 62px;
+  height: 62px;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: var(--shadow-card);
+  transform: rotate(var(--tilt, 0deg));
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), box-shadow 160ms ease;
+}
+
+.puzzle-piece.is-selected {
+  box-shadow: 0 0 0 3px var(--primary), var(--shadow-card);
+  transform: rotate(0deg) scale(1.1);
+}
+
+/* ---------- Scan the hidden fragments ---------- */
+
+.challenge-scanner {
+  overflow: hidden;
+  border-radius: var(--radius-card-lg);
+}
+
+.found-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.found-dot {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px dashed var(--border-strong);
+  border-radius: 50%;
+  color: var(--text-faint);
+  font-weight: 700;
+}
+
+.found-dot.is-found {
+  border: 0;
+  background: var(--primary);
+  color: var(--on-primary);
+  animation: pop 300ms var(--ease-out);
+}
+
+.dev-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.dev-inline-btn {
+  padding: 6px 12px;
+  border: 1px dashed #b8860b;
+  border-radius: var(--radius-pill);
+  background: #fff8e1;
+  color: #5c4400;
+  font: 600 12px var(--font-mono);
+}
+
+/* ---------- Select the real fragments ---------- */
+
+.select-tile {
+  padding: 0;
+  background: var(--tint);
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), border-color 160ms ease;
+}
+
+.select-tile:active {
+  transform: scale(0.96);
+}
+
+.select-tile-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.select-tile-label {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--navy) 85%, transparent);
+  color: var(--cream);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+
+.select-tile-check {
+  animation: pop 220ms var(--ease-out);
+}
+
+.challenge-card-text {
+  margin: 0 0 var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+}

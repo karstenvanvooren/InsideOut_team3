@@ -1,5 +1,6 @@
-// Turn-by-turn helpers: geometry along a route line, heading maths and
-// English instructions from OSRM steps. No map library in here.
+// Turn-by-turn helpers: geometry along a route line, heading maths, turns worked
+// out from the route's shape (BRouter gives the line, not the turns) and English
+// instructions. No map library in here.
 import { distanceMeters } from './location.js'
 
 const R = 6371000
@@ -89,6 +90,50 @@ export function stepPositions(line, steps) {
     from = bestIndex
     return line.cumulative[bestIndex]
   })
+}
+
+// ---------- Turns from the shape of the line ----------
+
+const TURN_MIN = 35 // degrees: smaller bends are "keep going"
+const LOOK = 12 // m: compare the direction this far before and after a corner (ignores tiny zigzags)
+const MERGE = 18 // m: two corners closer than this are one turn
+
+const modifierFor = (turn) => {
+  const a = Math.abs(turn)
+  const side = turn > 0 ? 'right' : 'left'
+  if (a >= 155) return 'uturn'
+  if (a >= 120) return `sharp ${side}`
+  if (a >= 60) return side
+  return `slight ${side}`
+}
+
+/**
+ * The turns along a route line [[lat, lng], ...]: a "depart" step, one step per
+ * corner sharper than TURN_MIN and an "arrive" step, in the same shape as before
+ * ({ type, modifier, name, bearingAfter, location }).
+ */
+export function stepsFromLine(coords) {
+  const line = measureLine(coords)
+  if (line.points.length < 2) return []
+  const first = pointAlong(line, Math.min(LOOK, line.length))
+  const steps = [{ type: 'depart', name: '', bearingAfter: bearing(line.points[0], first), location: line.points[0] }]
+  let lastAt = -Infinity
+  for (let i = 1; i < line.points.length - 1; i++) {
+    const at = line.cumulative[i]
+    if (at < LOOK || line.length - at < LOOK) continue
+    const before = pointAlong(line, at - LOOK)
+    const after = pointAlong(line, at + LOOK)
+    const turn = ((bearing(line.points[i], after) - bearing(before, line.points[i]) + 540) % 360) - 180
+    if (Math.abs(turn) < TURN_MIN) continue
+    const step = { type: 'turn', modifier: modifierFor(turn), name: '', bearingAfter: bearing(line.points[i], after), location: line.points[i], strength: Math.abs(turn) }
+    if (at - lastAt < MERGE) {
+      // keep the sharper of two corners that are really one turn
+      if (step.strength > steps.at(-1).strength) steps[steps.length - 1] = step
+    } else steps.push(step)
+    lastAt = at
+  }
+  steps.push({ type: 'arrive', name: '', location: line.points.at(-1) })
+  return steps
 }
 
 // ---------- Instructions ----------

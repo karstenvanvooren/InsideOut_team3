@@ -56,6 +56,14 @@ export async function resolveScan(qrId) {
     }
   }
 
+  if (found.kind === 'hidden') {
+    return {
+      kind: 'message',
+      title: 'A hidden fragment!',
+      text: `Scan this one inside the challenge at ${found.item.location.name}.`,
+    }
+  }
+
   const hook = found.item
   if (!STARTED_PHASES.includes(game.phase)) {
     return { kind: 'message', title: 'Not yet', text: 'Start the game at the Stadsfeestzaal first.' }

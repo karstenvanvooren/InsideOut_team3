@@ -1,7 +1,11 @@
 // The game's single source of truth, saved in localStorage so a reload never
-// resets a player mid-game: the phase, which location they're on, the riddle
-// attempts, collected hooks and unlocked fragments.
-import { getLocation, getLocations, isLastLocation } from '../lib/story.js'
+// resets a player mid-game: the phase, which location (and which of its two
+// challenges) they're on, the riddle attempts, collected hooks and fragments.
+//
+// Per location: riddle → navigating → atLocation (challenge 1) → fragmentUnlocked
+//   → atLocation (challenge 2) → fragmentUnlocked → riddle for the next location.
+// The last challenge at KMSKA gives no fragment and goes straight to the finale.
+import { getChallenges, getLocation, getLocations, isLastLocation } from '../lib/story.js'
 import { safeGet, safeRemove, safeSet } from '../lib/storage.js'
 
 const STORAGE_KEY = 'insideout.game.v2'
@@ -28,8 +32,8 @@ const NEXT = {
   riddleIntro: ['riddle'],
   riddle: ['navigating'],
   navigating: ['atLocation'],
-  atLocation: ['fragmentUnlocked'],
-  fragmentUnlocked: ['riddle', 'finale'],
+  atLocation: ['fragmentUnlocked', 'finale'],
+  fragmentUnlocked: ['atLocation', 'riddle', 'finale'],
   finale: [],
 }
 
@@ -43,6 +47,8 @@ const initialGame = () => ({
   phaseSince: null,
   startedAt: null,
   locationIndex: 0, // the location the current riddle / walk / challenge is about
+  challengeIndex: 0, // which challenge at that location (0 or 1)
+  lastFragments: [], // what the last challenge gave (shown in the fragment pop-up)
   riddle: freshRiddle(),
   collectedHooks: {}, // { hook01: collectedAt }
   fragments: [], // fragment ids, in the order they were unlocked
@@ -93,19 +99,39 @@ export const solveRiddle = ({ revealed = false } = {}) =>
 /** Inside the location's radius. */
 export const arriveAtLocation = () => goTo('atLocation')
 
-/** Challenge done: the location's fragments are added to the collection. */
-export function completeChallenge() {
-  const game = loadGame()
-  const location = getLocation(game.locationIndex)
-  const fragments = [...new Set([...game.fragments, ...(location?.fragments ?? [])])]
-  return goTo('fragmentUnlocked', { fragments })
+/** The challenge the player is on right now (or null). */
+export function currentChallenge(game = loadGame()) {
+  return getChallenges(getLocation(game.locationIndex))[game.challengeIndex ?? 0] ?? null
 }
 
-/** After the fragment screen: the riddle for the next location, or the finale after the last one. */
+const hasNextChallenge = (game) => (game.challengeIndex ?? 0) + 1 < getChallenges(getLocation(game.locationIndex)).length
+
+/** Challenge done: its fragment(s) go into the collection. A challenge without fragments (the KMSKA choice) ends the game. */
+export function completeChallenge() {
+  const game = loadGame()
+  if (game.phase !== 'atLocation') return false
+  const reward = currentChallenge(game)?.fragments ?? []
+  if (reward.length === 0) {
+    if (hasNextChallenge(game)) return goTo('fragmentUnlocked', { lastFragments: [] })
+    return goTo('finale', { lastFragments: [] })
+  }
+  const fragments = [...new Set([...game.fragments, ...reward])]
+  return goTo('fragmentUnlocked', { fragments, lastFragments: reward })
+}
+
+/** After the fragment pop-up: the next challenge here, the riddle for the next location, or the finale. */
+export function continueAfterFragment() {
+  const game = loadGame()
+  if (game.phase !== 'fragmentUnlocked') return false
+  if (hasNextChallenge(game)) return goTo('atLocation', { challengeIndex: (game.challengeIndex ?? 0) + 1 })
+  return nextLocation()
+}
+
+/** The riddle for the next location, or the finale after the last one. */
 export function nextLocation() {
   const game = loadGame()
   if (isLastLocation(game.locationIndex)) return goTo('finale')
-  return goTo('riddle', { locationIndex: game.locationIndex + 1, riddle: freshRiddle() })
+  return goTo('riddle', { locationIndex: game.locationIndex + 1, challengeIndex: 0, lastFragments: [], riddle: freshRiddle() })
 }
 
 /** Hooks are collectibles: saved, but the phase never changes. Returns false if already collected. */
@@ -126,18 +152,23 @@ export function resetGame() {
  * Dev panel only ("Skip to phase…"): jumps anywhere, bypassing the rules above.
  * Fragments of the locations before `locationIndex` are filled in, so the collection looks plausible.
  */
-export function devSetPhase(phase, locationIndex = loadGame().locationIndex) {
+export function devSetPhase(phase, locationIndex = loadGame().locationIndex, challengeIndex = 0) {
   if (!PHASES.includes(phase)) return
   const game = loadGame()
-  const done = getLocations().slice(0, locationIndex + (phase === 'fragmentUnlocked' || phase === 'finale' ? 1 : 0))
+  const done = getLocations().slice(0, locationIndex + (phase === 'finale' ? 1 : 0))
+  const here = getChallenges(getLocation(locationIndex))
+  // challenges already finished at this location (fragmentUnlocked = the current one is done too)
+  const doneHere = here.slice(0, challengeIndex + (phase === 'fragmentUnlocked' ? 1 : 0))
   save({
     ...game,
     phase,
     phaseSince: now(),
     startedAt: game.startedAt ?? (phase === 'locked' ? null : now()),
     locationIndex,
+    challengeIndex,
+    lastFragments: phase === 'fragmentUnlocked' ? here[challengeIndex]?.fragments ?? [] : [],
     riddle: freshRiddle(),
-    fragments: [...new Set(done.flatMap((location) => location.fragments))],
+    fragments: [...new Set([...done.flatMap((location) => location.fragments), ...doneHere.flatMap((c) => c.fragments)])],
   })
 }
 

@@ -1,76 +1,41 @@
 import { Link } from 'react-router-dom'
 import { FragmentThumb } from '../../components/FragmentViewer.jsx'
 import { Chip, Eyebrow, PrimaryButton } from '../../components/ui/basics.jsx'
-import { Icon } from '../../components/ui/icons.jsx'
-import { fragmentNumber, getFragments, getLocationFragments, getLocations } from '../../lib/story.js'
+import { fragmentNumber, getFragment, getFragments, getLocations } from '../../lib/story.js'
+import { rewardLabel } from '../challenges/ChallengeFrame.jsx'
 
-const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`
-
-/** The challenge card's labels. One (placeholder) challenge per location for now. */
-function challengeInfo(location) {
-  const challenges = [location.challenge].filter(Boolean)
-  return { number: 1, total: Math.max(1, challenges.length), reward: plural(getLocationFragments(location).length, 'fragment') }
-}
-
-/** Arrived at a location: its name and the challenge. "Solve challenge" opens the challenge screen. */
-export function ArrivedPopup({ location, index, onOpenChallenge }) {
-  const { challenge } = location
-  const info = challengeInfo(location)
+/**
+ * Arrived at a location (or back from the first challenge): what the challenge is
+ * about, its reward, and "Start challenge" to open it full screen.
+ */
+export function ArrivedPopup({ location, index, challenge, number, total, onOpenChallenge }) {
+  if (!challenge) return null
   return (
     <div className="stack">
       <div>
         <Eyebrow>
-          You’ve arrived · Location {index + 1}/{getLocations().length}
+          {number === 1 ? `You’ve arrived · Location ${index + 1}/${getLocations().length}` : `Next challenge · ${location.name}`}
         </Eyebrow>
-        <h2 className="sheet-title">{location.name}</h2>
+        <h2 className="sheet-title">{number === 1 ? location.name : challenge.title}</h2>
       </div>
       <div className="challenge-card">
         <Eyebrow tone="blue">
-          Challenge {info.number}/{info.total}
+          Challenge {number}/{total}
         </Eyebrow>
-        <div className="challenge-card-title">{challenge?.title ?? location.name}</div>
-        <Chip>Reward: {info.reward}</Chip>
+        <div className="challenge-card-title">{challenge.title}</div>
+        {challenge.intro && <p className="challenge-card-text">{challenge.intro}</p>}
+        <Chip>Reward: {rewardLabel(challenge)}</Chip>
       </div>
-      <PrimaryButton onClick={onOpenChallenge}>Solve challenge</PrimaryButton>
+      <PrimaryButton onClick={onOpenChallenge}>Start challenge</PrimaryButton>
     </div>
   )
 }
 
-/** The challenge itself, as a full screen. Placeholder for now: one "Solve challenge" button. */
-export function ChallengeScreen({ location, onClose, onSolve }) {
-  const { challenge } = location
-  const info = challengeInfo(location)
-  return (
-    <div className="challenge-screen" role="dialog" aria-modal="true" aria-label="Challenge">
-      <div className="challenge-screen-top">
-        <button type="button" className="round-btn" onClick={onClose} aria-label="Back to the map">
-          <Icon name="close" size={18} strokeWidth={2.4} />
-        </button>
-      </div>
-      <div className="challenge-screen-body stack">
-        <div>
-          <Eyebrow tone="blue">{location.name}</Eyebrow>
-          <div className="challenge-screen-count">
-            Challenge {info.number}/{info.total}
-          </div>
-        </div>
-        <div className="chip-row">
-          <Chip>Reward: {info.reward}</Chip>
-        </div>
-        <h2 className="challenge-question">{challenge?.title ?? location.name}</h2>
-        {challenge?.text && <p className="muted">{challenge.text}</p>}
-      </div>
-      <div className="challenge-screen-bottom">
-        <PrimaryButton onClick={onSolve}>Solve challenge</PrimaryButton>
-      </div>
-    </div>
-  )
-}
-
-/** What the challenge gave the player. "Continue" → the next riddle (or the finale). */
-export function FragmentPopup({ location, found, last, onContinue }) {
-  const fragments = getLocationFragments(location)
+/** What the challenge gave the player. "Continue" → the next challenge, the next riddle or the finale. */
+export function FragmentPopup({ fragmentIds, found, nextLabel, onContinue }) {
+  const fragments = fragmentIds.map(getFragment).filter(Boolean)
   const numbers = fragments.map((f) => fragmentNumber(f.id))
+  if (!fragments.length) return null
   return (
     <div className="stack center fragment-card">
       <Eyebrow>{fragments.length === 1 ? 'Fragment unlocked' : `${fragments.length} fragments unlocked`}</Eyebrow>
@@ -90,7 +55,7 @@ export function FragmentPopup({ location, found, last, onContinue }) {
           Fragments {found}/{getFragments().length}
         </Chip>
       </div>
-      <PrimaryButton onClick={onContinue}>{last ? 'To the finale' : 'Continue'}</PrimaryButton>
+      <PrimaryButton onClick={onContinue}>{nextLabel}</PrimaryButton>
     </div>
   )
 }

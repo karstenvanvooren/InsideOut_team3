@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { getHooks, getLocation } from '../lib/story.js'
+import { getChallenges, getHooks, getLocation } from '../lib/story.js'
 import {
   arriveAtLocation,
   collectHook,
   completeChallenge,
+  continueAfterFragment,
+  currentChallenge,
   finishIntro,
   loadGame,
   nextLocation,
@@ -27,6 +29,8 @@ export function GameProvider({ children }) {
     return {
       ...game,
       location: getLocation(game.locationIndex),
+      challenge: currentChallenge(game),
+      challengeTotal: getChallenges(getLocation(game.locationIndex)).length,
       hooksCollected,
       hooksTotal: getHooks().length,
       hasCollection: hooksCollected + game.fragments.length > 0,
@@ -37,6 +41,7 @@ export function GameProvider({ children }) {
       solveRiddle,
       arriveAtLocation,
       completeChallenge,
+      continueAfterFragment,
       nextLocation,
       collectHook,
       resetGame,
