@@ -1066,3 +1066,190 @@ html.is-typing .chat-bar {
 .ode-frame .sew-cloth {
   width: 100%;
 }
+
+/* ==========================================================================
+   Your stash (Collection.jsx): loose pieces taped into a scrapbook; tap → flip
+   ========================================================================== */
+
+.collection .stash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px 18px;
+  margin: 0 calc(var(--side) * -1);
+  padding: 34px var(--side) calc(var(--space-6) + var(--nav-scan-lift));
+  list-style: none;
+  background: var(--tint);
+}
+
+.stash-item {
+  height: 160px;
+  perspective: 900px;
+  rotate: var(--tilt, -3deg);
+  animation: drop-in 520ms var(--ease-pop) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.stash-item.is-tall {
+  height: 196px;
+}
+
+.stash-flip {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stash-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 560ms var(--ease-pop);
+}
+
+.stash-flip.is-flipped .stash-inner {
+  transform: rotateY(180deg);
+}
+
+.stash-flip:active .stash-inner {
+  scale: 0.97;
+}
+
+.stash-front,
+.stash-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Front of a piece: just the cloth, taped on */
+.stash-piece {
+  display: grid;
+  place-items: center;
+}
+
+.stash-piece img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 rgb(28 36 48 / 0.25);
+}
+
+/* Back: the label on the back of the cloth */
+.stash-back {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 14px 12px;
+  overflow: hidden;
+  border: var(--ink-line);
+  border-radius: 10px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 21px, rgb(100 124 159 / 0.22) 21px 22px),
+    var(--white);
+  box-shadow: var(--hard-shadow);
+  color: var(--navy);
+  transform: rotateY(180deg);
+}
+
+.stash-back .sticker {
+  align-self: flex-start;
+  animation: none;
+}
+
+.stash-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.stash-text {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.stash-verdict {
+  margin-top: auto;
+  color: var(--primary);
+  font-family: var(--font-hand);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.stash-verdict.is-real {
+  color: var(--olive);
+}
+
+.stash-verdict.is-fake {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+/* Diary pages */
+.stash-diary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 12px 12px 26px;
+  border-radius: 4px;
+  background:
+    linear-gradient(90deg, transparent 16px, var(--rose) 16px, var(--rose) 17px, transparent 17px),
+    repeating-linear-gradient(180deg, transparent 0 21px, rgb(100 124 159 / 0.3) 21px 22px),
+    var(--white);
+  box-shadow: 3px 3px 0 rgb(28 36 48 / 0.25);
+  color: var(--navy);
+}
+
+.stash-diary .sticker {
+  align-self: flex-start;
+  animation: none;
+  font-size: 11px;
+}
+
+.stash-diary-title {
+  color: var(--burgundy);
+  font-size: 23px;
+}
+
+.stash-turn {
+  margin-top: auto;
+  color: var(--text-faint);
+  font-size: 16px;
+}
+
+.stash-diary-back {
+  padding: 12px 12px 10px;
+  border-radius: 4px;
+  overflow-y: auto;
+}
+
+.stash-diary-text {
+  font-size: 17px;
+  line-height: 22px;
+}
+
+/* Everything still to find: one stitched spot */
+.stash-more {
+  display: grid;
+  place-items: center;
+  border: 1.5px dashed var(--text-faint);
+  border-radius: 14px;
+  color: var(--text-muted);
+  text-align: center;
+  rotate: 0deg;
+}
+
+.stash-more .hand {
+  padding: 0 12px;
+  font-size: 21px;
+}

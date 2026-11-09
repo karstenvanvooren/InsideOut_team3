@@ -1,41 +1,48 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import FragmentViewer, { FragmentThumb } from '../components/FragmentViewer.jsx'
 import BottomSheet from '../components/ui/BottomSheet.jsx'
 import { Eyebrow } from '../components/ui/basics.jsx'
-import { HookThumb } from '../components/ui/HookThumb.jsx'
-import { LockIcon } from '../components/ui/icons.jsx'
 import { useGame } from '../game/GameProvider.jsx'
 import { STARTED_PHASES } from '../game/gameState.js'
 import { fragmentNumber, getFragments, getHooks } from '../lib/story.js'
 import story from '../data/story.json'
 
-function LockedCard() {
+/** A found piece or diary page, taped into the scrapbook. Tap → it turns around (more info on the back). */
+function FlipItem({ index, flipped, onFlip, label, tall = false, children }) {
   return (
-    <li className="collect-card is-locked">
-      <LockIcon className="collect-card-lock" />
-      <span>Not found yet</span>
+    <li className={`stash-item ${tall ? 'is-tall' : ''}`} style={{ '--tilt': `${[-4, 3, 2, -3, -2, 4][index % 6]}deg`, '--delay': `${index * 60}ms` }}>
+      <button type="button" className={`stash-flip ${flipped ? 'is-flipped' : ''}`} onClick={onFlip} aria-pressed={flipped} aria-label={`${label}${flipped ? ' (back)' : ''}`}>
+        <span className="stash-inner">{children}</span>
+      </button>
     </li>
   )
 }
 
-// One collection, two tabs: fragments (from the locations) and hooks (found on the way).
-// Tap a found card to see it in full.
+/** One stitched spot for everything still to find. */
+function MoreOutThere({ count, text, tall = false }) {
+  if (count <= 0) return null
+  return (
+    <li className={`stash-item stash-more ${tall ? 'is-tall' : ''}`}>
+      <span className="hand">
+        {count} {text}
+      </span>
+    </li>
+  )
+}
+
+// Your stash: two tabs, the pieces (from the locations) and her diary (the hooks).
+// Everything is taped into a scrapbook; tap something and it turns around.
 export default function Collection() {
   const navigate = useNavigate()
   const { phase, fragments: found, isHookCollected, hooksCollected, hooksTotal } = useGame()
   const [tab, setTab] = useState('fragments')
-  const [open, setOpen] = useState(null) // { kind: 'fragment' | 'hook', item }
+  const [open, setOpen] = useState(null) // { kind: 'artwork', item }
+  const [flipped, setFlipped] = useState(null) // the card that shows its back
+  const flip = (id) => setFlipped((now) => (now === id ? null : id))
   const allFragments = getFragments()
   const hooks = getHooks()
   const finished = phase === 'finale' // after the finale: real or fake is revealed
   const finale = story.finale ?? {}
-  const verdict = (fragment) =>
-    finished ? (
-      <span className={`collect-card-sub ${fragment.real ? 'is-real' : 'is-fake'}`}>{fragment.real ? 'Real' : 'Fake'}</span>
-    ) : (
-      <span className="collect-card-sub">Real or fake?</span>
-    )
 
   return (
     <div className="page collection">
@@ -69,50 +76,49 @@ export default function Collection() {
       )}
 
       {tab === 'fragments' ? (
-        <ul className="collect-grid">
-          {allFragments.map((fragment) =>
-            found.includes(fragment.id) ? (
-              <li key={fragment.id}>
-                <button type="button" className="collect-card is-piece taped" onClick={() => setOpen({ kind: 'fragment', item: fragment })}>
-                  <FragmentThumb fragment={fragment} className="collect-card-image" />
-                  <span className="collect-card-name">Fragment {fragmentNumber(fragment.id)}</span>
-                  {verdict(fragment)}
-                </button>
-              </li>
-            ) : (
-              <LockedCard key={fragment.id} />
-            ),
-          )}
+        <ul className="stash-grid">
+          {allFragments
+            .filter((fragment) => found.includes(fragment.id))
+            .map((fragment, i) => (
+              <FlipItem key={fragment.id} index={i} flipped={flipped === fragment.id} onFlip={() => flip(fragment.id)} label={`Fragment ${fragmentNumber(fragment.id)}`}>
+                <span className="stash-front stash-piece taped">
+                  <img src={fragment.src} alt="" />
+                </span>
+                <span className="stash-back">
+                  <span className="sticker is-tint">fragment {fragmentNumber(fragment.id)}</span>
+                  <strong className="stash-title">{fragment.title}</strong>
+                  {fragment.caption && <span className="stash-text">{fragment.caption}</span>}
+                  <span className={`stash-verdict ${finished ? (fragment.real ? 'is-real' : 'is-fake') : ''}`}>
+                    {finished ? (fragment.real ? 'real – part of the artwork' : 'fake – not hers') : 'real or fake?'}
+                  </span>
+                </span>
+              </FlipItem>
+            ))}
+          <MoreOutThere count={allFragments.length - found.length} text="more out there" />
         </ul>
       ) : (
-        <ul className="collect-grid">
-          {hooks.map((hook) =>
-            isHookCollected(hook.id) ? (
-              <li key={hook.id}>
-                <button type="button" className="collect-card is-diary" onClick={() => setOpen({ kind: 'hook', item: hook })}>
-                  <span className="collect-card-image collect-card-diary hand">{hook.content?.text?.split('. ')[0] ?? ''}…</span>
-                  <span className="collect-card-name">{hook.content?.title ?? hook.id}</span>
-                  <span className="collect-card-sub">Chapter {hook.content?.chapter ?? '–'}</span>
-                </button>
-              </li>
-            ) : (
-              <LockedCard key={hook.id} />
-            ),
-          )}
+        <ul className="stash-grid">
+          {hooks
+            .filter((hook) => isHookCollected(hook.id))
+            .map((hook, i) => (
+              <FlipItem key={hook.id} index={i} flipped={flipped === hook.id} onFlip={() => flip(hook.id)} label={hook.content?.title ?? 'Diary page'} tall>
+                <span className="stash-front stash-diary taped">
+                  <span className="sticker">chapter {hook.content?.chapter ?? '–'}</span>
+                  <strong className="hand stash-diary-title">{hook.content?.title ?? hook.id}</strong>
+                  <span className="stash-turn hand">turn the page</span>
+                </span>
+                <span className="stash-back stash-diary-back">
+                  <span className="hand stash-diary-text">{hook.content?.text}</span>
+                </span>
+              </FlipItem>
+            ))}
+          <MoreOutThere count={hooksTotal - hooksCollected} text={hooksTotal - hooksCollected === 1 ? 'page still hidden' : 'pages still hidden'} tall />
         </ul>
       )}
 
       <div className="page-fade" aria-hidden="true" />
 
-      <BottomSheet open={Boolean(open)} onClose={() => setOpen(null)} label={open?.item.title ?? 'Hook'}>
-        {open?.kind === 'fragment' && (
-          <div className="stack">
-            <Eyebrow>
-              Fragment {fragmentNumber(open.item.id)} · {finished ? (open.item.real ? 'real' : 'fake') : 'real or fake?'}
-            </Eyebrow>
-            <FragmentViewer fragment={open.item} />
-          </div>
-        )}
+      <BottomSheet open={Boolean(open)} onClose={() => setOpen(null)} label="The artwork">
         {open?.kind === 'artwork' && (
           <div className="stack">
             <Eyebrow>The artwork</Eyebrow>
@@ -120,13 +126,6 @@ export default function Collection() {
             <img className="collect-artwork-full" src={finale.image ?? '/fragments/artwork.svg'} alt={finale.alt ?? ''} />
             <p className="muted">{finale.subtitle}</p>
             {finale.text && <p className="hook-story-text">{finale.text}</p>}
-          </div>
-        )}
-        {open?.kind === 'hook' && (
-          <div className="stack">
-            <Eyebrow>Hook{open.item.content?.chapter ? ` · chapter ${open.item.content.chapter}` : ''}</Eyebrow>
-            <h2 className="sheet-title">{open.item.content?.title ?? open.item.id}</h2>
-            {open.item.content?.text && <p className="hook-story-text">{open.item.content.text}</p>}
           </div>
         )}
       </BottomSheet>
