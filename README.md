@@ -300,7 +300,7 @@ Routes: `/` the game (current phase) · `/hook/:qrId` QR deep link · `/collecti
 
 Any static host works (Netlify, Vercel, GitHub Pages...). Build with `npm run build` and upload `dist/`.
 
-Important: URLs like `/hook/hk01` must serve `index.html`. This is already set up for **Netlify** (`public/_redirects`) and **Vercel** (`vercel.json`). For other hosts, look up "SPA fallback".
+Important: URLs like `/hook/hk01` must serve `index.html`. This is already set up for **Cloudflare** (`wrangler.jsonc`, `not_found_handling`) and **Vercel** (`vercel.json`). For other hosts, look up "SPA fallback".
 
 The real site must use **https** (all of the hosts above do this automatically). Without https, GPS doesn't work.
 
@@ -308,7 +308,7 @@ The real site must use **https** (all of the hosts above do this automatically).
 
 The QR codes are **not** part of the website. They only contain its address. So the site never needs a rebuild because of the QR codes, but the codes must be made **after** you know the final address.
 
-1. `npm run build` → creates the `dist/` folder (it already contains `_redirects`).
+1. `npm run build` → creates the `dist/` folder.
 2. Go to **https://app.netlify.com/drop** and drag the **`dist` folder** (not the project folder) onto the page.
 3. **Log in / sign up and claim the site.** Without an account, a drop is temporary and every new drop gets a new random URL, which would break printed QR codes.
 4. Optional: *Site configuration → Change site name* → e.g. `insideout-team3` → your URL becomes `https://insideout-team3.netlify.app`. **Do this before step 5.**
