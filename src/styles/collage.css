@@ -2,7 +2,7 @@
    Collage style (hi-fi v3): our colours and components, with the details of
    Ode à l'oubli itself – thin navy lines with a small hard shadow, tape,
    stitches, little tilted stickers, handwriting (Caveat) – and playful motion.
-   Big moments (her diary, a new piece, sewing your page) sit on deep burgundy.
+   Big moments (a new piece, sewing your page) sit on deep burgundy; her diary (hooks) is dark navy like the start.
    ========================================================================== */
 
 :root {
@@ -538,53 +538,67 @@ html.is-typing .chat-bar {
   text-align: center;
 }
 
+/* Her diary (a hook): dark like the start, the chapter on a taped cream page (hi-fi v2, D4) */
+.diary-screen {
+  background: var(--navy);
+}
+
+.diary-screen .btn {
+  background: var(--burgundy);
+}
+
+.diary-screen .deep-note {
+  color: rgb(230 224 214 / 0.6);
+  font-weight: 500;
+}
+
 .diary-stickers {
   display: flex;
   gap: 8px;
 }
 
-.diary-page {
-  margin: 14px 6px 0;
-  padding: 26px 22px 70px 58px;
-  border-radius: 6px;
-  background:
-    linear-gradient(90deg, transparent 44px, var(--rose) 44px, var(--rose) 45.5px, transparent 45.5px),
-    repeating-linear-gradient(180deg, transparent 0 27px, rgb(100 124 159 / 0.35) 27px 28px),
-    var(--white);
-  background-position: 0 0, 0 58px, 0 0;
-  box-shadow: var(--hard-shadow-soft);
-  color: var(--navy);
-  rotate: 1.5deg;
-  animation: page-in 520ms var(--ease-pop) both;
+.diary-title {
+  margin-top: 6px;
+  font-size: 40px;
+  animation: pop-in 480ms var(--ease-pop) both;
 }
 
-.diary-title {
-  margin: 0 0 10px;
-  color: var(--burgundy);
-  font-family: var(--font-hand);
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.05;
+.diary-aside {
+  margin: -8px 0 0;
+  color: var(--rose);
+  font-size: 22px;
+  animation: fade-in 400ms 250ms both;
+}
+
+.diary-page {
+  margin: 14px 4px 0;
+  padding: 26px 22px 30px;
+  border: var(--ink-line);
+  border-radius: 6px;
+  background: var(--cream);
+  box-shadow: 5px 5px 0 var(--rose);
+  color: var(--navy);
+  rotate: -1.5deg;
+  animation: page-in 520ms 120ms var(--ease-pop) both;
 }
 
 .diary-text {
   margin: 0;
-  font-family: var(--font-hand);
-  font-size: 23px;
-  line-height: 28px;
-  animation: write-in 1.4s 0.35s steps(28) both;
+  font-size: 17px;
+  line-height: 26px;
+  animation: write-in 1.4s 0.5s steps(28) both;
 }
 
 .diary-scrap {
   position: absolute;
-  right: -14px;
-  bottom: -18px;
-  width: 92px;
-  height: 64px;
-  background: repeating-linear-gradient(90deg, var(--navy) 0 6px, var(--cream) 6px 9px, var(--navy) 9px 15px, var(--rose) 15px 17px);
+  right: -12px;
+  bottom: -30px;
+  width: 104px;
+  height: 58px;
+  background: repeating-linear-gradient(90deg, var(--burgundy) 0 6px, var(--cream) 6px 9px, var(--burgundy) 9px 15px, var(--rose) 15px 17px);
   clip-path: polygon(4% 8%, 22% 0, 48% 6%, 74% 0, 100% 9%, 96% 50%, 100% 92%, 70% 100%, 40% 94%, 12% 100%, 0 70%, 5% 38%);
-  rotate: -12deg;
-  animation: drop-in 520ms 0.4s var(--ease-pop) both;
+  rotate: -8deg;
+  animation: drop-in 520ms 0.6s var(--ease-pop) both;
 }
 
 .reward-title {

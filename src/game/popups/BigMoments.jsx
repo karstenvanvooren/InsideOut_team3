@@ -1,5 +1,5 @@
-// The big moments of the game, full screen on deep burgundy (hi-fi v3):
-//   DiaryPage       a hook = a page from her diary
+// The big moments of the game, full screen (hi-fi v2):
+//   DiaryPage       a hook = a page from her diary, dark like the start (navy)
 //   FragmentReward  a new piece: confetti, the piece taped on, a FOUND stamp
 import { useEffect, useMemo } from 'react'
 import { fragmentNumber, getFragment, getFragments } from '../../lib/story.js'
@@ -31,7 +31,13 @@ function Confetti({ count = 34 }) {
   )
 }
 
-/** A hook: one chapter of her story, as a page torn from her diary. */
+/** Her title, the v2 way: lowercase with a full stop ("Her mother’s needle" → "her mother’s needle."). */
+const bigTitle = (title) => {
+  const t = title.toLowerCase()
+  return /[a-z]$/.test(t) ? `${t}.` : t
+}
+
+/** A hook: one chapter of her story. Dark like the start (the colours of the mystery), on a taped cream page. */
 export function DiaryPage({ hook, collected, total, onClose }) {
   const content = hook?.content ?? {}
   useEffect(() => vibrate(patterns.found), [])
@@ -39,7 +45,7 @@ export function DiaryPage({ hook, collected, total, onClose }) {
     <div className="deep-screen diary-screen" role="dialog" aria-modal="true" aria-label={content.title ?? 'Hook collected'}>
       <div className="deep-inner">
         <div className="diary-stickers">
-          <span className="sticker is-dark" style={{ '--tilt': '-3deg' }}>
+          <span className="sticker is-rose" style={{ '--tilt': '-3deg' }}>
             hook {collected}/{total}
           </span>
           {content.chapter && (
@@ -48,11 +54,14 @@ export function DiaryPage({ hook, collected, total, onClose }) {
             </span>
           )}
         </div>
-        <article className="diary-page taped" style={{ '--tape-rot': '-5deg', '--tape-x': '-30px' }}>
-          <h2 className="diary-title">{content.title ?? 'Hook collected'}</h2>
-          {content.text && <p className="diary-text">{content.text}</p>}
-          <span className="diary-scrap taped" aria-hidden="true" style={{ '--tape-rot': '14deg', '--delay': '500ms' }} />
-        </article>
+        <h2 className="big-title diary-title">{bigTitle(content.title ?? 'Hook collected')}</h2>
+        <p className="hand diary-aside">(a page from her diary{content.chapter ? ` – chapter ${content.chapter} of ${total}` : ''})</p>
+        {content.text && (
+          <article className="diary-page taped" style={{ '--tape-rot': '3deg', '--tape-x': '10px' }}>
+            <p className="diary-text">{content.text}</p>
+            <span className="diary-scrap taped" aria-hidden="true" style={{ '--tape-rot': '-8deg', '--delay': '500ms' }} />
+          </article>
+        )}
         <div className="deep-bottom">
           <button type="button" className="btn btn-block" onClick={onClose}>
             Keep walking
