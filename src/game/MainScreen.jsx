@@ -116,7 +116,6 @@ export default function MainScreen() {
           wrong={riddle.wrong}
           onWrong={game.recordRiddleWrong}
           onSolve={game.solveRiddle}
-          onMinimise={() => setMinimised(true)}
         />
       )}
 

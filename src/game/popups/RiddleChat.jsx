@@ -19,7 +19,7 @@ const NOPE = ['nope. close though.', 'not that one.', 'hmm. no.']
 let nextId = 1
 const msg = (from, kind, text) => ({ id: nextId++, from, kind, text })
 
-export default function RiddleChat({ location, index, wrong, onWrong, onSolve, onMinimise }) {
+export default function RiddleChat({ location, index, wrong, onWrong, onSolve }) {
   const { riddle } = location
   const hints = riddle.hints ?? []
   const intro = location.chat ?? DEFAULT_LINES[Math.min(index, DEFAULT_LINES.length - 1)]
@@ -101,9 +101,6 @@ export default function RiddleChat({ location, index, wrong, onWrong, onSolve, o
         <span className="sticker is-tint" style={{ '--tilt': '3deg' }}>
           riddle {index + 1}/{getLocations().length}
         </span>
-        <button type="button" className="chat-minimise" onClick={onMinimise} aria-label="Minimise the riddle (look at the map)">
-          <Icon name="chevronDown" size={18} strokeWidth={2.4} />
-        </button>
       </header>
 
       <div className="chat-list" ref={listRef} aria-live="polite">
