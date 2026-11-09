@@ -468,21 +468,24 @@ body:not(.has-game-nav) .sheet {
   margin: 0;
 }
 
-/* Centered card: every pop-up in the game (riddle, intro, arrived, fragment, finale, …) */
+/* Centered card: every pop-up in the game (riddle, intro, arrived, fragment, finale, …).
+   Fixed baseline: the card sits a bit above the middle (free space split 1 : 2), the
+   same spot for every pop-up. It does NOT move when the phone keyboard opens: the
+   keyboard simply slides over the bottom nav, and inputs are high enough to stay visible. */
 .sheet-layer.is-centered {
   display: grid;
-  place-items: center;
+  grid-template-rows: minmax(0, 1fr) fit-content(100%) minmax(0, 2fr);
+  justify-items: center;
   padding: calc(env(safe-area-inset-top) + var(--space-4)) var(--space-4) var(--space-4);
 }
 
-/* With the nav: stay clear of the round Scan button; with the keyboard open: sit above it */
-body.has-game-nav .sheet-layer.is-centered {
-  bottom: max(calc(var(--nav-height) + env(safe-area-inset-bottom)), var(--keyboard, 0px));
-  padding-bottom: calc(var(--space-4) + var(--nav-scan-lift));
+.sheet-layer.is-centered > .sheet {
+  grid-row: 2;
 }
 
-body:not(.has-game-nav) .sheet-layer.is-centered {
-  bottom: var(--keyboard, 0px);
+/* With the nav: stay clear of the round Scan button */
+body.has-game-nav .sheet-layer.is-centered {
+  padding-bottom: calc(var(--space-4) + var(--nav-scan-lift));
 }
 
 body:not(.has-game-nav) .sheet-layer.is-centered .sheet,
@@ -1258,24 +1261,11 @@ body.game-fullscreen {
   transition: background-color 600ms ease;
 }
 
-/* Mystery: the map tiles are blurred (less and less per stage, see --map-blur) */
+/* The map style's pane. Optional mystery blur: set --map-blur in tokens.css (0 = sharp) */
 .leaflet-pane.game-tiles-pane {
   z-index: 200;
-  filter: blur(var(--map-blur)) saturate(0.75);
+  filter: blur(var(--map-blur));
   transition: filter 900ms ease;
-}
-
-/* Colour wash of the current stage over the tiles; route and markers stay sharp above it */
-.leaflet-pane.game-tint-pane {
-  z-index: 250;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-
-.game-map-tint {
-  fill: var(--map-tint);
-  fill-opacity: 1;
-  transition: fill 900ms ease;
 }
 
 .game-route {

@@ -76,8 +76,7 @@
   --page-outside: color-mix(in srgb, var(--cream) 45%, var(--white)); /* desktop, around the 430px frame */
 
   /* Map (Leaflet, see src/map/mapTheme.js and "Game map" in global.css) – begin stage: blurred, cool grey */
-  --map-blur: 2.6px; /* mystery: the map is soft at the start and gets sharper towards the end */
-  --map-tint: #dcdcdc; /* multiplied over the tiles */
+  --map-blur: 0px; /* optional mystery blur over the map (e.g. 2px); 0 = sharp like the original */
   --map-land: #f2f1ee;
   --map-road: var(--white);
   --map-road-edge: #e4e2de;
@@ -175,8 +174,6 @@
 /* Locations 3–4: warming up – off-white, olive, sage */
 .stage-middle {
   --bg: #faf7f2;
-  --map-blur: 1.6px;
-  --map-tint: #efe3cf;
   --tint: color-mix(in srgb, var(--cream) 45%, transparent);
   --tint-strong: var(--cream-60);
   --primary: var(--olive);
@@ -197,8 +194,6 @@
 /* Locations 5–6 and the finale: the colours of the artwork */
 .stage-end {
   --bg: #efe9e0;
-  --map-blur: 0.6px;
-  --map-tint: #ead1cb;
   --text-muted: color-mix(in srgb, var(--navy) 65%, transparent);
   --text-faint: var(--navy-50);
   --divider: var(--navy-10);

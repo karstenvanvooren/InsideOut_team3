@@ -1,16 +1,19 @@
-// The game map, built with Leaflet (https://leafletjs.com). A calm map without
-// street names, blurred for mystery (the blur clears up while you play, see
-// --map-blur in tokens.css), tinted in the colour of the current stage. On top:
-// the player (with a direction cone), optionally the destination beacon, the
-// route line, hook markers and an arrow on the screen edge when the destination
-// is off-screen. Colours come from CSS tokens, so stage changes need no JS.
+// The game map, built with Leaflet (https://leafletjs.com). The map itself is the
+// calm vector style from mapTheme.js (street names, buildings, stage colours), drawn
+// inside Leaflet as one layer (@maplibre/maplibre-gl-leaflet). Leaflet handles the
+// view, gestures, the route line and the markers. On top: the player (with a
+// direction cone), optionally the destination beacon, the route line, hook markers
+// and an arrow on the screen edge when the destination is off-screen.
 // Leaflet keeps north up (no tilt/rotation); the cone shows where you look.
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
+import '@maplibre/maplibre-gl-leaflet'
 import { distanceMeters, formatDistance } from '../lib/location.js'
 import { bearing } from '../lib/navigation.js'
-import { TILE_ATTRIBUTION, TILE_URL } from './mapTheme.js'
+import { MAP_ATTRIBUTION, applyMapTheme, buildMapStyle } from './mapTheme.js'
+import { STAGE_EVENT } from '../game/colourStage.js'
 
 const ANTWERP = { lat: 51.2194, lng: 4.4025 }
 const START_ZOOM = 17
@@ -100,31 +103,25 @@ export default function GameMap({
     mapRef.current = map
     map.attributionControl.setPrefix(false)
 
-    // Map tiles in their own pane, so only they get the mystery blur and the stage tint
+    // The map style in its own pane, below the route and markers
     // (z-index set here: Leaflet's own CSS gives every pane 400 and loads after ours)
     const tilesPane = map.createPane('gameTiles')
     tilesPane.classList.add('game-tiles-pane')
     tilesPane.style.zIndex = 200
-    let errors = 0
-    L.tileLayer(TILE_URL, { pane: 'gameTiles', maxZoom: MAX_ZOOM, maxNativeZoom: 19, attribution: TILE_ATTRIBUTION, detectRetina: true })
-      .on('tileerror', () => {
-        errors += 1
-        if (errors > 6) setMapProblem(true)
-      })
-      .on('tileload', () => setMapProblem(false))
-      .addTo(map)
-
-    // Stage colour wash over the tiles (multiply), below the route and markers
-    const tintPane = map.createPane('gameTint')
-    tintPane.classList.add('game-tint-pane')
-    tintPane.style.zIndex = 250
-    L.rectangle(
-      [
-        [-85, -180],
-        [85, 180],
-      ],
-      { pane: 'gameTint', renderer: L.svg({ pane: 'gameTint', padding: 0.5 }), className: 'game-map-tint', stroke: false, interactive: false },
-    ).addTo(map)
+    const base = L.maplibreGL({ style: buildMapStyle(), pane: 'gameTiles', attribution: MAP_ATTRIBUTION }).addTo(map)
+    const gl = base.getMaplibreMap()
+    let problems = 0
+    gl.on('error', () => {
+      problems += 1
+      if (problems > 6) setMapProblem(true)
+    })
+    gl.on('data', (e) => {
+      if (e.dataType === 'source' && e.isSourceLoaded) setMapProblem(false)
+    })
+    // New colour stage (begin → middle → end): repaint the map in place
+    const repaint = () => applyMapTheme(gl)
+    gl.on('load', repaint)
+    window.addEventListener(STAGE_EVENT, repaint)
 
     // Route: one line in the stage colour (CSS: .game-route)
     layersRef.current.route = L.polyline([], { className: 'game-route', interactive: false }).addTo(map)
@@ -176,6 +173,7 @@ export default function GameMap({
     map.on('move zoom resize', updatePointer)
 
     return () => {
+      window.removeEventListener(STAGE_EVENT, repaint)
       resizeObserver.disconnect()
       map.remove()
       mapRef.current = null

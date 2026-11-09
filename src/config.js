@@ -12,6 +12,5 @@ export const config = {
   // is BRouter's walking profile; if the server doesn't have it, "shortest" is used.
   routeProfile: 'hiking-mountain',
 
-  // How blurred the map is per colour stage (the mystery clears up while you play).
-  // Values in px; 0 = sharp. Change them in src/styles/tokens.css (--map-blur).
+  // Optional mystery blur over the map: --map-blur in src/styles/tokens.css (0 = sharp).
 }

@@ -6,8 +6,9 @@ const CLOSE_MS = 200
 
 /**
  * One component for every pop-up: a white card in the middle of the screen
- * (consistent with the fragment pop-up). It moves up when the phone keyboard
- * opens, so inputs stay visible. `sheet` gives the old bottom sheet instead.
+ * (consistent with the fragment pop-up), always on the same baseline. It stays put
+ * when the phone keyboard opens (the keyboard slides over the nav). `sheet` gives
+ * the old bottom sheet instead.
  *
  * open: show it (it animates in and out by itself).
  * onClose: if given, tapping outside or the ✕ closes it. Leave it out for
@@ -20,7 +21,7 @@ const CLOSE_MS = 200
 export default function BottomSheet({ open, onClose, dim = false, sheet = false, label, className = '', children }) {
   const { visible, closing, content } = usePresence(open, CLOSE_MS, children)
   const centered = !sheet
-  useKeyboardOffset(visible)
+  useStayPut(visible)
   if (!visible) return null
 
   const backdrop = dim ? 'is-dim' : onClose ? 'is-catcher' : 'is-passthrough'
@@ -42,22 +43,16 @@ export default function BottomSheet({ open, onClose, dim = false, sheet = false,
 }
 
 /**
- * While a pop-up is open: how much of the screen the phone keyboard covers,
- * as --keyboard on <html> (0px when it's closed). The centered card sits above it.
+ * While a pop-up is open: when the keyboard closes again, put the page back where it
+ * was (iOS sometimes leaves the page scrolled after typing), so nothing stays shifted.
  */
-function useKeyboardOffset(active) {
+function useStayPut(active) {
   useEffect(() => {
-    const vv = window.visualViewport
-    if (!active || !vv) return
-    const root = document.documentElement
-    const update = () => root.style.setProperty('--keyboard', `${Math.max(0, window.innerHeight - vv.height - vv.offsetTop)}px`)
-    update()
-    vv.addEventListener('resize', update)
-    vv.addEventListener('scroll', update)
-    return () => {
-      vv.removeEventListener('resize', update)
-      vv.removeEventListener('scroll', update)
-      root.style.setProperty('--keyboard', '0px')
-    }
+    if (!active) return
+    const reset = () => requestAnimationFrame(() => {
+      if (!document.activeElement || document.activeElement === document.body) window.scrollTo(0, 0)
+    })
+    document.addEventListener('focusout', reset)
+    return () => document.removeEventListener('focusout', reset)
   }, [active])
 }

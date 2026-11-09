@@ -9,5 +9,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: true, // reachable from your phone on the same Wi-Fi
     port: 5173,
+    // allow a Cloudflare quick tunnel (cloudflared tunnel --url http://localhost:5173)
+    allowedHosts: ['.trycloudflare.com'],
   },
 }))

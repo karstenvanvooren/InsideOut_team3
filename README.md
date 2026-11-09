@@ -4,7 +4,7 @@ A mystery game that turns Antwerp into a book. Players start at the Stadsfeestza
 
 This repo is the **engine**. All story content is placeholder and lives in `src/data/story.json` (places, riddles, challenges, fragments, hooks) and `src/data/onboarding.json` (the intro screens). Game design switches are in `src/config.js`.
 
-Tech: React + Vite, plain JavaScript, plain CSS, **Leaflet** (map, CARTO/OpenStreetMap tiles without labels) and **BRouter** (walking routes, brouter.de). No backend, no login. Progress is saved in the browser (localStorage).
+Tech: React + Vite, plain JavaScript, plain CSS, **Leaflet** (map; the vector style from OpenFreeMap/OpenStreetMap drawn inside it with maplibre-gl-leaflet) and **BRouter** (walking routes, brouter.de). No backend, no login. Progress is saved in the browser (localStorage).
 
 ## The game
 
@@ -266,7 +266,7 @@ src/
     ScanProvider.jsx         ← in-app scanner + scan results on top of every screen
     BottomNav.jsx            ← Map · Scan · Collection (from the riddle phase on)
     screens/                 ← LockedScreen, UnlockAnimation
-  map/                       ← the Leaflet game map (blurred tiles, stage tint, route, markers)
+  map/                       ← the Leaflet game map (style per colour stage, route, markers)
     GameMap.jsx              ← player, beacon, trail, off-screen pointer, optional hook markers
     mapTheme.js              ← the map style, built from the --map-* design tokens
     useGameScreen.js         ← full-screen plumbing (banner/sheet refs, no page scroll)
@@ -354,7 +354,7 @@ Still to do (marked `_todo` in story.json): answer options for the two multiple-
 
 ## Map & routes
 
-- **Leaflet** draws the map. Tiles: CARTO Voyager without labels (OpenStreetMap data) — no street names, on purpose.
-- **Mystery blur:** the tiles are blurred and washed in the stage colour. The blur gets weaker per colour stage (`--map-blur` and `--map-tint` in `src/styles/tokens.css`): begin 2.6px → middle 1.6px → end 0.6px. Route, player, beacon and the edge arrow stay sharp.
+- **Leaflet** is the map: view, gestures, route line and markers. The map itself is our own calm vector style (`src/map/mapTheme.js`, OpenFreeMap tiles, no API key) drawn inside Leaflet with `@maplibre/maplibre-gl-leaflet`, so it looks like the original design: street names, buildings, colours per stage. Leaflet keeps north up (no tilt).
+- **Optional mystery blur:** `--map-blur` in `src/styles/tokens.css` (now 0 = sharp). Route, player, beacon and the edge arrow always stay sharp.
 - **BRouter** (`https://brouter.de/brouter`, profile in `src/config.js` → `routeProfile`, default `hiking-mountain`, backup `shortest`) gives the walking route. The turn banner ("in 190 m · Turn left") is worked out from the shape of that route (`stepsFromLine` in `src/lib/navigation.js`). If BRouter can't be reached, a dashed straight line to the destination is shown.
 - All pop-ups are centered cards (like the fragment pop-up); they move up when the phone keyboard opens.

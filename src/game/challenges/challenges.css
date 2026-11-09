@@ -127,7 +127,7 @@
 
 .memory-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-3);
 }
 
@@ -136,22 +136,17 @@
   gap: 6px;
 }
 
-.memory-hard .memory-card {
-  aspect-ratio: 1 / 1.15;
-}
-
-.memory-hard .memory-front {
-  padding: 3px;
-  font-size: 10px;
-}
-
 .memory-card {
-  aspect-ratio: 1 / 1.05;
+  aspect-ratio: 1 / 1.28;
   padding: 0;
   border: 0;
   background: none;
   perspective: 600px;
   cursor: pointer;
+}
+
+.memory-hard .memory-card {
+  aspect-ratio: 1 / 1.25;
 }
 
 .memory-card-inner {
@@ -171,44 +166,70 @@
 .memory-front {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  overflow: hidden;
   border-radius: 12px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-.memory-back {
-  background:
-    radial-gradient(circle, color-mix(in srgb, var(--white) 10%, transparent) 2px, transparent 3px) 0 0 / 14px 14px,
-    var(--secondary);
-  color: var(--cream);
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
+.memory-hard .memory-back,
+.memory-hard .memory-front {
+  border-radius: 8px;
 }
 
+/* Back: a woven fabric with a stitched border (like the textile pages of the artwork) */
+.memory-back {
+  background:
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--cream) 22%, transparent) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--cream) 22%, transparent) 0 1px, transparent 1px 7px),
+    var(--secondary);
+}
+
+.memory-back::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1.5px dashed color-mix(in srgb, var(--cream) 55%, transparent);
+  border-radius: 8px;
+}
+
+.memory-hard .memory-back::after {
+  inset: 3px;
+  border-radius: 5px;
+}
+
+/* Front: the illustration with the name underneath */
 .memory-front {
-  padding: 6px;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border);
-  background: var(--tint-strong);
+  background: var(--surface);
   color: var(--text);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
   transform: rotateY(180deg);
 }
 
-.memory-fragment {
-  background: repeating-linear-gradient(90deg, var(--rose) 0 9px, var(--cream) 9px 18px);
-  color: var(--navy);
+.memory-art {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
 }
 
-.memory-fragment span {
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--navy) 85%, transparent);
+.memory-caption {
+  padding: 3px 3px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.memory-hard .memory-caption {
+  padding: 2px 1px 3px;
+  font-size: 8px;
+}
+
+.memory-fragment .memory-caption {
+  background: var(--navy);
   color: var(--cream);
 }
 

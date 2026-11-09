@@ -1,7 +1,9 @@
 // Memory (Plantin-Moretus). One pair is the fragment, the other pairs are things
 // they used in the printing house. Easy: 6 pairs, hard: 10 pairs.
+// Card faces are textile-collage illustrations (memoryArt.jsx), like the artwork.
 import { useEffect, useMemo, useState } from 'react'
 import ChallengeFrame, { shuffled, useChallenge } from './ChallengeFrame.jsx'
+import MemoryArt from './memoryArt.jsx'
 
 const FLIP_BACK_MS = 850
 
@@ -64,9 +66,10 @@ export default function Memory({ onClose }) {
               aria-label={faceUp ? card.face : 'Hidden card'}
             >
               <span className="memory-card-inner">
-                <span className="memory-back" aria-hidden="true">?</span>
+                <span className="memory-back" aria-hidden="true" />
                 <span className={`memory-front ${card.isFragment ? 'memory-fragment' : ''}`}>
-                  <span>{card.face}</span>
+                  <MemoryArt name={card.face} isFragment={card.isFragment} />
+                  <span className="memory-caption">{card.face}</span>
                 </span>
               </span>
             </button>
