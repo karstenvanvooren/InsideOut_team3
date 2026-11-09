@@ -88,6 +88,10 @@
             "f07"
           ]
         }
+      ],
+      "chat": [
+        "psst. you came.",
+        "I hid my memories all over Antwerp. The first one is close."
       ]
     },
     {
@@ -171,6 +175,10 @@
             "f08"
           ]
         }
+      ],
+      "chat": [
+        "you found it. that was one.",
+        "the next memory is a little further."
       ]
     },
     {
@@ -235,6 +243,10 @@
             "f09"
           ]
         }
+      ],
+      "chat": [
+        "halfway. you’re good at this.",
+        "next one."
       ]
     },
     {
@@ -300,6 +312,10 @@
             "f10"
           ]
         }
+      ],
+      "chat": [
+        "still with me?",
+        "keep your eyes open on the way."
       ]
     },
     {
@@ -371,6 +387,10 @@
             "f11"
           ]
         }
+      ],
+      "chat": [
+        "almost there.",
+        "one more after this one."
       ]
     },
     {
@@ -439,6 +459,10 @@
           "reward": "the reveal",
           "fragments": []
         }
+      ],
+      "chat": [
+        "last one.",
+        "this is where it all comes together."
       ]
     }
   ],
@@ -616,139 +640,144 @@
     {
       "id": "f01",
       "type": "image",
-      "title": "Burgundy stripes",
-      "src": "/fragments/real-1.svg",
+      "title": "Red with three points",
+      "src": "/fragments/real-1.jpg",
       "caption": "Earned at Sint-Carolus Borromeuskerk.",
       "real": true,
       "place": [
-        58,
-        58,
-        244,
-        214
+        561,
+        21,
+        147,
+        138
       ]
     },
     {
       "id": "f07",
       "type": "image",
-      "title": "Pink circles",
-      "src": "/fragments/fake-1.svg",
+      "title": "Three white circles",
+      "src": "/fragments/fake-1.jpg",
       "caption": "Earned at Sint-Carolus Borromeuskerk."
     },
     {
       "id": "f02",
       "type": "image",
-      "title": "Burgundy band",
-      "src": "/fragments/fake-2.svg",
+      "title": "Yellow star",
+      "src": "/fragments/fake-2.jpg",
       "caption": "Earned at Plantin-Moretus."
     },
     {
       "id": "f08",
       "type": "image",
-      "title": "Pink check",
-      "src": "/fragments/real-2.svg",
+      "title": "Red star",
+      "src": "/fragments/real-2.jpg",
       "caption": "Earned at Plantin-Moretus.",
       "real": true,
       "place": [
-        328,
-        108,
-        224,
-        224
+        27,
+        195,
+        120,
+        111
       ]
     },
     {
       "id": "f03",
       "type": "image",
-      "title": "Blue circles",
-      "src": "/fragments/real-3.svg",
+      "title": "Blue fan",
+      "src": "/fragments/real-3.jpg",
       "caption": "Earned at MoMu.",
       "real": true,
       "place": [
-        68,
-        318,
-        224,
-        224
+        765,
+        198,
+        117,
+        96
       ]
     },
     {
       "id": "f09",
       "type": "image",
       "title": "Blue stripes",
-      "src": "/fragments/fake-3.svg",
+      "src": "/fragments/fake-3.jpg",
       "caption": "Earned at MoMu."
     },
     {
       "id": "f04",
       "type": "image",
-      "title": "Dots and blue weave",
-      "src": "/fragments/fake-4.svg",
+      "title": "Red diamonds",
+      "src": "/fragments/fake-4.jpg",
       "caption": "Earned at Bourla."
     },
     {
       "id": "f10",
       "type": "image",
-      "title": "Linen grid",
-      "src": "/fragments/real-4.svg",
+      "title": "Black and white check",
+      "src": "/fragments/real-4.jpg",
       "caption": "Earned at Bourla.",
       "real": true,
       "place": [
-        288,
-        368,
-        254,
-        194
+        228,
+        363,
+        102,
+        102
       ]
     },
     {
       "id": "f06",
       "type": "image",
-      "title": "Dark band with stitches",
-      "src": "/fragments/real-5.svg",
+      "title": "Pinwheel patchwork",
+      "src": "/fragments/real-5.jpg",
       "caption": "Earned at Maagdenhuis.",
       "real": true,
       "place": [
-        48,
-        548,
-        324,
-        154
+        393,
+        510,
+        132,
+        117
       ]
     },
     {
       "id": "f11",
       "type": "image",
-      "title": "Green check",
-      "src": "/fragments/fake-5.svg",
+      "title": "Orange spiral",
+      "src": "/fragments/fake-5.jpg",
       "caption": "Earned at Maagdenhuis."
     },
     {
       "id": "f05",
       "type": "image",
-      "title": "Dots and weave",
-      "src": "/fragments/real-6.svg",
+      "title": "Two blue ovals",
+      "src": "/fragments/real-6.jpg",
       "caption": "Hidden in the KMSKA.",
       "real": true,
       "place": [
-        238,
-        638,
-        324,
-        144
+        762,
+        669,
+        126,
+        114
       ]
     },
     {
       "id": "f12",
       "type": "image",
-      "title": "Pink grid",
-      "src": "/fragments/fake-6.svg",
+      "title": "Pink cross",
+      "src": "/fragments/fake-6.jpg",
       "caption": "Hidden in the KMSKA."
     }
   ],
-  "_fragments_note": "Fragments are torn pieces of cloth. \"real\": true = cut from the artwork (KMSKA). Pictures: scripts/generate-fragments.js. For now a stand-in page in the style of Ode à l'oubli; replace with pieces of our own photo of the artwork.",
+  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style. A sharper photo gives sharper pieces (see README).",
   "_hooks_note": "Hooks tell Louise Bourgeois' story in order (chapter 1–12), without giving away her name before the MoMu challenge or the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
   "finale": {
-    "image": "/fragments/artwork.svg",
-    "alt": "A page of fabric pieces: stripes, checks, circles and grids, stitched together.",
+    "image": "/fragments/artwork.jpg",
+    "alt": "Ode à l'oubli: 36 framed fabric pages on a museum wall.",
     "title": "Louise Bourgeois",
     "subtitle": "Ode à l’oubli (Ode to forgetting), 2002",
     "text": "A book without paper. Every page is sewn from cloth she kept for most of her life: nightgowns, scarves, table napkins and hand towels from her wedding trousseau. The girl who grew up in a tapestry workshop mended her memories with needle and thread.",
     "closing": "She repaired what was torn. Today, piece by piece, so did you.",
-    "_todo": "The picture is a stand-in (scripts/generate-fragments.js). Replace it with our own photo of the artwork, and update \"place\" of the real fragments to where each piece sits on that photo (in a 600 × 800 frame)."
-  }
+    "size": [
+      1098,
+      975
+    ],
+    "_photo": "From the photo the team shared (scripts/fragments/ode-a-loubli-photo.png). \"place\" of each real fragment is in this picture's pixels (size)."
+  },
+  "_chat_note": "locations[].chat = what Sfumato texts before each riddle (riddle as chat). Keep it short and don't give the answer away."
 }

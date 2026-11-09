@@ -3,15 +3,16 @@
 //    player found fly into their place, one by one, and the page becomes sharp.
 // 2. The reveal: who she is and what the work is.
 // 3. The player's trail (fragments, hooks, time) and a closing line.
-// 4. Their collection stays open to browse (button + the Collection tab).
-// The artwork picture and the places of the pieces are stand-ins for now
-// (scripts/generate-fragments.js); swap them for our own photo later.
+// 4. The player sews their own page from the real pieces (SewPage.jsx) and can
+//    share it ("ode à toi"). Their collection stays open (button + Collection tab).
+// The picture is the photo of Ode à l'oubli; the real pieces are cut from it.
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getFragment, getFragments, meta } from '../../lib/story.js'
 import { patterns, vibrate } from '../../lib/vibrate.js'
 import { useGame } from '../GameProvider.jsx'
 import story from '../../data/story.json'
+import { OdePage, SewPage, loadPage } from './SewPage.jsx'
 
 const PIECE_MS = 650 // between two pieces flying in
 
@@ -29,6 +30,8 @@ export default function FinaleScreen() {
   const real = getFragments().filter((f) => f.real)
   const foundReal = real.filter((f) => owned.includes(f.id))
   const fakes = owned.map(getFragment).filter((f) => f && !f.real)
+  const [page, setPage] = useState(loadPage) // the player's own page, once sewn
+  const [step, setStep] = useState(() => (loadPage() ? 'page' : 'reveal')) // reveal → sew → page
   const [placed, setPlaced] = useState(0)
   const done = placed >= foundReal.length
 
@@ -42,14 +45,28 @@ export default function FinaleScreen() {
     return () => clearTimeout(timer)
   }, [placed, done])
 
+  const [W, H] = finale.size ?? [600, 800] // the picture's size; "place" of the pieces is in these units
   const duration = formatDuration((phaseSince ?? Date.now()) - (startedAt ?? 0))
+  const stats = `${foundReal.length}/${real.length} real · ${hooksCollected} chapters${duration ? ` · ${duration}` : ''}`
+
+  if (step === 'sew')
+    return (
+      <SewPage
+        pieces={foundReal}
+        onDone={(p) => {
+          setPage(p)
+          setStep('page')
+        }}
+      />
+    )
+  if (step === 'page' && page) return <OdePage page={page} stats={stats} onCollection={() => navigate('/collection')} />
 
   return (
     <div className="finale-screen">
       <div className="finale-scroll">
         <p className="eyebrow finale-eyebrow">The last page</p>
 
-        <div className={`finale-artwork ${done ? 'is-complete' : ''}`}>
+        <div className={`finale-artwork ${done ? 'is-complete' : ''}`} style={{ aspectRatio: `${W} / ${H}` }}>
           <img className="finale-page" src={finale.image ?? '/fragments/artwork.svg'} alt={done ? finale.alt ?? 'The artwork' : ''} />
           {foundReal.map((f, i) => {
             const [x, y, w, h] = f.place ?? [0, 0, 0, 0]
@@ -60,10 +77,10 @@ export default function FinaleScreen() {
                 src={f.src}
                 alt=""
                 style={{
-                  left: `${(x / 600) * 100}%`,
-                  top: `${(y / 800) * 100}%`,
-                  width: `${(w / 600) * 100}%`,
-                  height: `${(h / 800) * 100}%`,
+                  left: `${(x / W) * 100}%`,
+                  top: `${(y / H) * 100}%`,
+                  width: `${(w / W) * 100}%`,
+                  height: `${(h / H) * 100}%`,
                   '--from-x': `${(i % 2 ? 1 : -1) * (60 + i * 10)}px`,
                   '--from-y': `${140 + i * 20}px`,
                   '--turn': `${(i % 2 ? 1 : -1) * (8 + i * 3)}deg`,
@@ -105,12 +122,13 @@ export default function FinaleScreen() {
                 )}
               </ul>
 
-              {finale.closing && <p className="finale-closing">{finale.closing}</p>}
-
-              <button type="button" className="btn btn-block" onClick={() => navigate('/collection')}>
+              <p className="hand finale-hand">she mended her memories. now it’s your turn.</p>
+              <button type="button" className="btn btn-block" onClick={() => setStep('sew')}>
+                Sew your own page
+              </button>
+              <button type="button" className="btn btn-block btn-secondary" onClick={() => navigate('/collection')}>
                 View my collection
               </button>
-              <p className="finale-note">Your collection stays here: every fragment, now marked real or fake, and every chapter of her story.</p>
             </>
           )}
         </div>

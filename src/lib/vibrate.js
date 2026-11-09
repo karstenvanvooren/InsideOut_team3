@@ -4,6 +4,8 @@ export const patterns = {
   found: [60, 40, 60],
   unlock: [100, 60, 100, 60, 200],
   tap: 20,
+  wrong: [30, 50, 30],
+  stamp: [80],
 }
 
 export function vibrate(pattern = patterns.tap) {

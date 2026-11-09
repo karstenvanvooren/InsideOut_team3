@@ -11,6 +11,7 @@
     "qr": "node scripts/generate-qr.js"
   },
   "dependencies": {
+    "@fontsource/caveat": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/syne": "^5.3.0",
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",

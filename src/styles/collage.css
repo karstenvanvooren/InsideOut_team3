@@ -1,0 +1,1068 @@
+/* ==========================================================================
+   Collage style (hi-fi v3): our colours and components, with the details of
+   Ode à l'oubli itself – thin navy lines with a small hard shadow, tape,
+   stitches, little tilted stickers, handwriting (Caveat) – and playful motion.
+   Big moments (her diary, a new piece, sewing your page) sit on deep burgundy.
+   ========================================================================== */
+
+:root {
+  --ink: var(--navy);
+  --ink-line: 1.5px solid var(--navy);
+  --hard-shadow: 3px 3px 0 var(--navy);
+  --hard-shadow-lg: 4px 4px 0 var(--navy);
+  --hard-shadow-soft: 5px 5px 0 rgb(28 36 48 / 0.35);
+  --deep: var(--burgundy); /* background of the big moments */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Centred pop-up cards get the collage line + shadow */
+.sheet-layer.is-centered .sheet {
+  border: var(--ink-line);
+  box-shadow: var(--hard-shadow-lg);
+}
+
+/* Buttons press in */
+.btn:active {
+  transform: translate(1px, 1px) scale(0.985);
+}
+
+/* ---------- Building blocks ---------- */
+
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: var(--ink-line);
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  rotate: var(--tilt, -2deg);
+  animation: sticker-in 420ms var(--ease-pop) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.sticker.is-white {
+  background: var(--white);
+}
+
+.sticker.is-rose {
+  background: var(--rose);
+}
+
+.sticker.is-tint {
+  background: var(--tint);
+}
+
+.sticker.is-dark {
+  border-color: var(--cream);
+  background: transparent;
+  color: var(--cream);
+}
+
+/* A strip of tape on top of something (needs position: relative on the element) */
+.taped {
+  position: relative;
+}
+
+.taped::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: -11px;
+  left: calc(50% - 36px + var(--tape-x, 0px));
+  width: 72px;
+  height: 22px;
+  background: rgb(230 224 214 / 0.8);
+  rotate: var(--tape-rot, -4deg);
+  pointer-events: none;
+  animation: tape-in 380ms var(--ease-out) both;
+  animation-delay: calc(var(--delay, 0ms) + 200ms);
+}
+
+/* Running stitch just inside the edge */
+.stitched {
+  position: relative;
+}
+
+.stitched::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1.5px dashed var(--stitch, var(--rose));
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Deep burgundy full screens (diary, new piece, sewing) */
+.deep-screen {
+  position: fixed;
+  top: 0;
+  left: var(--frame-x);
+  right: var(--frame-x);
+  z-index: 22;
+  height: var(--app-h, 100dvh);
+  overflow: hidden auto;
+  background: var(--deep);
+  color: var(--white);
+  animation: fade-in 260ms ease-out;
+}
+
+body.has-game-nav .deep-screen {
+  height: calc(var(--app-h, 100dvh) - var(--nav-height) - env(safe-area-inset-bottom));
+}
+
+.deep-screen .btn {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.deep-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 100%;
+  padding: calc(env(safe-area-inset-top) + var(--space-5)) var(--side) calc(var(--space-5) + var(--nav-scan-lift));
+}
+
+.big-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Motion ---------- */
+
+@keyframes sticker-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4) rotate(-12deg);
+  }
+}
+
+@keyframes tape-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scaleX(0.6);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-60px) rotate(-14deg) scale(1.15);
+  }
+}
+
+@keyframes stamp-slam {
+  0% {
+    opacity: 0;
+    transform: scale(2.6) rotate(-14deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-14deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-14deg);
+  }
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    rotate: var(--tilt, 0deg);
+  }
+  30% {
+    rotate: calc(var(--tilt, 0deg) - 3deg);
+  }
+  65% {
+    rotate: calc(var(--tilt, 0deg) + 2deg);
+  }
+}
+
+@keyframes confetti-fall {
+  from {
+    opacity: 1;
+    transform: translate3d(0, -40px, 0) rotate(0deg);
+  }
+  to {
+    opacity: 0.9;
+    transform: translate3d(var(--drift, 20px), 110vh, 0) rotate(var(--spin, 540deg));
+  }
+}
+
+@keyframes typing-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes write-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px) rotate(-6deg);
+  }
+}
+
+/* Confetti in our colours (FragmentReward) */
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti i {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 13px;
+  border-radius: 1px;
+  animation: confetti-fall var(--dur, 2.6s) linear both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticker,
+  .taped::before,
+  .confetti i {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Riddle as a chat (RiddleChat.jsx)
+   ========================================================================== */
+
+.riddle-chat {
+  position: fixed;
+  top: 0;
+  left: var(--frame-x);
+  right: var(--frame-x);
+  z-index: 22;
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--app-h, 100dvh) - var(--nav-height) - env(safe-area-inset-bottom));
+  background: var(--tint);
+  animation: fade-in 220ms ease-out;
+}
+
+/* Keyboard open: the chat shrinks to the visible part, so the input sits right above the keys */
+html.is-typing .riddle-chat {
+  top: var(--vv-top, 0px);
+  height: var(--vv-h, 100dvh);
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(env(safe-area-inset-top) + 12px) 16px 12px;
+  border-bottom: 1px solid var(--divider);
+  background: var(--surface);
+}
+
+.chat-avatar {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  overflow: hidden;
+  border: var(--ink-line);
+  border-radius: 50%;
+  background: var(--rose);
+}
+
+.chat-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chat-who {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-who strong {
+  font-family: var(--font-display);
+  font-size: 19px;
+}
+
+.chat-who span {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chat-minimise {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: var(--ink-line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.chat-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 16px 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  margin: 0;
+  padding: 10px 14px;
+  border: var(--ink-line);
+  border-radius: 20px;
+  box-shadow: 2px 2px 0 var(--navy);
+  font-size: 16px;
+  line-height: 1.38;
+  transform-origin: bottom left;
+  animation: pop-in 320ms var(--ease-pop) both;
+}
+
+.chat-bubble.from-them {
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+  background: var(--white);
+  color: var(--navy);
+}
+
+.chat-bubble.from-me {
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+  background: var(--primary);
+  color: var(--on-primary);
+  transform-origin: bottom right;
+}
+
+.chat-bubble.kind-hint {
+  background: var(--rose);
+  font-weight: 600;
+}
+
+.chat-typing {
+  display: inline-flex;
+  gap: 5px;
+  padding: 14px 16px;
+}
+
+.chat-typing i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--navy);
+  animation: typing-dot 1s infinite;
+}
+
+.chat-typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.chat-typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.chat-riddle {
+  margin: 14px 4px 6px;
+  padding: 22px 20px;
+  border: var(--ink-line);
+  border-radius: 22px;
+  background: var(--primary);
+  box-shadow: var(--hard-shadow-lg);
+  color: var(--on-primary);
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.25;
+  rotate: -1.2deg;
+  animation: drop-in 520ms var(--ease-pop) both;
+}
+
+.chat-note {
+  margin: 8px 6px 0;
+  color: var(--primary);
+  font-size: 22px;
+  rotate: -2deg;
+  animation: fade-in 400ms ease-out;
+}
+
+.chat-solved {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.chat-stamp {
+  display: grid;
+  place-items: center;
+  width: 118px;
+  height: 118px;
+  border: 4px solid var(--primary);
+  border-radius: 50%;
+  color: var(--primary);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: stamp-slam 520ms var(--ease-out) both;
+}
+
+.chat-solved .hand {
+  color: var(--primary);
+  font-size: 24px;
+}
+
+.chat-bar {
+  display: flex;
+  gap: 10px;
+  padding: 10px 16px calc(8px + var(--nav-scan-lift));
+}
+
+html.is-typing .chat-bar {
+  padding-bottom: 10px;
+}
+
+.chat-input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 20px;
+  border: var(--ink-line);
+  border-radius: 26px;
+  background: var(--white);
+  color: var(--navy);
+  font: inherit;
+  font-size: 16px;
+}
+
+.chat-input.is-wrong {
+  border-color: var(--primary);
+}
+
+.chat-input:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.chat-send {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  cursor: pointer;
+  transition: transform 160ms var(--ease-pop), opacity 160ms;
+}
+
+.chat-send:disabled {
+  opacity: 0.45;
+}
+
+.chat-send:not(:disabled):active {
+  transform: scale(0.9);
+}
+
+/* ==========================================================================
+   Big moments: diary page (hook) and new piece (BigMoments.jsx)
+   ========================================================================== */
+
+.deep-bottom {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.deep-note {
+  margin: 0;
+  color: var(--rose);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.diary-stickers {
+  display: flex;
+  gap: 8px;
+}
+
+.diary-page {
+  margin: 14px 6px 0;
+  padding: 26px 22px 70px 58px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, transparent 44px, var(--rose) 44px, var(--rose) 45.5px, transparent 45.5px),
+    repeating-linear-gradient(180deg, transparent 0 27px, rgb(100 124 159 / 0.35) 27px 28px),
+    var(--white);
+  background-position: 0 0, 0 58px, 0 0;
+  box-shadow: var(--hard-shadow-soft);
+  color: var(--navy);
+  rotate: 1.5deg;
+  animation: page-in 520ms var(--ease-pop) both;
+}
+
+.diary-title {
+  margin: 0 0 10px;
+  color: var(--burgundy);
+  font-family: var(--font-hand);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.diary-text {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 23px;
+  line-height: 28px;
+  animation: write-in 1.4s 0.35s steps(28) both;
+}
+
+.diary-scrap {
+  position: absolute;
+  right: -14px;
+  bottom: -18px;
+  width: 92px;
+  height: 64px;
+  background: repeating-linear-gradient(90deg, var(--navy) 0 6px, var(--cream) 6px 9px, var(--navy) 9px 15px, var(--rose) 15px 17px);
+  clip-path: polygon(4% 8%, 22% 0, 48% 6%, 74% 0, 100% 9%, 96% 50%, 100% 92%, 70% 100%, 40% 94%, 12% 100%, 0 70%, 5% 38%);
+  rotate: -12deg;
+  animation: drop-in 520ms 0.4s var(--ease-pop) both;
+}
+
+.reward-title {
+  margin-top: 6px;
+  animation: pop-in 480ms var(--ease-pop) both;
+}
+
+.reward-pieces {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  padding: 18px 0 30px;
+}
+
+.reward-piece {
+  width: min(62%, 230px);
+  margin: 0;
+  rotate: var(--tilt, -5deg);
+  animation: drop-in 560ms var(--ease-pop) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.reward-pieces.count-2 .reward-piece {
+  width: 44%;
+}
+
+.reward-piece img {
+  display: block;
+  width: 100%;
+  border-radius: 3px;
+  box-shadow: var(--hard-shadow-soft);
+}
+
+.reward-stamp {
+  position: absolute;
+  right: 8%;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  border: 4px solid var(--rose);
+  border-radius: 50%;
+  color: var(--rose);
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: stamp-slam 480ms 0.55s var(--ease-out) both;
+}
+
+.reward-info {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+.reward-hand {
+  margin: 0;
+  color: var(--rose);
+  font-size: 25px;
+  rotate: -2deg;
+}
+
+/* ==========================================================================
+   Arrived pop-up: "you made it."
+   ========================================================================== */
+
+.arrived-title {
+  margin: 0;
+  color: var(--primary);
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1.05;
+  animation: pop-in 460ms var(--ease-pop) both;
+}
+
+.arrived-stickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.challenge-card.stitched {
+  border: var(--ink-line);
+  box-shadow: var(--hard-shadow);
+  background: var(--white);
+}
+
+.stack-sm {
+  display: grid;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Start (locked) screen: "someone left you a message."
+   ========================================================================== */
+
+.locked-screen .locked-logo {
+  align-self: flex-start;
+  width: 72px;
+}
+
+.locked-screen .locked-hero {
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-bottom: var(--space-4);
+  text-align: left;
+}
+
+.start-pile {
+  position: relative;
+  align-self: stretch;
+  height: 210px;
+  margin-bottom: 8px;
+}
+
+.start-patch {
+  position: absolute;
+  display: block;
+  border-radius: 3px;
+  box-shadow: var(--hard-shadow-soft);
+  animation: drop-in 620ms var(--ease-pop) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.start-patch.is-rings {
+  top: 6px;
+  left: -6px;
+  width: 132px;
+  height: 132px;
+  background: repeating-radial-gradient(circle, var(--blue) 0 7px, var(--cream) 7px 11px), var(--sage);
+  rotate: 11deg;
+}
+
+.start-patch.is-stripes {
+  top: 0;
+  right: 0;
+  width: 128px;
+  height: 116px;
+  background: repeating-linear-gradient(90deg, var(--burgundy) 0 7px, var(--cream) 7px 10px, var(--burgundy) 10px 15px, var(--rose) 15px 17px);
+  rotate: -9deg;
+}
+
+.start-patch.is-check {
+  bottom: 0;
+  left: 34%;
+  width: 116px;
+  height: 92px;
+  background:
+    repeating-linear-gradient(0deg, rgb(194 144 149 / 0.55) 0 9px, transparent 9px 18px),
+    repeating-linear-gradient(90deg, rgb(194 144 149 / 0.55) 0 9px, transparent 9px 18px),
+    var(--cream);
+  rotate: 4deg;
+}
+
+.start-title {
+  margin: 0;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.08;
+  animation: rise-in 520ms 0.4s var(--ease-out) both;
+}
+
+.start-aside {
+  margin: 0;
+  color: var(--rose);
+  font-size: 24px;
+  rotate: -2deg;
+  animation: fade-in 600ms 0.7s ease-out both;
+}
+
+.start-where {
+  margin-top: 4px;
+  white-space: normal;
+}
+
+.start-where .start-lock {
+  width: 12px;
+  height: 12px;
+}
+
+/* ==========================================================================
+   Memory cards: cloth patches
+   ========================================================================== */
+
+.memory-card {
+  --tilt: -1.5deg;
+  rotate: var(--tilt);
+}
+
+.memory-card:nth-child(3n + 2) {
+  --tilt: 1deg;
+}
+
+.memory-card:nth-child(3n) {
+  --tilt: -0.6deg;
+}
+
+.memory-card:nth-child(4n) {
+  --tilt: 1.4deg;
+}
+
+.memory-back,
+.memory-front {
+  border: var(--ink-line);
+  box-shadow: inset 0 0 0 0 transparent, var(--hard-shadow);
+}
+
+.memory-back {
+  background: var(--navy);
+}
+
+.memory-card:nth-child(even) .memory-back {
+  background: var(--burgundy);
+}
+
+.memory-back::after {
+  border-color: rgb(230 224 214 / 0.6);
+}
+
+.memory-back::before {
+  content: '?';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.memory-hard .memory-back::before {
+  font-size: 20px;
+}
+
+.memory-card.is-found .memory-card-inner {
+  animation: wobble 520ms ease-in-out;
+}
+
+/* ==========================================================================
+   Collection: your stash (scrapbook)
+   ========================================================================== */
+
+.collect-card.is-piece {
+  --tilt: -2deg;
+  border: var(--ink-line);
+  box-shadow: var(--hard-shadow);
+  rotate: var(--tilt);
+  animation: drop-in 480ms var(--ease-pop) both;
+}
+
+.collect-grid li:nth-child(even) .collect-card.is-piece {
+  --tilt: 2deg;
+  --tape-rot: 6deg;
+}
+
+.collect-grid li:nth-child(3n) .collect-card.is-piece {
+  --tilt: -1deg;
+}
+
+.collect-card.is-diary {
+  border: var(--ink-line);
+  box-shadow: var(--hard-shadow);
+}
+
+.collect-card-diary {
+  display: block;
+  padding: 12px 12px 12px 22px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, transparent 14px, var(--rose) 14px, var(--rose) 15px, transparent 15px),
+    repeating-linear-gradient(180deg, transparent 0 21px, rgb(100 124 159 / 0.3) 21px 22px),
+    var(--white);
+  color: var(--navy);
+  font-size: 18px;
+  line-height: 22px;
+  text-align: left;
+}
+
+/* ==========================================================================
+   Finale: sew your page + ode à toi (SewPage.jsx)
+   ========================================================================== */
+
+.finale-hand {
+  margin: 0 0 var(--space-4);
+  color: var(--primary);
+  font-size: 25px;
+  rotate: -2deg;
+}
+
+.finale-reveal .btn + .btn {
+  margin-top: var(--space-2);
+}
+
+.sew-screen .deep-inner {
+  gap: 12px;
+}
+
+.sew-eyebrow {
+  margin: 0;
+  color: var(--rose);
+}
+
+.sew-title {
+  font-size: 34px;
+}
+
+.sew-cloth {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(0deg, rgb(28 36 48 / 0.04) 0 2px, transparent 2px 4px),
+    var(--cream);
+  box-shadow: var(--hard-shadow-soft);
+  touch-action: none;
+}
+
+.sew-cloth::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1.5px dashed rgb(75 30 35 / 0.4);
+  pointer-events: none;
+}
+
+.sew-piece {
+  position: absolute;
+  width: 34%;
+  translate: -50% -50%;
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 rgb(28 36 48 / 0.3);
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: drop-in 420ms var(--ease-pop) both;
+}
+
+.sew-cloth.is-interactive .sew-piece {
+  cursor: grab;
+}
+
+.sew-piece.is-selected {
+  outline: 2.5px dashed var(--rose);
+  outline-offset: 4px;
+}
+
+.sew-piece.is-stitched {
+  border: 3px dashed var(--burgundy);
+}
+
+.sew-word {
+  position: absolute;
+  right: 6%;
+  bottom: 5%;
+  color: var(--burgundy);
+  font-size: 30px;
+  rotate: -3deg;
+}
+
+.sew-hint {
+  margin: 0;
+  color: var(--rose);
+  font-size: 22px;
+  rotate: -1.5deg;
+}
+
+.sew-tools {
+  display: flex;
+  gap: 8px;
+}
+
+.sew-tools .sticker {
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  animation: none;
+}
+
+.sew-tools .sticker:disabled {
+  opacity: 0.4;
+}
+
+.sew-tray {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: 14px;
+  background: var(--navy);
+}
+
+.sew-tray-piece {
+  flex: none;
+  width: 64px;
+  height: 58px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: transform 180ms var(--ease-pop), opacity 180ms;
+}
+
+.sew-tray-piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.sew-tray-piece:active {
+  transform: scale(0.9);
+}
+
+.sew-tray-piece.is-used {
+  opacity: 0.3;
+}
+
+.sew-input {
+  flex: none;
+}
+
+.ode-aside {
+  margin: -8px 0 0;
+  color: var(--rose);
+  font-size: 22px;
+  rotate: -2deg;
+}
+
+.ode-frame {
+  margin: 6px 10px 0;
+  padding: 18px 18px 12px;
+  background: var(--white);
+  box-shadow: var(--hard-shadow-soft);
+  rotate: -1.5deg;
+  animation: page-in 560ms var(--ease-pop) both;
+}
+
+.ode-frame figcaption {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ode-frame .sew-cloth {
+  box-shadow: none;
+}
+
+.ode-closing {
+  margin: 0;
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.deep-screen .btn.ode-secondary {
+  background: transparent;
+  border: 1.5px solid var(--cream);
+  color: var(--cream);
+}
+
+.sew-screen .sew-cloth,
+.ode-frame {
+  align-self: center;
+  width: min(100%, 300px);
+}
+
+.ode-frame .sew-cloth {
+  width: 100%;
+}

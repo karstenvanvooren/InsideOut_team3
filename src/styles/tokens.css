@@ -90,7 +90,7 @@
   --font-display: 'Syne', 'Inter', system-ui, sans-serif; /* Bold 700 only */
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --font-hand: 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+  --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive; /* handwriting: diary, notes */
   --font-serif: Georgia, 'Times New Roman', serif;
 
   --fs-screen-title: 32px;

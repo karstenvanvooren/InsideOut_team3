@@ -324,13 +324,21 @@ The QR codes are **not** part of the website. They only contain its address. So 
 
 - **Story content** in `story.json` and `onboarding.json`: route 1 (Stadsfeestzaal → Sint-Carolus Borromeuskerk → Plantin-Moretus → MoMu → Bourla → Maagdenhuis → KMSKA), its coordinates and the **riddles** are real; some challenge options and the intro texts are still marked "TODO".
 - **Hooks**: 2 per leg, each one chapter (1–12) of Louise Bourgeois' story, told without her name before the MoMu or the artwork before the KMSKA. Their positions are still on the straight line between two places (some are inside buildings).
-- **Fragments + finale picture**: torn fabric pieces, 6 real (`"real": true`) and 6 fake, cut from a **stand-in page** in the style of *Ode à l'oubli* (`node scripts/generate-fragments.js`). Replace with pieces of our own photo of the artwork and update `"place"` of the real ones (see `finale._todo` in `story.json`).
+- **Fragments + finale picture**: pages of *Ode à l'oubli*. The 6 real ones (`"real": true`) are cut from the photo of the work (`scripts/fragments/ode-a-loubli-photo.png` → `public/fragments/real-*.jpg`, finale picture `artwork.jpg`); the 6 fakes (`fake-*.jpg`) are our own cloth pages in the same style. The photo is small (450 px), so the pieces are a bit soft: a sharper photo of the wall gives sharper pieces (then also update `finale.size` and each real fragment's `"place"`, in pixels of the new picture).
 - **Finale**: the real pieces fly into the page, the reveal (Louise Bourgeois, *Ode à l'oubli*), the player's numbers and a closing line; the collection then shows real/fake. Texts in `story.json` → `finale`. The old museum test is parked in `src/parked/finale/`.
 - **App icons**: `public/icons/` (simple generated placeholders).
 - **No offline mode** yet (no service worker).
 #   I n s i d e O u t _ t e a m 3 
  
  
+
+## Look & feel (hi-fi v3)
+
+Our colour scheme and components, with the details of *Ode à l'oubli*: thin navy lines with a small hard shadow, tape, stitches, small tilted stickers and handwriting (Caveat). All of it is in `src/styles/collage.css` (with the animations).
+
+- **Riddles as a chat** with Sfumato (`src/game/popups/RiddleChat.jsx`). What Sfumato says before each riddle: `locations[].chat` in `story.json`.
+- **Hooks are pages from her diary**, **a new piece** gets confetti and a FOUND stamp (`src/game/popups/BigMoments.jsx`), both on deep burgundy.
+- **Finale**: the reveal, then the player **sews their own page** from the real pieces and can share it as a story picture, "ode à toi" (`src/game/screens/SewPage.jsx`). The page is saved in the browser (`insideout.page.v1`).
 
 ## Challenges (2 per location)
 

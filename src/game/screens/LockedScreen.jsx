@@ -109,21 +109,18 @@ export default function LockedScreen() {
       {/* Logo for now (Figma style guide: Logo). public/brand/sfumato-logo.png */}
       <img className="locked-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="520" height="465" />
       <div className="locked-hero">
-        <div className="locked-glow" aria-hidden="true">
-          <span className="locked-glow-burgundy" />
-          <span className="locked-glow-olive" />
+        {/* A little pile of cloth, like the pages of the artwork */}
+        <div className="start-pile" aria-hidden="true">
+          <span className="start-patch is-rings taped" style={{ '--tape-rot': '-14deg' }} />
+          <span className="start-patch is-stripes taped" style={{ '--tape-rot': '10deg', '--delay': '150ms' }} />
+          <span className="start-patch is-check taped" style={{ '--tape-rot': '-4deg', '--delay': '300ms' }} />
         </div>
-        <LockIcon open={unlocked} className="locked-lock" />
         <h1 className="visually-hidden">{meta.title} – locked</h1>
-        <p className="locked-title">Scan the QR to begin</p>
-
-        <div className="start-card">
-          <span className="start-card-pin" aria-hidden="true" />
-          <div>
-            <div className="start-card-name">{start.name}</div>
-            <div className="start-card-address">{start.address}</div>
-          </div>
-        </div>
+        <p className="start-title">someone left you a message.</p>
+        <p className="start-aside hand">(it’s about a woman who never threw anything away)</p>
+        <span className="sticker is-dark start-where" style={{ '--tilt': '-2deg', '--delay': '500ms' }}>
+          <LockIcon open={unlocked} className="start-lock" /> {start.name} · {start.address}
+        </span>
         {config.showDistanceOnLock && check && <p className="locked-distance">{formatDistance(check.distance)} away</p>}
       </div>
 

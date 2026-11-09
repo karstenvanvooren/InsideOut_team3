@@ -40,7 +40,7 @@ export default function Collection() {
   return (
     <div className="page collection">
       <header className="collection-head">
-        <h1 className="screen-title">Collection</h1>
+        <h1 className="screen-title">your stash.</h1>
         {/* The bottom nav takes you back during the game; before that there's no nav */}
         {!STARTED_PHASES.includes(phase) && (
           <button type="button" className="text-btn" onClick={() => navigate('/')}>
@@ -51,10 +51,10 @@ export default function Collection() {
 
       <div className="tabs" role="tablist">
         <button type="button" role="tab" aria-selected={tab === 'fragments'} className="tab" onClick={() => setTab('fragments')}>
-          Fragments {found.length}/{allFragments.length}
+          Pieces {found.length}/{allFragments.length}
         </button>
         <button type="button" role="tab" aria-selected={tab === 'hooks'} className="tab" onClick={() => setTab('hooks')}>
-          Hooks {hooksCollected}/{hooksTotal}
+          Her diary {hooksCollected}/{hooksTotal}
         </button>
       </div>
 
@@ -73,7 +73,7 @@ export default function Collection() {
           {allFragments.map((fragment) =>
             found.includes(fragment.id) ? (
               <li key={fragment.id}>
-                <button type="button" className="collect-card" onClick={() => setOpen({ kind: 'fragment', item: fragment })}>
+                <button type="button" className="collect-card is-piece taped" onClick={() => setOpen({ kind: 'fragment', item: fragment })}>
                   <FragmentThumb fragment={fragment} className="collect-card-image" />
                   <span className="collect-card-name">Fragment {fragmentNumber(fragment.id)}</span>
                   {verdict(fragment)}
@@ -89,10 +89,8 @@ export default function Collection() {
           {hooks.map((hook) =>
             isHookCollected(hook.id) ? (
               <li key={hook.id}>
-                <button type="button" className="collect-card" onClick={() => setOpen({ kind: 'hook', item: hook })}>
-                  <span className="collect-card-image collect-card-hook">
-                    <HookThumb />
-                  </span>
+                <button type="button" className="collect-card is-diary" onClick={() => setOpen({ kind: 'hook', item: hook })}>
+                  <span className="collect-card-image collect-card-diary hand">{hook.content?.text?.split('. ')[0] ?? ''}…</span>
                   <span className="collect-card-name">{hook.content?.title ?? hook.id}</span>
                   <span className="collect-card-sub">Chapter {hook.content?.chapter ?? '–'}</span>
                 </button>

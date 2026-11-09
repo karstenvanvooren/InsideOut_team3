@@ -15,9 +15,11 @@ import { getLocations, getStart, isLastLocation } from '../lib/story.js'
 import { patterns, vibrate } from '../lib/vibrate.js'
 import { useGame } from './GameProvider.jsx'
 import Challenge from './challenges/index.jsx'
-import { ArrivedPopup, FragmentPopup } from './popups/LocationPopups.jsx'
+import { ArrivedPopup } from './popups/LocationPopups.jsx'
+import { FragmentReward } from './popups/BigMoments.jsx'
 import FinaleScreen from './screens/FinaleScreen.jsx'
-import RiddlePopup, { SolvedRiddle } from './popups/RiddlePopup.jsx'
+import { SolvedRiddle } from './popups/RiddlePopup.jsx'
+import RiddleChat from './popups/RiddleChat.jsx'
 import Steps from './popups/Steps.jsx'
 import { useHookMarkers } from './screens/useHookMarkers.js'
 
@@ -106,8 +108,8 @@ export default function MainScreen() {
         </BottomSheet>
       ))}
 
-      <BottomSheet open={isOpen('riddle')} label="Riddle">
-        <RiddlePopup
+      {isOpen('riddle') && (
+        <RiddleChat
           key={locationIndex}
           location={location}
           index={locationIndex}
@@ -116,7 +118,7 @@ export default function MainScreen() {
           onSolve={game.solveRiddle}
           onMinimise={() => setMinimised(true)}
         />
-      </BottomSheet>
+      )}
 
       <BottomSheet open={showSolvedRiddle && phase === 'navigating'} onClose={() => setShowSolvedRiddle(false)} label="The riddle">
         <SolvedRiddle location={location} index={locationIndex} />
@@ -145,9 +147,10 @@ export default function MainScreen() {
         />
       )}
 
-      <BottomSheet open={isOpen('fragment') && game.lastFragments?.length > 0} dim label="Fragment unlocked">
-        <FragmentPopup
-          fragmentIds={game.lastFragments ?? []}
+      {isOpen('fragment') && game.lastFragments?.length > 0 && (
+        <FragmentReward
+          key={game.lastFragments.join()}
+          fragmentIds={game.lastFragments}
           found={game.fragments.length}
           nextLabel={
             challengeIndex + 1 < challengeTotal ? 'Next challenge' : isLastLocation(locationIndex) ? 'To the finale' : 'Next riddle'
@@ -157,7 +160,7 @@ export default function MainScreen() {
             game.continueAfterFragment()
           }}
         />
-      </BottomSheet>
+      )}
 
       {phase === 'finale' && <FinaleScreen key={phaseSince} />}
 

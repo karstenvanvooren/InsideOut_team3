@@ -2340,8 +2340,7 @@ body.has-game-nav .finale-screen {
 
 .finale-artwork {
   position: relative;
-  width: min(100%, 300px);
-  aspect-ratio: 600 / 800;
+  width: min(100%, 360px);
   margin: var(--space-3) auto var(--space-5);
   border-radius: 6px;
   box-shadow: var(--shadow-card);
@@ -2364,6 +2363,9 @@ body.has-game-nav .finale-screen {
 
 .finale-piece {
   position: absolute;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18);
   opacity: 0;
   transform: translate(var(--from-x), var(--from-y)) rotate(var(--turn)) scale(1.2);
   transition: transform 700ms var(--ease-out), opacity 300ms ease;
@@ -2489,7 +2491,7 @@ body.has-game-nav .finale-screen {
 
 .collect-artwork img {
   width: 72px;
-  aspect-ratio: 600 / 800;
+  aspect-ratio: 1 / 1;
   border-radius: 4px;
   object-fit: cover;
 }

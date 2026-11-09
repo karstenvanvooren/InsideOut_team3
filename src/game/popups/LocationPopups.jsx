@@ -12,13 +12,18 @@ export function ArrivedPopup({ location, index, challenge, number, total, onOpen
   if (!challenge) return null
   return (
     <div className="stack">
-      <div>
-        <Eyebrow>
-          {number === 1 ? `You’ve arrived · Location ${index + 1}/${getLocations().length}` : `Next challenge · ${location.name}`}
-        </Eyebrow>
-        <h2 className="sheet-title">{number === 1 ? location.name : challenge.title}</h2>
+      <div className="stack-sm">
+        <h2 className="arrived-title">{number === 1 ? 'you made it.' : 'next one.'}</h2>
+        <div className="arrived-stickers">
+          <span className="sticker is-white" style={{ '--tilt': '-2deg' }}>
+            {location.name}
+          </span>
+          <span className="sticker" style={{ '--tilt': '3deg', '--delay': '120ms' }}>
+            location {index + 1}/{getLocations().length}
+          </span>
+        </div>
       </div>
-      <div className="challenge-card">
+      <div className="challenge-card stitched">
         <Eyebrow tone="blue">
           Challenge {number}/{total}
         </Eyebrow>

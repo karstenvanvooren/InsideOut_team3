@@ -8,8 +8,11 @@ import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
 import '@fontsource/syne/700.css'
+import '@fontsource/caveat/400.css'
+import '@fontsource/caveat/700.css'
 import './styles/tokens.css'
 import './styles/global.css'
+import './styles/collage.css'
 import { trackAppHeight } from './lib/appHeight.js'
 
 trackAppHeight()
