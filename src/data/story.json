@@ -59,13 +59,12 @@
           "intro": "Go inside the church and ask someone this question. Then pick the right answer.",
           "question": "Go inside and ask: which museum can you visit on Wednesday?",
           "options": [
-            "Option A (to decide)",
-            "Option B (to decide)",
-            "Option C (to decide)",
-            "Option D (to decide)"
+            "Rubenshuis",
+            "Kantenmuseum",
+            "Museum aan de Stroom (MAS)",
+            "Snijders&Rockoxhuis"
           ],
-          "answer": null,
-          "_todo": "Answer options still to decide. While answer is null, every option counts as correct.",
+          "answer": 1,
           "fragments": [
             "f01"
           ]
@@ -77,13 +76,12 @@
           "intro": "Find the library and look for the oldest book.",
           "question": "What’s the oldest book in the library?",
           "options": [
-            "Option A (to decide)",
-            "Option B (to decide)",
-            "Option C (to decide)",
-            "Option D (to decide)"
+            "Liber Floridus",
+            "Biblia Polyglotta",
+            "Suasoriae",
+            "Hortus Deliciarum"
           ],
-          "answer": null,
-          "_todo": "Answer options still to decide. While answer is null, every option counts as correct.",
+          "answer": 2,
           "fragments": [
             "f07"
           ]
@@ -380,9 +378,8 @@
           "intro": "Put the picture back together, piece by piece.",
           "question": "Puzzle the picture together",
           "text": "Tap a piece, then tap where it goes.",
-          "image": "/challenges/puzzle-placeholder.svg",
+          "image": "/challenges/puzzle-thread.svg",
           "size": 3,
-          "_todo": "Picture is a placeholder: choose the real image.",
           "fragments": [
             "f11"
           ]
@@ -433,7 +430,7 @@
           "title": "The hidden fragments",
           "intro": "The last two fragments are hidden somewhere in the museum. Find them and scan them.",
           "question": "Find the last two fragments hidden in the museum",
-          "text": "Point your camera at a hidden fragment.",
+          "text": "One is at the artwork itself. The other one is on your way up the stairs.",
           "codes": [
             {
               "qrId": "hidden1",
@@ -765,7 +762,7 @@
     }
   ],
   "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style. A sharper photo gives sharper pieces (see README).",
-  "_hooks_note": "Hooks tell Louise Bourgeois' story in order (chapter 1–12), without giving away her name before the MoMu challenge or the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
+  "_hooks_note": "Hooks hang anywhere in the streets (no fixed spot, the coordinates are only used by the dev panel). The diary chapters come in the order you find hooks: your 1st hook = chapter 1, your 2nd = chapter 2, … whatever QR it is. Chapters tell Louise Bourgeois' story without giving away the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
   "finale": {
     "image": "/fragments/artwork.jpg",
     "alt": "Ode à l'oubli: 36 framed fabric pages on a museum wall.",

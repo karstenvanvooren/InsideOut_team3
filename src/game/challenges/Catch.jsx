@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { patterns, vibrate } from '../../lib/vibrate.js'
 import ChallengeFrame, { useChallenge } from './ChallengeFrame.jsx'
+import MemoryArt from './memoryArt.jsx'
 
 const SPAWN_MS = 900
 const FALL_PX_PER_S = 120
 const BASKET_W = 110
-const ITEM_H = 40
+const ITEM_H = 58 // the falling tools are little cloth tiles (memoryArt.jsx)
 
 export default function Catch({ onClose }) {
   const { challenge, solve, solved } = useChallenge()
@@ -102,8 +103,9 @@ export default function Catch({ onClose }) {
         onPointerMove={(e) => e.buttons && moveTo(e.clientX)}
       >
         {items.map((it) => (
-          <span key={it.id} className="catch-item" style={{ left: `${it.x * 100}%`, transform: `translate(-50%, ${it.y}px)` }}>
-            {it.name}
+          <span key={it.id} className="catch-item" style={{ left: `${it.x * 100}%`, transform: `translate(-50%, ${it.y}px) rotate(${(it.id % 5) * 6 - 12}deg)` }}>
+            <MemoryArt name={it.name} />
+            <span className="visually-hidden">{it.name}</span>
           </span>
         ))}
         <div className={`catch-basket ${flash === 'good' ? 'pop' : ''} ${flash === 'bad' ? 'shake' : ''}`} style={{ left: `${basket * 100}%`, width: BASKET_W }}>

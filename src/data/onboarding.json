@@ -2,28 +2,28 @@
   "hooksIntro": {
     "steps": [
       {
-        "title": "TODO – What are hooks?",
-        "text": "Placeholder. Hidden around Antwerp are hooks: small QR codes in the streets between the locations."
+        "title": "Hooks",
+        "text": "Small stickers with a QR code hang in the streets of Antwerp. We call them hooks. Each one holds a page from her diary."
       },
       {
-        "title": "TODO – Collect them on the way",
-        "text": "Placeholder. Keep your eyes open while you walk. Scan a hook to add it to your collection. You don’t need them to finish the case, but they tell you more."
+        "title": "Keep your eyes open",
+        "text": "They hang anywhere on your way – on poles, walls, doors. Spot one, scan it, and a new chapter of her story is yours. You don’t need them to finish, but you’ll understand more."
       }
     ]
   },
   "tutorial": {
     "steps": [
       {
-        "title": "TODO – The map",
-        "text": "Placeholder. The map shows where you are and the trail to the next location."
+        "title": "The map",
+        "text": "Solve a riddle and the map shows you the way: a line from where you are to the next place. Look up, not down – it’s a walk, not a race."
       },
       {
-        "title": "TODO – Your collection",
-        "text": "Placeholder. Everything you find – fragments and hooks – ends up in your collection. Open it any time with the Collection button."
+        "title": "Your stash",
+        "text": "Every piece of cloth and every diary page you find ends up in your stash. Open it with Collection, and tap something to turn it around."
       },
       {
-        "title": "TODO – Scanning",
-        "text": "Placeholder. Found a hook? Tap Scan hook and point your camera at the QR code.",
+        "title": "Scanning",
+        "text": "Found a hook, or a QR code at a location? Tap the round Scan button and point your camera at it.",
         "image": ""
       }
     ]
@@ -31,12 +31,12 @@
   "riddleIntro": {
     "steps": [
       {
-        "title": "TODO – How riddles work",
-        "text": "Placeholder. Every riddle hides the name of a place in Antwerp. Type the name to find out where to go next."
+        "title": "Riddles",
+        "text": "Sfumato texts you a riddle. The answer is always a place in Antwerp. Type its name in the chat – small typos are fine."
       },
       {
-        "title": "TODO – Stuck?",
-        "text": "Placeholder. Every wrong answer gives you a hint. After three wrong answers we show you the answer, so you can keep playing."
+        "title": "Stuck?",
+        "text": "Every wrong answer gets you a hint. After three wrong answers Sfumato just tells you, so you can keep walking. No shame."
       }
     ]
   }

@@ -380,16 +380,20 @@
 .catch-item {
   position: absolute;
   top: 0;
-  padding: 8px 14px;
-  border-radius: 16px;
+  width: 58px;
+  height: 58px;
+  overflow: hidden;
+  border: var(--ink-line, 1.5px solid var(--navy));
+  border-radius: 10px;
   background: var(--surface);
-  box-shadow: var(--shadow-card);
-  color: var(--text);
-  font-size: var(--fs-eyebrow);
-  font-weight: 600;
-  white-space: nowrap;
+  box-shadow: 2px 2px 0 var(--navy);
   pointer-events: none;
   will-change: transform;
+}
+
+.catch-item .memory-art {
+  width: 100%;
+  height: 100%;
 }
 
 .catch-basket {

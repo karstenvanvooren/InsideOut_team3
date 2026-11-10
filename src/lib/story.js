@@ -27,6 +27,12 @@ export function legTo(index) {
 
 export const getHooks = () => story.hooks
 export const getHook = (id) => hooksById[id] ?? null
+/**
+ * Hooks hang anywhere in the streets, so her story follows the order you find them:
+ * your 1st hook = chapter 1, your 2nd = chapter 2, … whatever QR it was.
+ * n = how many hooks you have now → the chapter you just got.
+ */
+export const getChapter = (n) => story.hooks[Math.max(0, n - 1)] ?? null
 export const getHooksOnLeg = (leg) => story.hooks.filter((hook) => hook.leg === leg)
 
 export const getFragments = () => story.fragments

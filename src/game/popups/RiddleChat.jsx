@@ -14,7 +14,11 @@ const TYPE_MS = 750 // "typing…" before each message
 const SOLVED_MS = 1700
 
 const DEFAULT_LINES = [['psst. you came.', 'I hid my memories all over Antwerp. The first one is close.'], ['nice. that was one.', 'the next one is a little further.']]
-const NOPE = ['nope. close though.', 'not that one.', 'hmm. no.']
+// Sfumato's replies: several of each, so it doesn't repeat itself across the 6 riddles
+const NOPE = ['nope. close though.', 'not that one.', 'hmm. no.', 'nice try. no.', 'cold. very cold.', 'that’s not it.', 'no – but you’re thinking.', 'wrong place.', 'almost. not really.']
+const YES = ['yes. that’s the place.', 'there it is.', 'you got it.', 'exactly that one.', 'yes! go.', 'correct. I knew you would.']
+const TELL = ['it’s {name}. no shame.', 'okay, I’ll tell you: {name}.', 'it’s {name}. happens to the best.']
+const pick = (list, n) => list[n % list.length]
 
 let nextId = 1
 const msg = (from, kind, text) => ({ id: nextId++, from, kind, text })
@@ -71,7 +75,7 @@ export default function RiddleChat({ location, index, wrong, onWrong, onSolve })
     if (isCorrectRiddleAnswer(text, riddle.answers)) {
       setSolved(true)
       vibrate(patterns.found)
-      say(msg('them', 'text', 'yes. that’s the place.'), msg('them', 'solved', location.name))
+      say(msg('them', 'text', pick(YES, index)), msg('them', 'solved', location.name))
       setTimeout(() => onSolve(), TYPE_MS * 2 + SOLVED_MS)
       return
     }
@@ -80,9 +84,9 @@ export default function RiddleChat({ location, index, wrong, onWrong, onSolve })
     vibrate(patterns.wrong ?? patterns.tap)
     if (count >= REVEAL_AFTER) {
       setRevealed(true)
-      say(msg('them', 'text', `it’s ${location.name}. no shame.`))
+      say(msg('them', 'text', pick(TELL, index).replace('{name}', location.name)))
     } else {
-      say(msg('them', 'text', NOPE[(count - 1) % NOPE.length]), ...(hints[count - 1] ? [msg('them', 'hint', `hint: ${hints[count - 1]}`)] : []))
+      say(msg('them', 'text', pick(NOPE, index * 2 + count - 1)), ...(hints[count - 1] ? [msg('them', 'hint', `hint: ${hints[count - 1]}`)] : []))
     }
   }
 
@@ -92,7 +96,7 @@ export default function RiddleChat({ location, index, wrong, onWrong, onSolve })
     <section className="riddle-chat" aria-label={`Riddle ${index + 1}`}>
       <header className="chat-head">
         <span className="chat-avatar" aria-hidden="true">
-          <img src="/fragments/real-5.jpg" alt="" />
+          <img src="/brand/sfumato-avatar.png" alt="" />
         </span>
         <div className="chat-who">
           <strong>Sfumato</strong>

@@ -34,7 +34,7 @@ function MoreOutThere({ count, text, tall = false }) {
 // Everything is taped into a scrapbook; tap something and it turns around.
 export default function Collection() {
   const navigate = useNavigate()
-  const { phase, fragments: found, isHookCollected, hooksCollected, hooksTotal } = useGame()
+  const { phase, fragments: found, hooksCollected, hooksTotal } = useGame()
   const [tab, setTab] = useState('fragments')
   const [open, setOpen] = useState(null) // { kind: 'artwork', item }
   const [flipped, setFlipped] = useState(null) // the card that shows its back
@@ -98,8 +98,9 @@ export default function Collection() {
         </ul>
       ) : (
         <ul className="stash-grid">
+          {/* her story in the order you found the hooks (see getChapter) */}
           {hooks
-            .filter((hook) => isHookCollected(hook.id))
+            .slice(0, hooksCollected)
             .map((hook, i) => (
               <FlipItem key={hook.id} index={i} flipped={flipped === hook.id} onFlip={() => flip(hook.id)} label={hook.content?.title ?? 'Diary page'} tall>
                 <span className="stash-front stash-diary taped">

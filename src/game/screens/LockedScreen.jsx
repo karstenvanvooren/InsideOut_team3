@@ -106,8 +106,8 @@ export default function LockedScreen() {
   return (
     <>
     <div className="locked-screen theme-dark">
-      {/* Logo for now (Figma style guide: Logo). public/brand/sfumato-logo.png */}
-      <img className="locked-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="520" height="465" />
+      {/* Sfumato logo (public/brand/sfumato-logo.png, from the team) */}
+      <img className="locked-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="360" height="322" />
       <div className="locked-hero">
         {/* A little pile of cloth, like the pages of the artwork */}
         <div className="start-pile" aria-hidden="true">

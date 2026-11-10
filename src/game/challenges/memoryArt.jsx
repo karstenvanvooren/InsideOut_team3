@@ -1,4 +1,4 @@
-// Illustrations for the memory cards, in the style of the artwork: Louise Bourgeois'
+// Illustrations for the memory cards and the catch game, in the style of the artwork: Louise Bourgeois'
 // "Ode à l'oubli" is a book of fabric collages (stripes, checks, grids, circles,
 // stitched pieces). Every card is a little textile collage: a fabric background,
 // the object cut out of another fabric, and a stitched line around it.
@@ -189,6 +189,110 @@ const OBJECTS = {
         <path d="M34 84H66M50 78V84" />
       </>
     ),
+  },
+  // ---- Catch the right utensils (Maagdenhuis): sewing & lace-making tools…
+  Needle: {
+    bg: ['grid', C.cream, C.rose],
+    piece: ['default', C.navy, C.cream],
+    shape: <path d="M46 8H54V76L50 92 46 76Z" transform="rotate(35 50 50)" />,
+    detail: <path d="M50 14V24" transform="rotate(35 50 50)" style={{ stroke: 'var(--cream)' }} />,
+  },
+  Thread: {
+    bg: ['dots', C.sage, C.cream],
+    piece: ['stripes', C.cream, C.burgundy],
+    shape: <path d="M28 16H72V28H64V72H72V84H28V72H36V28H28Z" />,
+    detail: <path d="M64 46Q84 52 78 80" />,
+  },
+  Bobbin: {
+    bg: ['pinstripe', C.rose, C.cream],
+    piece: ['diagonal', C.cream, C.olive],
+    shape: <path d="M42 8H58V18H54V64Q64 70 59 90H41Q36 70 46 64V18H42Z" />,
+    detail: <path d="M46 30H54M46 40H54M46 50H54" />,
+  },
+  Scissors: {
+    bg: ['gingham', C.cream, C.blue],
+    piece: ['stripes', C.cream, C.navy],
+    shape: (
+      <>
+        <path d="M36 62 74 10 80 15 46 68Z" />
+        <path d="M58 66 28 12 22 17 48 70Z" />
+        <circle cx="34" cy="78" r="12" />
+        <circle cx="64" cy="80" r="12" />
+      </>
+    ),
+    detail: (
+      <>
+        <circle cx="34" cy="78" r="5" />
+        <circle cx="64" cy="80" r="5" />
+      </>
+    ),
+  },
+  Thimble: {
+    bg: ['weave', C.blue, C.cream],
+    piece: ['gingham', C.rose, C.burgundy],
+    shape: <path d="M28 84V46Q28 18 50 18 72 18 72 46V84Z" />,
+    detail: <path d="M28 74H72M40 34H40.1M50 30H50.1M60 34H60.1M38 46H38.1M50 44H50.1M62 46H62.1M38 58H38.1M50 58H50.1M62 58H62.1" />,
+  },
+  Pins: {
+    bg: ['stripes', C.cream, C.sage],
+    piece: ['rings', C.burgundy, C.rose],
+    shape: (
+      <>
+        <circle cx="34" cy="24" r="10" />
+        <circle cx="66" cy="30" r="10" />
+        <path d="M32 32H36V88L34 92 32 88Z" />
+        <path d="M64 38H68V88L66 92 64 88Z" />
+      </>
+    ),
+  },
+  // …and the things that don't belong
+  Fork: {
+    bg: ['diagonal', C.cream, C.rose],
+    piece: ['grid', C.olive, C.cream],
+    shape: (
+      <>
+        <path d="M33 10H38V40H33ZM43 10H48V40H43ZM52 10H57V40H52ZM62 10H67V40H62Z" />
+        <path d="M33 36H67Q67 54 50 54 33 54 33 36Z" />
+        <path d="M46 50H54V90H46Z" />
+      </>
+    ),
+  },
+  Spoon: {
+    bg: ['gingham', C.cream, C.olive],
+    piece: ['pinstripe', C.blue, C.cream],
+    shape: (
+      <>
+        <ellipse cx="50" cy="30" rx="16" ry="20" />
+        <path d="M46 46H54V90H46Z" />
+      </>
+    ),
+  },
+  Knife: {
+    bg: ['dots', C.blue, C.cream],
+    piece: ['stripes', C.cream, C.rose],
+    shape: (
+      <>
+        <path d="M45 8Q64 18 58 58H45Z" />
+        <path d="M43 56H59V92H43Z" />
+      </>
+    ),
+  },
+  Cup: {
+    bg: ['grid', C.rose, C.cream],
+    piece: ['dots', C.cream, C.navy],
+    shape: (
+      <>
+        <path d="M20 30H70V58Q70 78 45 78 20 78 20 58Z" />
+        <path d="M12 84H84V90H12Z" />
+      </>
+    ),
+    detail: <path d="M70 38Q86 38 86 50 86 62 70 62" />,
+  },
+  Plate: {
+    bg: ['weave', C.sage, C.cream],
+    piece: ['rings', C.cream, C.blue],
+    shape: <circle cx="50" cy="50" r="38" />,
+    detail: <circle cx="50" cy="50" r="24" />,
   },
 }
 

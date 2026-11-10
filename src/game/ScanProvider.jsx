@@ -4,6 +4,7 @@ import QrScanner, { hookIdFromText } from '../components/QrScanner.jsx'
 import { HookThumb } from '../components/ui/HookThumb.jsx'
 import { Icon } from '../components/ui/icons.jsx'
 import { DiaryPage } from './popups/BigMoments.jsx'
+import { getChapter } from '../lib/story.js'
 import { vibrate, patterns } from '../lib/vibrate.js'
 import { useGame } from './GameProvider.jsx'
 import { resolveScan } from './scans.js'
@@ -90,7 +91,7 @@ export function ScanProvider({ children }) {
 
       {/* A hook is a chapter of her story: a page from her diary (and later in the collection) */}
       {result?.kind === 'hook-collected' && result.hook && (
-        <DiaryPage hook={result.hook} collected={hooksCollected} total={hooksTotal} onClose={() => setResult(null)} />
+        <DiaryPage hook={getChapter(hooksCollected) ?? result.hook} collected={hooksCollected} total={hooksTotal} onClose={() => setResult(null)} />
       )}
 
       {result?.kind === 'message' && (
