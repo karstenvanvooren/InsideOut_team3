@@ -226,17 +226,18 @@
         },
         {
           "id": "loc3-c2",
-          "type": "type",
-          "title": "Use the word",
-          "intro": "The name you just found is the key to the next piece.",
-          "question": "Use this word to get the next piece",
-          "hint": "Type the name you just found.",
-          "placeholder": "Type the name…",
-          "answers": [
-            "louise bourgeois",
-            "bourgeois"
+          "type": "scan",
+          "title": "Scan in the museum",
+          "intro": "The next piece is hidden somewhere inside MoMu. Find it and scan it.",
+          "question": "Find the hidden code in MoMu and scan it",
+          "text": "Look around inside the museum – the code is hidden somewhere.",
+          "_todo": "Where the code hangs and what the player has to do: the team explains later. Then update intro, question and text. Print the QR with the value momu1 (or the hook link with momu1).",
+          "codes": [
+            {
+              "qrId": "momu1",
+              "fragment": "f09"
+            }
           ],
-          "button": "Unlock",
           "fragments": [
             "f09"
           ]

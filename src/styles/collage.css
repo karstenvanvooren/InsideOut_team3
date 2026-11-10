@@ -716,7 +716,7 @@ html.is-typing .chat-bar {
 
 .locked-screen .locked-logo {
   align-self: flex-start;
-  width: 72px;
+  width: 128px;
 }
 
 .locked-screen .locked-hero {
@@ -1963,4 +1963,40 @@ html.is-typing .chat-bar {
 
 .ticket.is-voucher .ticket-place {
   font-size: 34px;
+}
+
+/* ---------- Stash after the finale: real or fake, stamped on the piece ---------- */
+.collection .collect-artwork {
+  margin-top: var(--space-5);
+  border: var(--ink-line);
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: var(--hard-shadow-soft);
+}
+
+.stash-stamp {
+  position: absolute;
+  right: 6px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 3px 10px;
+  border: 2px solid currentcolor;
+  border-radius: 6px;
+  background: var(--white);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  rotate: -8deg;
+  box-shadow: 2px 2px 0 rgb(28 36 48 / 0.25);
+}
+
+.stash-stamp.is-real {
+  color: var(--olive);
+}
+
+.stash-stamp.is-fake {
+  color: var(--burgundy);
+  rotate: 7deg;
 }

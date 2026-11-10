@@ -1,4 +1,4 @@
-// The hidden fragments (KMSKA): scan the two QR codes hidden in the museum.
+// Scan inside a museum: the QR code(s) hidden there (MoMu: one, KMSKA: two).
 import { useState } from 'react'
 import QrScanner, { hookIdFromText } from '../../components/QrScanner.jsx'
 import { isDevEnabled } from '../../dev/devSettings.js'
@@ -12,7 +12,7 @@ export default function ScanHidden({ onClose }) {
 
   const register = (qrId) => {
     const code = codes.find((c) => c.qrId === qrId)
-    if (!code) return 'That’s not one of the hidden fragments. Keep looking!'
+    if (!code) return codes.length > 1 ? 'That’s not one of the hidden fragments. Keep looking!' : 'That’s not the hidden code. Keep looking!'
     if (found.includes(qrId)) return 'You already found this one – find the other one!'
     const next = [...found, qrId]
     setFound(next)

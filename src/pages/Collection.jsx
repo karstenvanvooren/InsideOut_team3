@@ -102,6 +102,8 @@ export default function Collection() {
               <FlipItem key={fragment.id} index={i} flipped={flipped === fragment.id} onFlip={() => flip(fragment.id)} label={`Fragment ${fragmentNumber(fragment.id)}`}>
                 <span className="stash-front stash-piece taped">
                   <img src={fragment.src} alt="" />
+                  {/* after the finale: stamped real or fake, right on the piece */}
+                  {finished && <span className={`stash-stamp ${fragment.real ? 'is-real' : 'is-fake'}`}>{fragment.real ? 'real' : 'fake'}</span>}
                 </span>
                 <span className="stash-back">
                   <span className="sticker is-tint">fragment {fragmentNumber(fragment.id)}</span>
