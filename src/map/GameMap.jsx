@@ -46,7 +46,8 @@ function addGameLayers(gl, theme) {
     type: 'line',
     source: 'route',
     layout: { 'line-cap': 'round', 'line-join': 'round' },
-    paint: { 'line-color': theme.route, 'line-width': 6 },
+    // a bit thicker than before, and thicker still when you zoom in
+    paint: { 'line-color': theme.route, 'line-width': ['interpolate', ['linear'], ['zoom'], 14, 7, 17, 10, 20, 16] },
   })
 }
 
