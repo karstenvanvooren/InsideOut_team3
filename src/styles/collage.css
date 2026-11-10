@@ -730,7 +730,7 @@ html.is-typing .chat-bar {
 .start-pile {
   position: relative;
   align-self: stretch;
-  height: 210px;
+  height: 190px;
   margin-bottom: 8px;
 }
 
@@ -744,32 +744,29 @@ html.is-typing .chat-bar {
 }
 
 .start-patch.is-rings {
-  top: 6px;
+  top: 22px;
   left: -6px;
-  width: 132px;
-  height: 132px;
-  background: repeating-radial-gradient(circle, var(--blue) 0 7px, var(--cream) 7px 11px), var(--sage);
+  width: 118px;
+  height: 116px;
+  background: url('/fragments/real-3.jpg') center / cover;
   rotate: 11deg;
 }
 
 .start-patch.is-stripes {
-  top: 0;
+  top: 4px;
   right: 0;
-  width: 128px;
-  height: 116px;
-  background: repeating-linear-gradient(90deg, var(--burgundy) 0 7px, var(--cream) 7px 10px, var(--burgundy) 10px 15px, var(--rose) 15px 17px);
+  width: 118px;
+  height: 112px;
+  background: url('/fragments/fake-2.png') center / cover;
   rotate: -9deg;
 }
 
 .start-patch.is-check {
   bottom: 0;
   left: 34%;
-  width: 116px;
-  height: 92px;
-  background:
-    repeating-linear-gradient(0deg, rgb(194 144 149 / 0.55) 0 9px, transparent 9px 18px),
-    repeating-linear-gradient(90deg, rgb(194 144 149 / 0.55) 0 9px, transparent 9px 18px),
-    var(--cream);
+  width: 108px;
+  height: 100px;
+  background: url('/fragments/real-2.jpg') center / cover;
   rotate: 4deg;
 }
 
@@ -1999,4 +1996,58 @@ html.is-typing .chat-bar {
 .stash-stamp.is-fake {
   color: var(--burgundy);
   rotate: 7deg;
+}
+
+.end-credits .end-credits-brand {
+  font-family: var(--font-display);
+  font-size: 40px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.end-credits-by {
+  font-weight: 600;
+}
+
+.end-credits-names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-hand, 'Caveat'), cursive;
+  font-size: 22px;
+}
+
+/* ---------- Map ⇄ stash: the stash slides over the (still mounted) map ---------- */
+.stash-layer {
+  position: fixed;
+  top: 0;
+  left: var(--frame-x);
+  right: var(--frame-x);
+  z-index: 23; /* over the map and its cards, under the nav (25) and the big moments (26) */
+  height: calc(var(--app-h, 100dvh) - var(--nav-height) - env(safe-area-inset-bottom));
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  background: var(--bg);
+  animation: stash-in 280ms var(--ease-out, ease-out) both;
+}
+
+@keyframes stash-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+.stash-layer .page-fade {
+  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stash-layer {
+    animation: none;
+  }
 }

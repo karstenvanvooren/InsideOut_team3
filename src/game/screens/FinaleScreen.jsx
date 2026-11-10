@@ -419,10 +419,15 @@ function EndPage({ game, score, foundReal, real, duration, hasPage, onPage }) {
         </div>
 
         <footer className="end-credits">
-          <span className="eyebrow">{credits.title ?? 'Made by'}</span>
-          <strong>{credits.team ?? meta.title}</strong>
-          {credits.names?.length > 0 && <span>{credits.names.join(' · ')}</span>}
-          {credits.school && <span className="muted">{credits.school}</span>}
+          <strong className="end-credits-brand">Sfumato</strong>
+          <span className="end-credits-by">is made by {credits.team ?? 'Frosinone · team 3'}</span>
+          {credits.names?.length > 0 && (
+            <ul className="end-credits-names">
+              {credits.names.map((name) => (
+                <li key={name}>{name}</li>
+              ))}
+            </ul>
+          )}
           <span className="muted end-credits-art">Artwork: Louise Bourgeois, {story.finale?.subtitle}</span>
         </footer>
       </div>

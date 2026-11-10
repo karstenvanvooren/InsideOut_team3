@@ -109,7 +109,7 @@ export default function LockedScreen() {
       {/* Sfumato logo (public/brand/sfumato-logo.png, from the team) */}
       <img className="locked-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="360" height="322" />
       <div className="locked-hero">
-        {/* A little pile of cloth, like the pages of the artwork */}
+        {/* A little pile of the pieces you'll be looking for (public/fragments) */}
         <div className="start-pile" aria-hidden="true">
           <span className="start-patch is-rings taped" style={{ '--tape-rot': '-14deg' }} />
           <span className="start-patch is-stripes taped" style={{ '--tape-rot': '10deg', '--delay': '150ms' }} />

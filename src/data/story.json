@@ -659,17 +659,17 @@
       "id": "f07",
       "type": "image",
       "title": "Blue dots",
-      "src": "/fragments/fake-1.jpg",
+      "src": "/fragments/fake-1.png",
       "caption": "Earned at Sint-Carolus Borromeuskerk.",
       "off": "Dots in a perfect grid. Look at the wall: no dots like these. We made it."
     },
     {
       "id": "f02",
       "type": "image",
-      "title": "Green ladder",
-      "src": "/fragments/fake-2.jpg",
+      "title": "Olive ladder",
+      "src": "/fragments/fake-2.png",
       "caption": "Earned at Plantin-Moretus.",
-      "off": "A ladder of stripes that climbs nowhere. It’s not on her wall – it’s ours."
+      "off": "A ladder that climbs nowhere. It’s not on her wall – it’s ours."
     },
     {
       "id": "f08",
@@ -688,9 +688,39 @@
     {
       "id": "f03",
       "type": "image",
-      "title": "Blue fan",
+      "title": "Red waves",
       "src": "/fragments/real-3.jpg",
       "caption": "Earned at MoMu.",
+      "real": true,
+      "place": [
+        212,
+        197,
+        120,
+        106
+      ]
+    },
+    {
+      "id": "f09",
+      "type": "image",
+      "title": "Burgundy crosshatch",
+      "src": "/fragments/fake-3.png",
+      "caption": "Earned at MoMu.",
+      "off": "A crosshatch, drawn line by line. You won’t find it on her pages. We made it."
+    },
+    {
+      "id": "f04",
+      "type": "image",
+      "title": "Rose half-moons",
+      "src": "/fragments/fake-4.png",
+      "caption": "Earned at Bourla.",
+      "off": "Half-moons in a neat row. Pretty, but not hers – we made it."
+    },
+    {
+      "id": "f10",
+      "type": "image",
+      "title": "Blue skirt",
+      "src": "/fragments/real-4.jpg",
+      "caption": "Earned at Bourla.",
       "real": true,
       "place": [
         765,
@@ -700,81 +730,51 @@
       ]
     },
     {
-      "id": "f09",
-      "type": "image",
-      "title": "Red crosshatch",
-      "src": "/fragments/fake-3.jpg",
-      "caption": "Earned at MoMu.",
-      "off": "A crosshatch, drawn line by line. You won’t find it on her pages. We made it."
-    },
-    {
-      "id": "f04",
-      "type": "image",
-      "title": "Pink half-moons",
-      "src": "/fragments/fake-4.jpg",
-      "caption": "Earned at Bourla.",
-      "off": "Half-moons in a neat row. Pretty, but not hers – we made it."
-    },
-    {
-      "id": "f10",
-      "type": "image",
-      "title": "Black and white check",
-      "src": "/fragments/real-4.jpg",
-      "caption": "Earned at Bourla.",
-      "real": true,
-      "place": [
-        228,
-        363,
-        102,
-        102
-      ]
-    },
-    {
       "id": "f06",
       "type": "image",
-      "title": "Pinwheel patchwork",
+      "title": "Blue stones",
       "src": "/fragments/real-5.jpg",
       "caption": "Earned at Maagdenhuis.",
       "real": true,
       "place": [
-        393,
-        510,
-        132,
-        117
+        948,
+        28,
+        112,
+        112
       ]
     },
     {
       "id": "f11",
       "type": "image",
       "title": "Navy waves",
-      "src": "/fragments/fake-5.jpg",
+      "src": "/fragments/fake-5.png",
       "caption": "Earned at Maagdenhuis.",
-      "off": "Navy waves. Look at the wall again: there are no waves. We made it."
+      "off": "Navy waves on green. Her waves are red – we made this one."
     },
     {
       "id": "f05",
       "type": "image",
-      "title": "Two blue ovals",
+      "title": "Tangled threads",
       "src": "/fragments/real-6.jpg",
       "caption": "Hidden in the KMSKA.",
       "real": true,
       "place": [
-        762,
-        669,
-        126,
-        114
+        218,
+        826,
+        122,
+        110
       ]
     },
     {
       "id": "f12",
       "type": "image",
-      "title": "Black zigzag",
-      "src": "/fragments/fake-6.jpg",
+      "title": "Navy zigzag",
+      "src": "/fragments/fake-6.png",
       "caption": "Hidden in the KMSKA.",
       "off": "A zigzag to fool you. It’s on none of her pages on the wall."
     }
   ],
-  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style (scripts/fragments/make-fakes.py). A sharper photo gives sharper pieces (see README). \"off\" (fakes only): what gave the fake away, shown in the finale.",
+  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style (scripts/fragments/make-fakes.py). A sharper photo gives sharper pieces (see README). \"off\" (fakes only): what gave the fake away, shown in the finale. Pictures: the team's own illustrations (public/fragments/real-N.jpg and fake-N.png).",
   "_hooks_note": "Hooks hang anywhere in the streets (no fixed spot, the coordinates are only used by the dev panel). The diary chapters come in the order you find hooks: your 1st hook = chapter 1, your 2nd = chapter 2, … whatever QR it is. Chapters tell Louise Bourgeois' story without giving away the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
   "finale": {
     "image": "/fragments/artwork.jpg",
@@ -817,10 +817,9 @@
     "_note": "6 hooks = coffee & cake on us (flyer). The ticket for the KMSKA unlocks at the last location (src/lib/ticket.js)."
   },
   "credits": {
-    "title": "Inside Out is made by",
-    "team": "Sfumato · team 3",
+    "title": "Sfumato is made by",
+    "team": "Frosinone · team 3",
     "names": [],
-    "school": "AP Hogeschool Antwerpen",
-    "_todo": "Add the team names in \"names\" (and anyone to thank)."
+    "_todo": "Add the team names in \"names\" (one string per person)."
   }
 }

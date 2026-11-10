@@ -2,6 +2,9 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { isDevEnabled, readDevFlagFromUrl, toggleDevEnabled } from '../dev/devSettings.js'
 import BottomNav from '../game/BottomNav.jsx'
+import PhaseScreen from '../game/PhaseScreen.jsx'
+import { STARTED_PHASES } from '../game/gameState.js'
+import Collection from '../pages/Collection.jsx'
 import { useColourStage } from '../game/colourStage.js'
 import { useGame } from '../game/GameProvider.jsx'
 import { ScanProvider } from '../game/ScanProvider.jsx'
@@ -13,11 +16,18 @@ const DevPanel = lazy(() => import('../dev/DevPanel.jsx'))
 export default function Layout() {
   const { pathname, search, hash } = useLocation()
   const [devEnabled, setDevEnabled] = useState(isDevEnabled)
+  const game = useGame()
   // The colour of the whole app follows the progress (dark → begin → middle → end)
-  useColourStage(useGame())
+  useColourStage(game)
+
+  // Map ⇄ stash: during the game the map screen stays mounted underneath and the stash
+  // slides over it, so switching back doesn't reload the map, the route or the camera.
+  const onCollection = pathname === '/collection'
+  const keepGame = pathname === '/' || (onCollection && STARTED_PHASES.includes(game.phase))
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    document.querySelector('.stash-layer')?.scrollTo(0, 0)
   }, [pathname])
 
   useEffect(() => {
@@ -51,6 +61,16 @@ export default function Layout() {
     <ScanProvider>
       <div className="app">
         <main>
+          {keepGame && (
+            <div className="game-layer" aria-hidden={onCollection || undefined} inert={onCollection ? '' : undefined}>
+              <PhaseScreen />
+            </div>
+          )}
+          {onCollection && (
+            <div className={keepGame ? 'stash-layer' : undefined}>
+              <Collection />
+            </div>
+          )}
           <Outlet />
         </main>
         <BottomNav />
