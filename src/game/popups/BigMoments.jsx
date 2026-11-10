@@ -1,6 +1,7 @@
 // The big moments of the game, full screen (hi-fi v2):
 //   DiaryPage       a hook = a page from her diary, dark like the start (navy)
-//   FragmentReward  a new piece: confetti, the piece taped on, a FOUND stamp
+//   FragmentReward  a new piece: confetti, the piece taped on, a FOUND stamp (full screen, over the nav)
+//   TicketMoment    at the KMSKA, before the last challenges: your museum ticket
 import { useEffect, useMemo } from 'react'
 import { fragmentNumber, getFragment, getFragments } from '../../lib/story.js'
 import { patterns, vibrate } from '../../lib/vibrate.js'
@@ -107,6 +108,52 @@ export function FragmentReward({ fragmentIds, found, nextLabel, onContinue }) {
           <button type="button" className="btn btn-block" onClick={onContinue}>
             {nextLabel}
           </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const ticketDate = (t) => new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+
+/** The ticket itself (also shown again in the stash). */
+export function TicketCard({ ticket, place }) {
+  return (
+    <div className="ticket" role="img" aria-label={`Free entry ticket for ${place}, code ${ticket.code}`}>
+      <div className="ticket-stub" aria-hidden="true">
+        <span>admit one</span>
+      </div>
+      <div className="ticket-main">
+        <span className="ticket-eyebrow">free entry · Inside Out</span>
+        <span className="ticket-place">{place}</span>
+        <span className="ticket-meta">valid on {ticketDate(ticket.at)} · 1 person</span>
+        <span className="ticket-code">{ticket.code}</span>
+      </div>
+    </div>
+  )
+}
+
+/** Before the last challenges: the museum ticket is yours. "Let’s go in" → the first challenge here. */
+export function TicketMoment({ ticket, place, onContinue }) {
+  useEffect(() => {
+    const t = setTimeout(() => vibrate(patterns.unlock), 500)
+    return () => clearTimeout(t)
+  }, [])
+  return (
+    <div className="deep-screen ticket-screen" role="dialog" aria-modal="true" aria-label="Your museum ticket">
+      <Confetti count={24} />
+      <div className="deep-inner">
+        <span className="sticker is-rose" style={{ '--tilt': '-3deg', alignSelf: 'flex-start' }}>
+          ticket unlocked
+        </span>
+        <h2 className="big-title ticket-title">the last door opens.</h2>
+        <p className="hand ticket-aside">(the last pieces are inside. this one’s on us.)</p>
+        <TicketCard ticket={ticket} place={place} />
+        <div className="deep-bottom">
+          <button type="button" className="btn btn-block" onClick={onContinue}>
+            Let’s go in
+          </button>
+          <p className="deep-note">show this at the desk · saved in your stash</p>
         </div>
       </div>
     </div>

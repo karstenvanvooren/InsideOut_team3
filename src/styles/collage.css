@@ -121,6 +121,22 @@ body.has-game-nav .deep-screen {
   height: calc(var(--app-h, 100dvh) - var(--nav-height) - env(safe-area-inset-bottom));
 }
 
+/* A new piece and the museum ticket take the whole screen: over the bottom nav too */
+.deep-screen.reward-screen,
+.deep-screen.ticket-screen {
+  z-index: 26;
+}
+
+body.has-game-nav .deep-screen.reward-screen,
+body.has-game-nav .deep-screen.ticket-screen {
+  height: var(--app-h, 100dvh);
+}
+
+.reward-screen .deep-inner,
+.ticket-screen .deep-inner {
+  padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom));
+}
+
 .deep-screen .btn {
   background: var(--navy);
   color: var(--white);
@@ -1265,4 +1281,166 @@ html.is-typing .chat-bar {
 .stash-more .hand {
   padding: 0 12px;
   font-size: 21px;
+}
+
+/* ---------- The museum ticket (unlocked before the last challenges, at the KMSKA) ---------- */
+.ticket-screen {
+  background: var(--navy);
+}
+
+.ticket-screen .btn {
+  background: var(--burgundy);
+}
+
+.ticket-title {
+  font-size: 44px;
+  animation: pop-in 480ms var(--ease-pop) both;
+}
+
+.ticket-aside {
+  margin: -8px 0 0;
+  color: var(--rose);
+  font-size: 22px;
+  animation: fade-in 400ms 250ms both;
+}
+
+.ticket {
+  position: relative;
+  display: flex;
+  margin: 18px 4px 0;
+  border: var(--ink-line);
+  border-radius: 10px;
+  background: var(--cream);
+  box-shadow: 5px 5px 0 var(--rose);
+  color: var(--navy);
+  rotate: -2deg;
+  animation: drop-in 560ms 150ms var(--ease-pop) both;
+}
+
+.ticket-stub {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 54px;
+  border-right: 2px dashed var(--navy-40, rgb(28 36 48 / 0.4));
+}
+
+.ticket-stub span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+}
+
+.ticket-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 18px 18px 16px;
+}
+
+.ticket-eyebrow {
+  color: var(--burgundy);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ticket-place {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ticket-meta {
+  color: var(--navy-70, rgb(28 36 48 / 0.7));
+  font-size: 13px;
+}
+
+.ticket-code {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border: 1.5px dashed var(--navy);
+  border-radius: 6px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+/* the same ticket in the stash (bottom sheet) sits straight */
+.sheet .ticket {
+  margin: 8px 0 0;
+  rotate: 0deg;
+  animation: none;
+}
+
+.stash-ticket-btn {
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- The route card on top (v2 style): ink line, hard shadow, lowercase title ---------- */
+.nav-card {
+  padding: 12px 14px;
+  border: var(--ink-line);
+  border-radius: 14px;
+  box-shadow: var(--hard-shadow);
+  animation: drop-in 420ms var(--ease-pop) both;
+}
+
+.nav-card.is-note {
+  border-radius: 999px;
+  box-shadow: var(--hard-shadow-soft, 2px 2px 0 var(--navy));
+}
+
+.nav-turn-icon {
+  width: 46px;
+  height: 46px;
+  border: var(--ink-line);
+  border-radius: 12px;
+  rotate: -3deg;
+}
+
+.nav-card-sub {
+  color: var(--navy-70, rgb(28 36 48 / 0.7));
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.nav-card-title {
+  font-size: 21px;
+  line-height: 1.1;
+  text-transform: lowercase;
+}
+
+/* "6 min · 450 m · place" + "?" as a sticker under the card */
+.nav-info {
+  display: inline-flex;
+  max-width: calc(100% - 8px);
+  margin: 10px 0 0 6px;
+  padding: 5px 6px 5px 12px;
+  pointer-events: auto;
+}
+
+.nav-info .nav-card-info-text {
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nav-info .nav-help {
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--navy);
+  background: var(--white);
+  font-size: 12px;
 }

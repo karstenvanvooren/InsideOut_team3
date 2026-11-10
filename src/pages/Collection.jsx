@@ -4,8 +4,10 @@ import BottomSheet from '../components/ui/BottomSheet.jsx'
 import { Eyebrow } from '../components/ui/basics.jsx'
 import { useGame } from '../game/GameProvider.jsx'
 import { STARTED_PHASES } from '../game/gameState.js'
-import { fragmentNumber, getFragments, getHooks } from '../lib/story.js'
+import { fragmentNumber, getFragments, getHooks, getLocations } from '../lib/story.js'
 import story from '../data/story.json'
+import { TicketCard } from '../game/popups/BigMoments.jsx'
+import { getTicket } from '../lib/ticket.js'
 
 /** A found piece or diary page, taped into the scrapbook. Tap → it turns around (more info on the back). */
 function FlipItem({ index, flipped, onFlip, label, tall = false, children }) {
@@ -34,7 +36,8 @@ function MoreOutThere({ count, text, tall = false }) {
 // Everything is taped into a scrapbook; tap something and it turns around.
 export default function Collection() {
   const navigate = useNavigate()
-  const { phase, fragments: found, hooksCollected, hooksTotal } = useGame()
+  const { phase, fragments: found, hooksCollected, hooksTotal, startedAt } = useGame()
+  const ticket = getTicket(startedAt) // the museum ticket, once unlocked at the KMSKA
   const [tab, setTab] = useState('fragments')
   const [open, setOpen] = useState(null) // { kind: 'artwork', item }
   const [flipped, setFlipped] = useState(null) // the card that shows its back
@@ -48,6 +51,11 @@ export default function Collection() {
     <div className="page collection">
       <header className="collection-head">
         <h1 className="screen-title">your stash.</h1>
+        {ticket && (
+          <button type="button" className="sticker is-rose stash-ticket-btn" style={{ '--tilt': '3deg' }} onClick={() => setOpen({ kind: 'ticket' })}>
+            your ticket
+          </button>
+        )}
         {/* The bottom nav takes you back during the game; before that there's no nav */}
         {!STARTED_PHASES.includes(phase) && (
           <button type="button" className="text-btn" onClick={() => navigate('/')}>
@@ -119,7 +127,14 @@ export default function Collection() {
 
       <div className="page-fade" aria-hidden="true" />
 
-      <BottomSheet open={Boolean(open)} onClose={() => setOpen(null)} label="The artwork">
+      <BottomSheet open={Boolean(open)} onClose={() => setOpen(null)} label={open?.kind === 'ticket' ? 'Your ticket' : 'The artwork'}>
+        {open?.kind === 'ticket' && ticket && (
+          <div className="stack">
+            <Eyebrow>Your museum ticket</Eyebrow>
+            <TicketCard ticket={ticket} place={getLocations().at(-1)?.name ?? 'KMSKA'} />
+            <p className="muted">Show this at the desk.</p>
+          </div>
+        )}
         {open?.kind === 'artwork' && (
           <div className="stack">
             <Eyebrow>The artwork</Eyebrow>

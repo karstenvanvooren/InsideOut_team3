@@ -1,3 +1,19 @@
+/* Pra Bono (Fontsider) – the title font. Put PraBono.otf or PraBono.ttf in public/fonts/.
+   One weight only: the range below stops browsers from making a fake bold.
+   unicode-range = what the demo has; the rest (? ! ’ – …) comes from Syne. */
+@font-face {
+  font-family: 'Pra Bono';
+  src:
+    local('Pra Bono Demo'),
+    local('Pra Bono'),
+    url('/fonts/PraBono.otf') format('opentype'),
+    url('/fonts/PraBono.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020, U+002C, U+002E, U+0030-0039, U+0041-005A, U+0061-007A;
+}
+
 /*
  * Design tokens (hi-fi "chosen style"). Change the look of the whole app here;
  * components only use these variables, never raw colours.
@@ -87,7 +103,9 @@
   --map-route: var(--primary);
 
   /* ---------- Type ---------- */
-  --font-display: 'Syne', 'Inter', system-ui, sans-serif; /* Bold 700 only */
+  /* Titles: Pra Bono (brush), file in public/fonts/. Signs the demo lacks (? ! ’ …)
+     and everything while the file is missing fall back to Syne. */
+  --font-display: 'Pra Bono', 'Syne', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive; /* handwriting: diary, notes */

@@ -5,6 +5,7 @@
 //   riddle            → riddle pop-up (can be minimised to a pill; no destination on the map yet)
 //   navigating        → no pop-up: route + banner + info strip ("?" re-opens the solved riddle)
 //   atLocation        → arrived pop-up (what the challenge is) → "Start challenge" → full-screen challenge
+//                       (at the last location, the KMSKA, first the museum ticket: TicketMoment)
 //   fragmentUnlocked  → fragment pop-up → "Continue" → challenge 2 here, or the riddle for the next location
 //   finale            → the finale screen: the artwork completes itself, the reveal, the collection
 import { lazy, Suspense, useEffect, useState } from 'react'
@@ -16,7 +17,8 @@ import { patterns, vibrate } from '../lib/vibrate.js'
 import { useGame } from './GameProvider.jsx'
 import Challenge from './challenges/index.jsx'
 import { ArrivedPopup } from './popups/LocationPopups.jsx'
-import { FragmentReward } from './popups/BigMoments.jsx'
+import { FragmentReward, TicketMoment } from './popups/BigMoments.jsx'
+import { getTicket, ticketCode, unlockTicket } from '../lib/ticket.js'
 import FinaleScreen from './screens/FinaleScreen.jsx'
 import { SolvedRiddle } from './popups/RiddlePopup.jsx'
 import RiddleChat from './popups/RiddleChat.jsx'
@@ -51,6 +53,9 @@ export default function MainScreen() {
   const [showSolvedRiddle, setShowSolvedRiddle] = useState(false)
   const [challengeOpen, setChallengeOpen] = useState(false)
   const popup = popupFor[phase] ?? null
+  // The museum ticket: at the last location, before its first challenge (once per game)
+  const [ticket, setTicket] = useState(() => getTicket(game.startedAt))
+  const ticketDue = phase === 'atLocation' && isLastLocation(locationIndex) && challengeIndex === 0 && !ticket
 
   // Every new phase (or location) opens its pop-up fresh
   useEffect(() => {
@@ -123,7 +128,18 @@ export default function MainScreen() {
         <SolvedRiddle location={location} index={locationIndex} />
       </BottomSheet>
 
-      <BottomSheet open={isOpen('challenge') && !challengeOpen} dim label="You’ve arrived">
+      {ticketDue && !minimised && (
+        <TicketMoment
+          ticket={{ at: Date.now(), code: ticketCode(game.startedAt) }}
+          place={location.name}
+          onContinue={() => {
+            vibrate(patterns.tap)
+            setTicket(unlockTicket(game.startedAt))
+          }}
+        />
+      )}
+
+      <BottomSheet open={isOpen('challenge') && !challengeOpen && !ticketDue} dim label="You’ve arrived">
         <ArrivedPopup
           key={`${locationIndex}-${challengeIndex}`}
           location={location}

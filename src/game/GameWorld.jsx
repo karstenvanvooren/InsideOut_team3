@@ -240,25 +240,25 @@ export default function GameWorld({ destination = null, mode = 'free', onArrive,
               </div>
             )}
 
-            {/* While navigating: time · distance · destination, and "?" for the riddle */}
-            {navigating && (
-              <div className="nav-card-info">
-                <span className="nav-card-info-text">
-                  {nav && `${formatWalkingTime(nav.remainingTime)} · ${formatDistance(nav.remaining)} · `}
-                  {destination.name}
-                </span>
-                {onShowRiddle && (
-                  <button type="button" className="nav-help" onClick={onShowRiddle} aria-label="Show the riddle again">
-                    ?
-                  </button>
-                )}
-              </div>
-            )}
             {notes.map((note) => (
               <div key={note} className="nav-card-note">
                 {note}
               </div>
             ))}
+          </div>
+        )}
+        {/* While navigating: time · distance · destination, and "?" for the riddle, as a sticker */}
+        {navigating && (
+          <div className="sticker is-white nav-info" style={{ '--tilt': '-1.5deg', '--delay': '200ms' }}>
+            <span className="nav-card-info-text">
+              {nav && `${formatWalkingTime(nav.remainingTime)} · ${formatDistance(nav.remaining)} · `}
+              {destination.name}
+            </span>
+            {onShowRiddle && (
+              <button type="button" className="nav-help" onClick={onShowRiddle} aria-label="Show the riddle again">
+                ?
+              </button>
+            )}
           </div>
         )}
       </div>

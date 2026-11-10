@@ -150,6 +150,7 @@ const loadImage = (src) =>
 async function pageImage(page) {
   try {
     await document.fonts?.load('700 60px Caveat')
+    await document.fonts?.load('700 60px "Pra Bono"')
     await document.fonts?.load('700 60px Syne')
   } catch {
     // fonts are a nice-to-have
@@ -163,7 +164,7 @@ async function pageImage(page) {
   g.fillStyle = col('--burgundy', '#4b1e23')
   g.fillRect(0, 0, 1080, 1920)
   g.fillStyle = '#ffffff'
-  g.font = '700 120px Syne, sans-serif'
+  g.font = '700 120px "Pra Bono", Caveat, Syne, sans-serif'
   g.fillText('ode à toi.', 90, 260)
   g.fillStyle = col('--rose', '#c29095')
   g.font = '700 58px Caveat, cursive'
@@ -215,7 +216,7 @@ async function pageImage(page) {
   g.fillText(`Antwerp · ${dateLabel(page.at)}`, 540, fy + fh - 40)
   g.restore()
   g.fillStyle = '#ffffff'
-  g.font = '700 46px Syne, sans-serif'
+  g.font = '700 46px "Pra Bono", Caveat, Syne, sans-serif'
   g.textAlign = 'center'
   g.fillText('She repaired what was torn.', 540, 1580)
   g.fillText('Today, piece by piece, so did I.', 540, 1645)
