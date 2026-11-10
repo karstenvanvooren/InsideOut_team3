@@ -1,4 +1,5 @@
 // Count the heads (Bourla): a number with − and +.
+// Wrong answers get tips: too few / too many → the hint from story.json → a range.
 import { useState } from 'react'
 import { PrimaryButton } from '../../components/ui/basics.jsx'
 import { Icon } from '../../components/ui/icons.jsx'
@@ -8,11 +9,21 @@ export default function Count({ onClose }) {
   const { challenge, solve, solved } = useChallenge()
   const [count, setCount] = useState(0)
   const [feedback, shaking, showWrong, clear] = useWrong()
+  const [wrong, setWrong] = useState(0)
   const change = (d) => {
     clear()
     setCount((c) => Math.max(0, Math.min(99, c + d)))
   }
-  const check = () => (count === challenge.answer ? solve() : showWrong('Not quite – count again.'))
+  const check = () => {
+    if (count === challenge.answer) return solve()
+    const n = wrong + 1
+    setWrong(n)
+    const way = count < challenge.answer ? 'too few' : 'too many'
+    const hints = challenge.hints ?? []
+    if (n >= 3) showWrong(`Almost: it’s between ${Math.max(0, challenge.answer - 2)} and ${challenge.answer + 2}.`)
+    else if (n === 2 && hints[0]) showWrong(`Still ${way}. ${hints[0]}`)
+    else showWrong(`Not quite – that’s ${way}.`)
+  }
 
   return (
     <ChallengeFrame

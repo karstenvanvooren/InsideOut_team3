@@ -1,6 +1,7 @@
 /* Pra Bono (Fontsider) – the title font. Put PraBono.otf or PraBono.ttf in public/fonts/.
    One weight only: the range below stops browsers from making a fake bold.
-   unicode-range = what the demo has; the rest (? ! ’ – …) comes from Syne. */
+   unicode-range = letters and digits only: punctuation (. , ? ! ’ – …) comes from
+   Ma Shan Zheng (index.html), anything else from Syne. */
 @font-face {
   font-family: 'Pra Bono';
   src:
@@ -11,7 +12,7 @@
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
-  unicode-range: U+0020, U+002C, U+002E, U+0030-0039, U+0041-005A, U+0061-007A;
+  unicode-range: U+0020, U+0030-0039, U+0041-005A, U+0061-007A;
 }
 
 /*
@@ -103,9 +104,9 @@
   --map-route: var(--primary);
 
   /* ---------- Type ---------- */
-  /* Titles: Pra Bono (brush), file in public/fonts/. Signs the demo lacks (? ! ’ …)
-     and everything while the file is missing fall back to Syne. */
-  --font-display: 'Pra Bono', 'Syne', 'Inter', system-ui, sans-serif;
+  /* Titles: Pra Bono (brush, file in public/fonts/), punctuation in Ma Shan Zheng,
+     anything else (and everything while the Pra Bono file is missing) in Syne. */
+  --font-display: 'Pra Bono', 'Ma Shan Zheng', 'Syne', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive; /* handwriting: diary, notes */

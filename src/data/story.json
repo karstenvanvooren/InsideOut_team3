@@ -290,6 +290,9 @@
           "answer": 17,
           "fragments": [
             "f04"
+          ],
+          "hints": [
+            "Look at the whole front, from the doors up to the roof."
           ]
         },
         {
@@ -308,6 +311,9 @@
           "button": "Check",
           "fragments": [
             "f10"
+          ],
+          "hints": [
+            "Walk around the statue – is there a name somewhere on it?"
           ]
         }
       ],

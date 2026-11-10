@@ -270,6 +270,26 @@
   font-weight: 700;
 }
 
+.letter-slot {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.letter-slot:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+/* fixed after a mistake: dark and locked */
+.letter-slot.is-filled.is-fixed {
+  background: var(--burgundy);
+  color: var(--white);
+  box-shadow: 2px 2px 0 var(--rose);
+  rotate: -3deg;
+}
+
 .letter-slot.is-filled {
   background: var(--secondary);
   box-shadow: none;
@@ -589,4 +609,17 @@
   color: var(--text-muted);
   font-size: var(--fs-body);
   line-height: 1.45;
+}
+
+/* Memory: all pairs found → a handwritten note, and the button wakes up */
+.memory-done {
+  margin: 6px 0 0;
+  color: var(--burgundy);
+  font-size: 22px;
+  rotate: -1.5deg;
+  animation: pop-in 420ms var(--ease-pop, ease) both;
+}
+
+.challenge-screen-bottom .btn.is-ready {
+  animation: pop-in 420ms var(--ease-pop, ease) both;
 }

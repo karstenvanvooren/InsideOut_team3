@@ -2,13 +2,14 @@
 // they used in the printing house. Easy: 6 pairs, hard: 10 pairs.
 // Card faces are textile-collage illustrations (memoryArt.jsx), like the artwork.
 import { useEffect, useMemo, useState } from 'react'
+import { PrimaryButton } from '../../components/ui/basics.jsx'
 import ChallengeFrame, { shuffled, useChallenge } from './ChallengeFrame.jsx'
 import MemoryArt from './memoryArt.jsx'
 
 const FLIP_BACK_MS = 850
 
 export default function Memory({ onClose }) {
-  const { challenge, solve } = useChallenge()
+  const { challenge, solve, solved } = useChallenge()
   const pairs = challenge.pairs ?? 6
   const cards = useMemo(() => {
     const objects = challenge.objects ?? []
@@ -33,12 +34,7 @@ export default function Memory({ onClose }) {
     return () => clearTimeout(timer)
   }, [open, cards])
 
-  useEffect(() => {
-    if (found.length === pairs) {
-      const timer = setTimeout(solve, 450)
-      return () => clearTimeout(timer)
-    }
-  }, [found, pairs]) // eslint-disable-line react-hooks/exhaustive-deps
+  const complete = found.length === pairs
 
   const turn = (i) => {
     if (open.length === 2 || open.includes(i) || found.includes(cards[i].pair)) return
@@ -48,10 +44,20 @@ export default function Memory({ onClose }) {
 
   const hard = pairs > 6
   return (
-    <ChallengeFrame onClose={onClose} counter={`Pairs ${found.length}/${pairs} · Moves ${moves}`}>
+    <ChallengeFrame
+      onClose={onClose}
+      counter={`Pairs ${found.length}/${pairs} · Moves ${moves}`}
+      bottom={
+        // Shows how far you are while playing; when all pairs are found you collect the piece yourself
+        <PrimaryButton disabled={!complete || solved} onClick={solve} className={complete ? 'is-ready' : ''}>
+          {complete ? 'Collect your piece' : `${found.length}/${pairs} pairs found`}
+        </PrimaryButton>
+      }
+    >
       <div>
         <h2 className="challenge-question">{challenge.title}</h2>
         <p className="muted challenge-text">Find the pairs. One pair is the fragment, the others are things they used here.</p>
+        {complete && <p className="hand memory-done">all pairs found. in {moves} moves.</p>}
       </div>
       <div className={`memory-grid ${hard ? 'memory-hard' : ''}`}>
         {cards.map((card, i) => {
