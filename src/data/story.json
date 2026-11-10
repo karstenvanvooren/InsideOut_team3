@@ -659,14 +659,16 @@
       "type": "image",
       "title": "Blue dots",
       "src": "/fragments/fake-1.jpg",
-      "caption": "Earned at Sint-Carolus Borromeuskerk."
+      "caption": "Earned at Sint-Carolus Borromeuskerk.",
+      "off": "Dots in a perfect grid. Look at the wall: no dots like these. We made it."
     },
     {
       "id": "f02",
       "type": "image",
       "title": "Green ladder",
       "src": "/fragments/fake-2.jpg",
-      "caption": "Earned at Plantin-Moretus."
+      "caption": "Earned at Plantin-Moretus.",
+      "off": "A ladder of stripes that climbs nowhere. It’s not on her wall – it’s ours."
     },
     {
       "id": "f08",
@@ -701,14 +703,16 @@
       "type": "image",
       "title": "Red crosshatch",
       "src": "/fragments/fake-3.jpg",
-      "caption": "Earned at MoMu."
+      "caption": "Earned at MoMu.",
+      "off": "A crosshatch, drawn line by line. You won’t find it on her pages. We made it."
     },
     {
       "id": "f04",
       "type": "image",
       "title": "Pink half-moons",
       "src": "/fragments/fake-4.jpg",
-      "caption": "Earned at Bourla."
+      "caption": "Earned at Bourla.",
+      "off": "Half-moons in a neat row. Pretty, but not hers – we made it."
     },
     {
       "id": "f10",
@@ -743,7 +747,8 @@
       "type": "image",
       "title": "Navy waves",
       "src": "/fragments/fake-5.jpg",
-      "caption": "Earned at Maagdenhuis."
+      "caption": "Earned at Maagdenhuis.",
+      "off": "Navy waves. Look at the wall again: there are no waves. We made it."
     },
     {
       "id": "f05",
@@ -764,10 +769,11 @@
       "type": "image",
       "title": "Black zigzag",
       "src": "/fragments/fake-6.jpg",
-      "caption": "Hidden in the KMSKA."
+      "caption": "Hidden in the KMSKA.",
+      "off": "A zigzag to fool you. It’s on none of her pages on the wall."
     }
   ],
-  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style (scripts/fragments/make-fakes.py). A sharper photo gives sharper pieces (see README).",
+  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style (scripts/fragments/make-fakes.py). A sharper photo gives sharper pieces (see README). \"off\" (fakes only): what gave the fake away, shown in the finale.",
   "_hooks_note": "Hooks hang anywhere in the streets (no fixed spot, the coordinates are only used by the dev panel). The diary chapters come in the order you find hooks: your 1st hook = chapter 1, your 2nd = chapter 2, … whatever QR it is. Chapters tell Louise Bourgeois' story without giving away the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
   "finale": {
     "image": "/fragments/artwork.jpg",
@@ -780,7 +786,40 @@
       1098,
       975
     ],
-    "_photo": "From the photo the team shared (scripts/fragments/ode-a-loubli-photo.png). \"place\" of each real fragment is in this picture's pixels (size)."
+    "_photo": "From the photo the team shared (scripts/fragments/ode-a-loubli-photo.png). \"place\" of each real fragment is in this picture's pixels (size).",
+    "cards": [
+      {
+        "eyebrow": "who she is",
+        "title": "Louise Bourgeois.",
+        "text": "Born in Paris in 1911, she grew up in her parents’ tapestry workshop. She became one of the great artists of the 20th century, and kept making art until she died in 2010, at 98."
+      },
+      {
+        "eyebrow": "what the work is",
+        "title": "Ode à l’oubli.",
+        "text": "2002. A book without paper: 36 pages, sewn from cloth instead. The pages hang on the wall in front of you – your pieces are cut from them."
+      },
+      {
+        "eyebrow": "why fabric",
+        "title": "the cloth was hers.",
+        "text": "Nightgowns, scarves, napkins and hand towels from her wedding trousseau, kept for most of her life. For the girl from the tapestry workshop, sewing meant repairing. Mending the cloth was mending her memories."
+      }
+    ],
+    "lookUp": {
+      "title": "look up.",
+      "text": "(your pieces are on the wall in front of you. can you find them?)"
+    }
   },
-  "_chat_note": "locations[].chat = what Sfumato texts before each riddle (riddle as chat). Keep it short and don't give the answer away."
+  "_chat_note": "locations[].chat = what Sfumato texts before each riddle (riddle as chat). Keep it short and don't give the answer away.",
+  "rewards": {
+    "hooksForVoucher": 6,
+    "voucherPlace": "the museum café",
+    "_note": "6 hooks = coffee & cake on us (flyer). The ticket for the KMSKA unlocks at the last location (src/lib/ticket.js)."
+  },
+  "credits": {
+    "title": "Inside Out is made by",
+    "team": "Sfumato · team 3",
+    "names": [],
+    "school": "AP Hogeschool Antwerpen",
+    "_todo": "Add the team names in \"names\" (and anyone to thank)."
+  }
 }

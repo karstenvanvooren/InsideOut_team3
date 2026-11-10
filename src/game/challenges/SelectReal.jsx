@@ -6,12 +6,13 @@ import { FragmentThumb } from '../../components/FragmentViewer.jsx'
 import { PrimaryButton } from '../../components/ui/basics.jsx'
 import { Icon } from '../../components/ui/icons.jsx'
 import { fragmentNumber, getFragment, getFragments } from '../../lib/story.js'
+import { recordFirstChoice } from '../../lib/realfake.js'
 import { useGame } from '../GameProvider.jsx'
 import ChallengeFrame, { useChallenge, useWrong } from './ChallengeFrame.jsx'
 
 export default function SelectReal({ onClose }) {
   const { solve, solved, challenge } = useChallenge()
-  const { fragments } = useGame()
+  const { fragments, startedAt } = useGame()
   const owned = fragments.map(getFragment).filter(Boolean)
   const [selected, setSelected] = useState([])
   const [feedback, shaking, showWrong, clear] = useWrong()
@@ -23,6 +24,8 @@ export default function SelectReal({ onClose }) {
   }
   const confirm = () => {
     if (!realIds.length) return solve()
+    // your first try is your score in the finale ("you spotted 4 of 6 fakes")
+    recordFirstChoice(startedAt, selected, fragments.filter((id) => !realIds.includes(id)))
     const right = realIds.filter((id) => fragments.includes(id))
     const ok = right.length === selected.length && right.every((id) => selected.includes(id))
     if (ok) solve()

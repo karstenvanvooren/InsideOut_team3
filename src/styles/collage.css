@@ -1444,3 +1444,523 @@ html.is-typing .chat-bar {
   background: var(--white);
   font-size: 12px;
 }
+
+/* ---------- The café voucher (bonus for 6 hooks): the ticket's sister, in rose ---------- */
+.voucher-screen {
+  background: var(--burgundy);
+}
+
+.voucher-screen .btn {
+  background: var(--navy);
+}
+
+.ticket.is-voucher {
+  background: var(--rose);
+  box-shadow: 5px 5px 0 var(--navy);
+  rotate: 2deg;
+}
+
+.ticket.is-voucher .ticket-eyebrow {
+  color: var(--navy);
+}
+
+.ticket.is-voucher .ticket-stub {
+  border-right-color: rgb(28 36 48 / 0.5);
+}
+
+.sheet .ticket.is-voucher {
+  rotate: 0deg;
+}
+
+.stash-tickets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Finale v2: look up → story cards → real or fake → sew → ode à toi → the end
+   ========================================================================== */
+.finale-sticker {
+  display: inline-block;
+  margin-bottom: var(--space-4);
+}
+
+.finale-artwork {
+  border: var(--ink-line);
+  box-shadow: var(--hard-shadow);
+}
+
+.finale-reveal .finale-lookup {
+  margin-top: var(--space-5);
+  font-size: 56px;
+  animation: pop-in 480ms var(--ease-pop) both;
+}
+
+.finale-count {
+  margin: 0 0 var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--fs-secondary);
+  font-weight: 600;
+}
+
+.finale-screen .finale-scroll > .btn,
+.finale-reveal .btn {
+  margin-top: var(--space-2);
+}
+
+/* the stash in the finale: the missed diary pages */
+.stash-missed {
+  align-self: flex-start;
+  font-size: 11px;
+}
+
+/* --- story cards: swipe sideways, one at a time --- */
+.story-track {
+  display: flex;
+  margin: 0 calc(-1 * var(--side));
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.story-track::-webkit-scrollbar {
+  display: none;
+}
+
+.story-card {
+  position: relative;
+  display: flex;
+  flex: 0 0 100%;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  min-height: 300px;
+  margin: 6px 0 12px;
+  padding: 22px 20px 40px;
+  border: var(--ink-line);
+  border-radius: 6px;
+  background: var(--white);
+  box-shadow: var(--hard-shadow);
+  color: var(--navy);
+  scroll-snap-align: center;
+}
+
+/* each card fills one "slot" of the track (track width), with the side margins inside */
+.story-track {
+  gap: 0;
+  padding: 0 0 8px;
+}
+
+.story-track > .story-card {
+  flex-basis: calc(100% - 2 * var(--side));
+  margin-inline: var(--side);
+}
+
+.story-card.is-1 {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.story-card.is-2 {
+  background: var(--rose);
+}
+
+.story-card .story-card-eyebrow {
+  align-self: flex-start;
+  background: var(--navy);
+  color: var(--white);
+  animation: none;
+  opacity: 1;
+}
+
+.story-card.is-1 .story-card-eyebrow {
+  background: var(--cream);
+  color: var(--navy);
+}
+
+.story-card-title {
+  font-size: 36px;
+}
+
+.story-card-text {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.story-next {
+  margin-top: var(--space-3);
+}
+
+.story-card-num {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  font-size: 22px;
+  opacity: 0.7;
+}
+
+.story-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: var(--space-2);
+}
+
+.story-dots i {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--navy);
+  border-radius: 50%;
+  transition: background 200ms;
+}
+
+.story-dots i.is-on {
+  background: var(--navy);
+}
+
+.story-swipe {
+  margin: 6px 0 0;
+  color: var(--primary);
+  font-size: 20px;
+  text-align: center;
+}
+
+.story-more {
+  margin: var(--space-3) 0 var(--space-4);
+  text-align: center;
+}
+
+.story-more-text {
+  text-align: left;
+}
+
+.story-more-text {
+  margin-top: var(--space-2);
+  padding: 14px 16px;
+  border-left: 3px solid var(--rose);
+  background: rgb(230 224 214 / 0.55);
+}
+
+.story-more-text p {
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+
+/* --- real or fake: the score --- */
+.verdict-title {
+  font-size: 42px;
+}
+
+.verdict-score {
+  display: inline-block;
+  padding: 0 8px;
+  border: var(--ink-line);
+  border-radius: 6px;
+  background: var(--rose);
+  rotate: -3deg;
+}
+
+.fake-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: var(--space-2) 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.fake-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 12px;
+  border: var(--ink-line);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: var(--hard-shadow-soft);
+  rotate: var(--tilt, 0deg);
+}
+
+.fake-thumb {
+  flex: none;
+  width: 76px;
+  height: 70px;
+  object-fit: cover;
+}
+
+.fake-body {
+  min-width: 0;
+}
+
+.fake-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  align-items: center;
+}
+
+.fake-body p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.fake-badge {
+  padding: 2px 8px;
+  border: 1.5px solid var(--navy);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: lowercase;
+}
+
+.fake-badge.is-spotted {
+  background: var(--sage);
+  color: var(--white);
+  border-color: var(--sage);
+}
+
+.fake-badge.is-fooled {
+  background: var(--burgundy);
+  color: var(--white);
+  border-color: var(--burgundy);
+}
+
+.real-strip .hand {
+  color: var(--primary);
+  font-size: 22px;
+}
+
+.real-strip-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.real-strip-row img {
+  flex: none;
+  width: 64px;
+  height: 58px;
+  border: 1.5px solid var(--navy);
+  object-fit: cover;
+}
+
+.verdict-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.verdict-msg {
+  margin: 0;
+  text-align: center;
+}
+
+.verdict-sew {
+  margin: var(--space-3) 0 0;
+  color: var(--primary);
+  font-size: 23px;
+  rotate: -1.5deg;
+}
+
+/* --- the end --- */
+.end-title {
+  font-size: 46px;
+}
+
+.end-screen .finale-stats li {
+  border: var(--ink-line);
+  border-radius: 8px;
+  background: var(--cream);
+}
+
+.end-section {
+  margin-top: var(--space-6);
+}
+
+.end-heading {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.end-sub {
+  margin: 0 0 var(--space-3);
+}
+
+.end-section .ticket + .ticket {
+  margin-top: 26px;
+}
+
+.end-voucher-todo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 26px;
+  padding: 16px 18px;
+  border: 2px dashed var(--navy);
+  border-radius: 10px;
+  rotate: 1deg;
+}
+
+.end-voucher-todo strong {
+  font-family: var(--font-display);
+  font-size: 28px;
+}
+
+.end-voucher-todo > span {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.end-progress {
+  display: block;
+  height: 8px;
+  margin-top: 4px;
+  border: 1.5px solid var(--navy);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.end-progress i {
+  display: block;
+  height: 100%;
+  background: var(--rose);
+}
+
+.end-chapters {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1.5px solid var(--navy);
+}
+
+.end-chapter {
+  border-bottom: 1.5px solid var(--navy);
+}
+
+.end-chapter button {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 12px 2px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.end-chapter-num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--navy);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.end-chapter.is-open .end-chapter-num {
+  background: var(--navy);
+  color: var(--white);
+}
+
+.end-chapter-title {
+  flex: 1;
+  font-weight: 600;
+}
+
+.end-missed {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--rose);
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.end-chapter-text {
+  margin: 0 0 14px 40px;
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+.end-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+.end-again {
+  align-self: center;
+  margin-top: var(--space-2);
+}
+
+.end-confirm {
+  padding: 14px 16px;
+  border: var(--ink-line);
+  border-radius: 10px;
+  background: var(--cream);
+}
+
+.end-confirm p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.end-confirm-row {
+  display: flex;
+  gap: 8px;
+}
+
+.end-confirm-row .btn {
+  flex: 1;
+}
+
+.end-credits {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1.5px dashed var(--navy);
+  text-align: center;
+}
+
+.end-credits strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+}
+
+.end-credits-art {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.end-sticker,
+.stash-voucher-btn {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--white);
+}
+
+.ticket.is-voucher .ticket-place {
+  font-size: 34px;
+}

@@ -2,13 +2,14 @@
 //   DiaryPage       a hook = a page from her diary, dark like the start (navy)
 //   FragmentReward  a new piece: confetti, the piece taped on, a FOUND stamp (full screen, over the nav)
 //   TicketMoment    at the KMSKA, before the last challenges: your museum ticket
+//   VoucherMoment   after the 6th hook: coffee & cake on us (the bonus for her diary)
 import { useEffect, useMemo } from 'react'
 import { fragmentNumber, getFragment, getFragments } from '../../lib/story.js'
 import { patterns, vibrate } from '../../lib/vibrate.js'
 
 const CONFETTI_COLOURS = ['var(--rose)', 'var(--cream)', 'var(--sage)', 'var(--blue)', 'var(--white)']
 
-function Confetti({ count = 34 }) {
+export function Confetti({ count = 34 }) {
   const bits = useMemo(
     () =>
       Array.from({ length: count }, (_, i) => ({
@@ -154,6 +155,52 @@ export function TicketMoment({ ticket, place, onContinue }) {
             Let’s go in
           </button>
           <p className="deep-note">show this at the desk · saved in your stash</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/** The café voucher (also shown again in the stash and at the end). */
+export function VoucherCard({ voucher, place, hooks }) {
+  return (
+    <div className="ticket is-voucher" role="img" aria-label={`Voucher for coffee and cake at ${place}, code ${voucher.code}`}>
+      <div className="ticket-stub" aria-hidden="true">
+        <span>on us</span>
+      </div>
+      <div className="ticket-main">
+        <span className="ticket-eyebrow">bonus · {hooks} chapters found</span>
+        <span className="ticket-place">coffee &amp; cake</span>
+        <span className="ticket-meta">
+          at {place} · valid on {ticketDate(voucher.at)} · 1 person
+        </span>
+        <span className="ticket-code">{voucher.code}</span>
+      </div>
+    </div>
+  )
+}
+
+/** Right after the diary page that completes the bonus: coffee & cake are on us. */
+export function VoucherMoment({ voucher, place, hooks, onContinue }) {
+  useEffect(() => {
+    const t = setTimeout(() => vibrate(patterns.unlock), 500)
+    return () => clearTimeout(t)
+  }, [])
+  return (
+    <div className="deep-screen ticket-screen voucher-screen" role="dialog" aria-modal="true" aria-label="Your café voucher">
+      <Confetti count={24} />
+      <div className="deep-inner">
+        <span className="sticker is-white" style={{ '--tilt': '3deg', alignSelf: 'flex-start' }}>
+          {hooks} chapters found
+        </span>
+        <h2 className="big-title ticket-title">coffee &amp; cake are on us.</h2>
+        <p className="hand ticket-aside">(you read her diary. time for a break.)</p>
+        <VoucherCard voucher={voucher} place={place} hooks={hooks} />
+        <div className="deep-bottom">
+          <button type="button" className="btn btn-block" onClick={onContinue}>
+            Keep walking
+          </button>
+          <p className="deep-note">show this at the counter · saved in your stash</p>
         </div>
       </div>
     </div>

@@ -1,11 +1,11 @@
 // The end of the game, after the reveal (hi-fi v3): Bourgeois mended her memories
 // with needle and thread, so the player makes a page too.
 //   SewPage  tap a piece to put it on the cloth, drag it, turn it, stitch it, add one word
-//   OdePage  "ode à toi": the finished page, signed and dated → share as story / collection
+//   OdePage  "ode à toi": the finished page, signed and dated → share as story / continue to the end
 // The page is saved in this browser (PAGE_KEY), so it's still there when you come back.
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from '../../components/ui/icons.jsx'
-import { safeGet, safeSet } from '../../lib/storage.js'
+import { safeGet, safeRemove, safeSet } from '../../lib/storage.js'
 import { patterns, vibrate } from '../../lib/vibrate.js'
 
 const PAGE_KEY = 'insideout.page.v1'
@@ -13,6 +13,7 @@ const MAX_WORD = 16
 
 export const loadPage = () => safeGet(PAGE_KEY)
 const savePage = (page) => safeSet(PAGE_KEY, page)
+export const clearPage = () => safeRemove(PAGE_KEY)
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
 const dateLabel = (t) => new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -226,7 +227,7 @@ async function pageImage(page) {
   return new Promise((resolve) => c.toBlob(resolve, 'image/png'))
 }
 
-export function OdePage({ page, stats, onCollection }) {
+export function OdePage({ page, stats, onContinue }) {
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
 
@@ -272,8 +273,8 @@ export function OdePage({ page, stats, onCollection }) {
           <button type="button" className="btn btn-block" onClick={share} disabled={busy}>
             {busy ? 'Making your picture…' : 'Share as story'}
           </button>
-          <button type="button" className="btn btn-block ode-secondary" onClick={onCollection}>
-            View my collection
+          <button type="button" className="btn btn-block ode-secondary" onClick={onContinue}>
+            Continue
           </button>
           {msg && (
             <p className="deep-note" role="status">

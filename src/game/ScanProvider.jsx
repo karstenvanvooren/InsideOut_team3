@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import QrScanner, { hookIdFromText } from '../components/QrScanner.jsx'
 import { HookThumb } from '../components/ui/HookThumb.jsx'
 import { Icon } from '../components/ui/icons.jsx'
-import { DiaryPage } from './popups/BigMoments.jsx'
+import { DiaryPage, VoucherMoment } from './popups/BigMoments.jsx'
+import { getVoucher, hooksForVoucher, unlockVoucher, voucherCode, voucherPlace } from '../lib/voucher.js'
 import { getChapter } from '../lib/story.js'
 import { vibrate, patterns } from '../lib/vibrate.js'
 import { useGame } from './GameProvider.jsx'
@@ -18,7 +19,7 @@ const ScanContext = createContext(null)
  * router state { scanned: qrId } and take the same path.
  */
 export function ScanProvider({ children }) {
-  const { phase, hooksCollected, hooksTotal, unlockStart } = useGame()
+  const { phase, hooksCollected, hooksTotal, unlockStart, startedAt } = useGame()
   const navigate = useNavigate()
   const routerLocation = useLocation()
   const [scannerOpen, setScannerOpen] = useState(false)
@@ -91,7 +92,25 @@ export function ScanProvider({ children }) {
 
       {/* A hook is a chapter of her story: a page from her diary (and later in the collection) */}
       {result?.kind === 'hook-collected' && result.hook && (
-        <DiaryPage hook={getChapter(hooksCollected) ?? result.hook} collected={hooksCollected} total={hooksTotal} onClose={() => setResult(null)} />
+        <DiaryPage
+          hook={getChapter(hooksCollected) ?? result.hook}
+          collected={hooksCollected}
+          total={hooksTotal}
+          // enough chapters for the bonus → the café voucher comes right after this page
+          onClose={() => setResult(hooksCollected >= hooksForVoucher() && !getVoucher(startedAt) ? { kind: 'voucher' } : null)}
+        />
+      )}
+
+      {result?.kind === 'voucher' && (
+        <VoucherMoment
+          voucher={{ at: Date.now(), code: voucherCode(startedAt) }}
+          place={voucherPlace()}
+          hooks={hooksForVoucher()}
+          onContinue={() => {
+            unlockVoucher(startedAt)
+            setResult(null)
+          }}
+        />
       )}
 
       {result?.kind === 'message' && (

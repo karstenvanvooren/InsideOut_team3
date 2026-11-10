@@ -6,8 +6,9 @@ import { useGame } from '../game/GameProvider.jsx'
 import { STARTED_PHASES } from '../game/gameState.js'
 import { fragmentNumber, getFragments, getHooks, getLocations } from '../lib/story.js'
 import story from '../data/story.json'
-import { TicketCard } from '../game/popups/BigMoments.jsx'
+import { TicketCard, VoucherCard } from '../game/popups/BigMoments.jsx'
 import { getTicket } from '../lib/ticket.js'
+import { getVoucher, hooksForVoucher, voucherPlace } from '../lib/voucher.js'
 
 /** A found piece or diary page, taped into the scrapbook. Tap → it turns around (more info on the back). */
 function FlipItem({ index, flipped, onFlip, label, tall = false, children }) {
@@ -38,6 +39,7 @@ export default function Collection() {
   const navigate = useNavigate()
   const { phase, fragments: found, hooksCollected, hooksTotal, startedAt } = useGame()
   const ticket = getTicket(startedAt) // the museum ticket, once unlocked at the KMSKA
+  const voucher = getVoucher(startedAt) // coffee & cake, once you found enough hooks
   const [tab, setTab] = useState('fragments')
   const [open, setOpen] = useState(null) // { kind: 'artwork', item }
   const [flipped, setFlipped] = useState(null) // the card that shows its back
@@ -51,10 +53,19 @@ export default function Collection() {
     <div className="page collection">
       <header className="collection-head">
         <h1 className="screen-title">your stash.</h1>
-        {ticket && (
-          <button type="button" className="sticker is-rose stash-ticket-btn" style={{ '--tilt': '3deg' }} onClick={() => setOpen({ kind: 'ticket' })}>
-            your ticket
-          </button>
+        {(ticket || voucher) && (
+          <div className="stash-tickets">
+            {ticket && (
+              <button type="button" className="sticker is-rose stash-ticket-btn" style={{ '--tilt': '3deg' }} onClick={() => setOpen({ kind: 'ticket' })}>
+                your ticket
+              </button>
+            )}
+            {voucher && (
+              <button type="button" className="sticker stash-ticket-btn stash-voucher-btn" style={{ '--tilt': '-2deg' }} onClick={() => setOpen({ kind: 'voucher' })}>
+                your voucher
+              </button>
+            )}
+          </div>
         )}
         {/* The bottom nav takes you back during the game; before that there's no nav */}
         {!STARTED_PHASES.includes(phase) && (
@@ -106,13 +117,14 @@ export default function Collection() {
         </ul>
       ) : (
         <ul className="stash-grid">
-          {/* her story in the order you found the hooks (see getChapter) */}
+          {/* her story in the order you found the hooks (see getChapter); after the finale the whole diary is open */}
           {hooks
-            .slice(0, hooksCollected)
+            .slice(0, finished ? hooks.length : hooksCollected)
             .map((hook, i) => (
               <FlipItem key={hook.id} index={i} flipped={flipped === hook.id} onFlip={() => flip(hook.id)} label={hook.content?.title ?? 'Diary page'} tall>
                 <span className="stash-front stash-diary taped">
                   <span className="sticker">chapter {hook.content?.chapter ?? '–'}</span>
+                  {i >= hooksCollected && <span className="sticker is-rose stash-missed">missed</span>}
                   <strong className="hand stash-diary-title">{hook.content?.title ?? hook.id}</strong>
                   <span className="stash-turn hand">turn the page</span>
                 </span>
@@ -121,13 +133,20 @@ export default function Collection() {
                 </span>
               </FlipItem>
             ))}
-          <MoreOutThere count={hooksTotal - hooksCollected} text={hooksTotal - hooksCollected === 1 ? 'page still hidden' : 'pages still hidden'} tall />
+          <MoreOutThere count={finished ? 0 : hooksTotal - hooksCollected} text={hooksTotal - hooksCollected === 1 ? 'page still hidden' : 'pages still hidden'} tall />
         </ul>
       )}
 
       <div className="page-fade" aria-hidden="true" />
 
-      <BottomSheet open={Boolean(open)} onClose={() => setOpen(null)} label={open?.kind === 'ticket' ? 'Your ticket' : 'The artwork'}>
+      <BottomSheet open={Boolean(open)} onClose={() => setOpen(null)} label={open?.kind === 'ticket' ? 'Your ticket' : open?.kind === 'voucher' ? 'Your voucher' : 'The artwork'}>
+        {open?.kind === 'voucher' && voucher && (
+          <div className="stack">
+            <Eyebrow>Coffee &amp; cake on us</Eyebrow>
+            <VoucherCard voucher={voucher} place={voucherPlace()} hooks={hooksForVoucher()} />
+            <p className="muted">Show this at the counter.</p>
+          </div>
+        )}
         {open?.kind === 'ticket' && ticket && (
           <div className="stack">
             <Eyebrow>Your museum ticket</Eyebrow>
