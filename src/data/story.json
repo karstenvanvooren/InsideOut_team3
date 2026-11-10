@@ -659,7 +659,7 @@
       "id": "f07",
       "type": "image",
       "title": "Blue dots",
-      "src": "/fragments/fake-1.png",
+      "src": "/fragments/fake-1.svg",
       "caption": "Earned at Sint-Carolus Borromeuskerk.",
       "off": "Dots in a perfect grid. Look at the wall: no dots like these. We made it."
     },
@@ -667,7 +667,7 @@
       "id": "f02",
       "type": "image",
       "title": "Olive ladder",
-      "src": "/fragments/fake-2.png",
+      "src": "/fragments/fake-2.svg",
       "caption": "Earned at Plantin-Moretus.",
       "off": "A ladder that climbs nowhere. It’s not on her wall – it’s ours."
     },
@@ -703,7 +703,7 @@
       "id": "f09",
       "type": "image",
       "title": "Burgundy crosshatch",
-      "src": "/fragments/fake-3.png",
+      "src": "/fragments/fake-3.svg",
       "caption": "Earned at MoMu.",
       "off": "A crosshatch, drawn line by line. You won’t find it on her pages. We made it."
     },
@@ -711,7 +711,7 @@
       "id": "f04",
       "type": "image",
       "title": "Rose half-moons",
-      "src": "/fragments/fake-4.png",
+      "src": "/fragments/fake-4.svg",
       "caption": "Earned at Bourla.",
       "off": "Half-moons in a neat row. Pretty, but not hers – we made it."
     },
@@ -747,7 +747,7 @@
       "id": "f11",
       "type": "image",
       "title": "Navy waves",
-      "src": "/fragments/fake-5.png",
+      "src": "/fragments/fake-5.svg",
       "caption": "Earned at Maagdenhuis.",
       "off": "Navy waves on green. Her waves are red – we made this one."
     },
@@ -769,12 +769,12 @@
       "id": "f12",
       "type": "image",
       "title": "Navy zigzag",
-      "src": "/fragments/fake-6.png",
+      "src": "/fragments/fake-6.svg",
       "caption": "Hidden in the KMSKA.",
       "off": "A zigzag to fool you. It’s on none of her pages on the wall."
     }
   ],
-  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style (scripts/fragments/make-fakes.py). A sharper photo gives sharper pieces (see README). \"off\" (fakes only): what gave the fake away, shown in the finale. Pictures: the team's own illustrations (public/fragments/real-N.jpg and fake-N.png).",
+  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style (scripts/fragments/make-fakes.py). A sharper photo gives sharper pieces (see README). \"off\" (fakes only): what gave the fake away, shown in the finale. Pictures: the team's own illustrations (public/fragments/real-N.jpg and fake-N.svg (vector, sharp at every size)).",
   "_hooks_note": "Hooks hang anywhere in the streets (no fixed spot, the coordinates are only used by the dev panel). The diary chapters come in the order you find hooks: your 1st hook = chapter 1, your 2nd = chapter 2, … whatever QR it is. Chapters tell Louise Bourgeois' story without giving away the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
   "finale": {
     "image": "/fragments/artwork.jpg",

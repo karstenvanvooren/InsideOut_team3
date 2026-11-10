@@ -757,7 +757,7 @@ html.is-typing .chat-bar {
   right: 0;
   width: 118px;
   height: 112px;
-  background: url('/fragments/fake-2.png') center / cover;
+  background: url('/fragments/fake-2.svg') center / cover;
   rotate: -9deg;
 }
 
