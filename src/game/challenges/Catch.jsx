@@ -10,6 +10,29 @@ const FALL_PX_PER_S = 120
 const BASKET_W = 110
 const ITEM_H = 58 // the falling tools are little cloth tiles (memoryArt.jsx)
 
+/** A woven basket (cloth colours, navy line), drawn as SVG. */
+function Basket() {
+  return (
+    <svg viewBox="0 0 110 62" className="catch-basket-art" aria-hidden="true">
+      <defs>
+        <pattern id="basket-weave" width="12" height="10" patternUnits="userSpaceOnUse">
+          <rect width="12" height="10" style={{ fill: 'var(--cream)' }} />
+          <path d="M0 2.5H6M0 7.5H6" style={{ stroke: 'var(--olive)', strokeWidth: 3 }} />
+          <path d="M9 0V10" style={{ stroke: 'var(--olive)', strokeWidth: 3 }} />
+        </pattern>
+      </defs>
+      {/* handle */}
+      <path d="M22 26Q55 -8 88 26" style={{ fill: 'none', stroke: 'var(--navy)', strokeWidth: 7, strokeLinecap: 'round' }} />
+      <path d="M22 26Q55 -8 88 26" style={{ fill: 'none', stroke: 'var(--olive)', strokeWidth: 3, strokeLinecap: 'round' }} />
+      {/* body */}
+      <path d="M6 24H104L94 58Q93 60 90 60H20Q17 60 16 58Z" style={{ fill: 'url(#basket-weave)', stroke: 'var(--navy)', strokeWidth: 2.5, strokeLinejoin: 'round' }} />
+      {/* rim */}
+      <rect x="3" y="20" width="104" height="9" rx="4.5" style={{ fill: 'var(--burgundy)', stroke: 'var(--navy)', strokeWidth: 2.5 }} />
+      <path d="M10 24.5H100" style={{ stroke: 'var(--cream)', strokeWidth: 1.4, strokeDasharray: '4 3' }} />
+    </svg>
+  )
+}
+
 export default function Catch({ onClose }) {
   const { challenge, solve, solved } = useChallenge()
   const target = challenge.target ?? 5
@@ -109,7 +132,7 @@ export default function Catch({ onClose }) {
           </span>
         ))}
         <div className={`catch-basket ${flash === 'good' ? 'pop' : ''} ${flash === 'bad' ? 'shake' : ''}`} style={{ left: `${basket * 100}%`, width: BASKET_W }}>
-          Basket
+          <Basket />
         </div>
         {flash === 'bad' && <span className="catch-oops">Not that one!</span>}
       </div>

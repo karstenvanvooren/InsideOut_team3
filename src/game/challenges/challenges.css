@@ -398,17 +398,18 @@
 
 .catch-basket {
   position: absolute;
-  bottom: 16px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border-radius: 16px 16px 22px 22px;
-  background: var(--primary);
-  color: var(--on-primary);
-  font-size: var(--fs-eyebrow);
-  font-weight: 600;
+  bottom: 12px;
+  height: 62px;
   transform: translateX(-50%);
   pointer-events: none;
+}
+
+.catch-basket-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(2px 3px 0 rgb(28 36 48 / 0.35));
 }
 
 .catch-basket.pop {

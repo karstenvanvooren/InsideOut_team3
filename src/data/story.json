@@ -651,14 +651,14 @@
     {
       "id": "f07",
       "type": "image",
-      "title": "Three white circles",
+      "title": "Blue dots",
       "src": "/fragments/fake-1.jpg",
       "caption": "Earned at Sint-Carolus Borromeuskerk."
     },
     {
       "id": "f02",
       "type": "image",
-      "title": "Yellow star",
+      "title": "Green ladder",
       "src": "/fragments/fake-2.jpg",
       "caption": "Earned at Plantin-Moretus."
     },
@@ -693,14 +693,14 @@
     {
       "id": "f09",
       "type": "image",
-      "title": "Blue stripes",
+      "title": "Red crosshatch",
       "src": "/fragments/fake-3.jpg",
       "caption": "Earned at MoMu."
     },
     {
       "id": "f04",
       "type": "image",
-      "title": "Red diamonds",
+      "title": "Pink half-moons",
       "src": "/fragments/fake-4.jpg",
       "caption": "Earned at Bourla."
     },
@@ -735,7 +735,7 @@
     {
       "id": "f11",
       "type": "image",
-      "title": "Orange spiral",
+      "title": "Navy waves",
       "src": "/fragments/fake-5.jpg",
       "caption": "Earned at Maagdenhuis."
     },
@@ -756,12 +756,12 @@
     {
       "id": "f12",
       "type": "image",
-      "title": "Pink cross",
+      "title": "Black zigzag",
       "src": "/fragments/fake-6.jpg",
       "caption": "Hidden in the KMSKA."
     }
   ],
-  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style. A sharper photo gives sharper pieces (see README).",
+  "_fragments_note": "Fragments are pages of Ode à l'oubli. \"real\": true = a page of the real work, cut from scripts/fragments/ode-a-loubli-photo.png; the fakes are our own cloth pages in the same style (scripts/fragments/make-fakes.py). A sharper photo gives sharper pieces (see README).",
   "_hooks_note": "Hooks hang anywhere in the streets (no fixed spot, the coordinates are only used by the dev panel). The diary chapters come in the order you find hooks: your 1st hook = chapter 1, your 2nd = chapter 2, … whatever QR it is. Chapters tell Louise Bourgeois' story without giving away the artwork before the KMSKA. Sources: MoMA collection (Ode à l'oubli), Wikipedia.",
   "finale": {
     "image": "/fragments/artwork.jpg",

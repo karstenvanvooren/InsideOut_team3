@@ -1088,10 +1088,10 @@ html.is-typing .chat-bar {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 34px 18px;
-  margin: 0 calc(var(--side) * -1);
-  padding: 34px var(--side) calc(var(--space-6) + var(--nav-scan-lift));
+  margin: 30px 0 0; /* room between the tabs and the first pieces (tape + tilt stick out) */
+  padding: 0 0 calc(var(--space-6) + var(--nav-scan-lift));
   list-style: none;
-  background: var(--tint);
+  background: none; /* the whole page stays white */
 }
 
 .stash-item {
