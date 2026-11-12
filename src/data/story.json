@@ -862,7 +862,11 @@
   "credits": {
     "title": "Sfumato is made by",
     "team": "Frosinone · team 3",
-    "names": [],
-    "_todo": "Add the team names in \"names\" (one string per person)."
+    "names": [
+      "Karsten van Vooren",
+      "Jill Speetjens",
+      "Nadia Mele",
+      "Selin Sehoglu"
+    ]
   }
 }
