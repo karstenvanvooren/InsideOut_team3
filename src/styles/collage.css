@@ -2083,3 +2083,76 @@ html.is-typing .chat-bar {
 .finale-reveal .artist-collage ~ .finale-lookup {
   margin-top: var(--space-5);
 }
+
+/* ---------- Pinned: the pieces are linen, so they're pinned on, not taped ---------- */
+.pinned {
+  position: relative;
+}
+
+/* the pin's head */
+.pinned::before {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  top: -7px;
+  left: calc(50% - 8px + var(--pin-x, 0px));
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--navy);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 32%, var(--rose) 0 22%, var(--burgundy) 60%);
+  box-shadow: 2px 3px 0 rgb(28 36 48 / 0.35);
+  pointer-events: none;
+  animation: pin-in 420ms var(--ease-pop) both;
+  animation-delay: calc(var(--delay, 0ms) + 220ms);
+}
+
+/* the needle's little shadow on the cloth */
+.pinned::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  left: calc(50% + 1px + var(--pin-x, 0px));
+  width: 2px;
+  height: 9px;
+  border-radius: 2px;
+  background: rgb(28 36 48 / 0.45);
+  rotate: 28deg;
+  pointer-events: none;
+  animation: pin-in 420ms var(--ease-pop) both;
+  animation-delay: calc(var(--delay, 0ms) + 220ms);
+}
+
+@keyframes pin-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(1.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pinned::before,
+  .pinned::after {
+    animation: none;
+  }
+}
+
+/* ---------- The logo on the map (bottom left, like a sticker on the city) ---------- */
+.nav-floating-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.nav-logo {
+  display: block;
+  width: 84px;
+  height: auto;
+  rotate: -6deg;
+  filter: drop-shadow(3px 3px 0 rgb(28 36 48 / 0.35));
+  pointer-events: none;
+  animation: drop-in 520ms var(--ease-pop) both;
+  animation-delay: 300ms;
+}

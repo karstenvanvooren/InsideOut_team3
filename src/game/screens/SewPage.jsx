@@ -11,7 +11,12 @@ import { patterns, vibrate } from '../../lib/vibrate.js'
 const PAGE_KEY = 'insideout.page.v1'
 const MAX_WORD = 16
 
-export const loadPage = () => safeGet(PAGE_KEY)
+// The page belongs to one game (startedAt): after a reset the finale starts at the reveal again.
+export const loadPage = (startedAt) => {
+  const page = safeGet(PAGE_KEY)
+  if (!page) return null
+  return startedAt === undefined || page.startedAt === startedAt ? page : null
+}
 const savePage = (page) => safeSet(PAGE_KEY, page)
 export const clearPage = () => safeRemove(PAGE_KEY)
 
@@ -38,7 +43,7 @@ function Cloth({ pieces, word, selected, onPointerDown, clothRef, interactive = 
   )
 }
 
-export function SewPage({ pieces: available, onDone }) {
+export function SewPage({ pieces: available, onDone, startedAt }) {
   const [pieces, setPieces] = useState([])
   const [selected, setSelected] = useState(null)
   const [word, setWord] = useState('')
@@ -86,7 +91,7 @@ export function SewPage({ pieces: available, onDone }) {
   const sel = pieces.find((p) => p.key === selected)
 
   const finish = () => {
-    const page = { pieces, word: word.trim(), at: Date.now() }
+    const page = { pieces, word: word.trim(), at: Date.now(), startedAt }
     savePage(page)
     vibrate(patterns.unlock)
     onDone(page)

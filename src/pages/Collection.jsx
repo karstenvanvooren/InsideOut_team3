@@ -10,7 +10,7 @@ import { TicketCard, VoucherCard } from '../game/popups/BigMoments.jsx'
 import { getTicket } from '../lib/ticket.js'
 import { getVoucher, hooksForVoucher, voucherPlace } from '../lib/voucher.js'
 
-/** A found piece or diary page, taped into the scrapbook. Tap → it turns around (more info on the back). */
+/** A found piece (pinned – it's linen) or diary page (taped) in the scrapbook. Tap → it turns around (more info on the back). */
 function FlipItem({ index, flipped, onFlip, label, tall = false, children }) {
   return (
     <li className={`stash-item ${tall ? 'is-tall' : ''}`} style={{ '--tilt': `${[-4, 3, 2, -3, -2, 4][index % 6]}deg`, '--delay': `${index * 60}ms` }}>
@@ -100,7 +100,7 @@ export default function Collection() {
             .filter((fragment) => found.includes(fragment.id))
             .map((fragment, i) => (
               <FlipItem key={fragment.id} index={i} flipped={flipped === fragment.id} onFlip={() => flip(fragment.id)} label={`Fragment ${fragmentNumber(fragment.id)}`}>
-                <span className="stash-front stash-piece taped">
+                <span className="stash-front stash-piece pinned">
                   <img src={fragment.src} alt="" />
                   {/* after the finale: stamped real or fake, right on the piece */}
                   {finished && <span className={`stash-stamp ${fragment.real ? 'is-real' : 'is-fake'}`}>{fragment.real ? 'real' : 'fake'}</span>}

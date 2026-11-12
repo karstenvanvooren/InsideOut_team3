@@ -264,13 +264,15 @@ export default function GameWorld({ destination = null, mode = 'free', onArrive,
       </div>
 
       <div className="nav-floating">
-        {compass === 'needs-permission' ? (
-          <button type="button" className="nav-chip" onClick={requestCompass}>
-            Use compass
-          </button>
-        ) : (
-          <span />
-        )}
+        <div className="nav-floating-left">
+          {compass === 'needs-permission' && (
+            <button type="button" className="nav-chip" onClick={requestCompass}>
+              Use compass
+            </button>
+          )}
+          {/* the brand on the map, like a sticker on the city */}
+          <img className="nav-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="360" height="322" />
+        </div>
         {!following && position && (
           <button type="button" className="nav-locate" onClick={() => setFollowing(true)} aria-label="Recenter on my position">
             <UiIcon name="locate" size={22} />

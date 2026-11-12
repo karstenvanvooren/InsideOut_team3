@@ -35,8 +35,8 @@ export default function FinaleScreen() {
   const real = getFragments().filter((f) => f.real)
   const foundReal = real.filter((f) => owned.includes(f.id))
   const fakes = owned.map(getFragment).filter((f) => f && !f.real)
-  const [page, setPage] = useState(loadPage) // the player's own page, once sewn
-  const [step, setStep] = useState(() => (loadPage() ? 'end' : 'reveal'))
+  const [page, setPage] = useState(() => loadPage(startedAt)) // the player's own page, once sewn (this game)
+  const [step, setStep] = useState(() => (loadPage(startedAt) ? 'end' : 'reveal'))
   const go = (next) => {
     setStep(next)
     document.querySelector('.finale-scroll, .deep-screen')?.scrollTo?.(0, 0)
@@ -55,6 +55,7 @@ export default function FinaleScreen() {
     return (
       <SewPage
         pieces={foundReal}
+        startedAt={startedAt}
         onDone={(p) => {
           setPage(p)
           go('page')
@@ -63,7 +64,18 @@ export default function FinaleScreen() {
     )
   if (step === 'page' && page) return <OdePage page={page} stats={stats} onContinue={() => go('end')} />
   if (step === 'end')
-    return <EndPage game={game} score={score} foundReal={foundReal} real={real} duration={duration} hasPage={Boolean(page)} onPage={() => go(page ? 'page' : 'sew')} />
+    return (
+      <EndPage
+        game={game}
+        score={score}
+        foundReal={foundReal}
+        real={real}
+        duration={duration}
+        hasPage={Boolean(page)}
+        onPage={() => go(page ? 'page' : 'sew')}
+        onReveal={() => go('reveal')}
+      />
+    )
 
   return <Reveal pieces={foundReal} onDone={() => go('story')} />
 }
@@ -322,7 +334,7 @@ function Verdict({ score, fakes, reals, onDone }) {
 }
 
 /* ---------- 6. The end: what you take home ---------- */
-function EndPage({ game, score, foundReal, real, duration, hasPage, onPage }) {
+function EndPage({ game, score, foundReal, real, duration, hasPage, onPage, onReveal }) {
   const navigate = useNavigate()
   const { startedAt, hooksCollected, hooksTotal, resetGame } = game
   const ticket = getTicket(startedAt)
@@ -417,6 +429,9 @@ function EndPage({ game, score, foundReal, real, duration, hasPage, onPage }) {
         <div className="end-actions">
           <button type="button" className="btn btn-block" onClick={onPage}>
             {hasPage ? 'See my page again' : 'Sew your own page'}
+          </button>
+          <button type="button" className="btn btn-block btn-secondary" onClick={onReveal}>
+            Back to the artwork
           </button>
           <button type="button" className="btn btn-block btn-secondary" onClick={() => navigate('/collection')}>
             View my stash
