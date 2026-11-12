@@ -2148,11 +2148,24 @@ html.is-typing .chat-bar {
 
 .nav-logo {
   display: block;
-  width: 84px;
-  height: auto;
+  width: 62px;
   rotate: -6deg;
-  filter: drop-shadow(3px 3px 0 rgb(28 36 48 / 0.35));
+  filter: drop-shadow(2px 2px 0 rgb(28 36 48 / 0.3));
   pointer-events: none;
   animation: drop-in 520ms var(--ease-pop) both;
   animation-delay: 300ms;
+}
+
+.nav-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* a small piece of tape that fits the small logo */
+.nav-logo.taped::before {
+  top: -6px;
+  left: calc(50% - 20px);
+  width: 40px;
+  height: 14px;
 }

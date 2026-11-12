@@ -271,7 +271,9 @@ export default function GameWorld({ destination = null, mode = 'free', onArrive,
             </button>
           )}
           {/* the brand on the map, like a sticker on the city */}
-          <img className="nav-logo" src="/brand/sfumato-logo.png" alt="Sfumato" width="360" height="322" />
+          <span className="nav-logo taped" style={{ '--tape-rot': '8deg' }}>
+            <img src="/brand/sfumato-logo.png" alt="Sfumato" width="360" height="322" />
+          </span>
         </div>
         {!following && position && (
           <button type="button" className="nav-locate" onClick={() => setFollowing(true)} aria-label="Recenter on my position">
