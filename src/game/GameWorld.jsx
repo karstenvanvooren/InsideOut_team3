@@ -271,7 +271,7 @@ export default function GameWorld({ destination = null, mode = 'free', onArrive,
             </button>
           )}
           {/* the brand on the map, like a sticker on the city */}
-          <span className="nav-logo taped" style={{ '--tape-rot': '8deg' }}>
+          <span className="nav-logo pinned">
             <img src="/brand/sfumato-logo.png" alt="Sfumato" width="360" height="322" />
           </span>
         </div>

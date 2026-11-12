@@ -2162,10 +2162,13 @@ html.is-typing .chat-bar {
   height: auto;
 }
 
-/* a small piece of tape that fits the small logo */
-.nav-logo.taped::before {
-  top: -6px;
-  left: calc(50% - 20px);
-  width: 40px;
-  height: 14px;
+/* pinned to the map, a bit above the middle */
+.nav-logo.pinned::before {
+  top: 4px;
+  /* a light pin head, so it stands out on the burgundy logo */
+  background: radial-gradient(circle at 35% 32%, var(--white) 0 22%, var(--cream) 62%);
+}
+
+.nav-logo.pinned::after {
+  top: 17px;
 }
