@@ -49,6 +49,17 @@ function useLocationAccess() {
   return [allowed, () => setAllowed(true)]
 }
 
+// The pile on the start screen: 3 real pieces and 3 fakes (the team's illustrations).
+// [picture, x (0 = left, 1 = right), top in px, rotation]
+const START_PILE = [
+  ['/fragments/real-1.jpg', 0, 74, -8],
+  ['/fragments/fake-1.svg', 0.2, 8, 7],
+  ['/fragments/real-3.jpg', 0.4, 88, -3],
+  ['/fragments/fake-4.svg', 0.6, 12, 9],
+  ['/fragments/real-5.jpg', 0.8, 80, -10],
+  ['/fragments/fake-3.svg', 1, 4, 5],
+]
+
 export default function LockedScreen() {
   const { openScanner } = useScanner()
   const { skipLocationCheck } = useDevOptions()
@@ -111,9 +122,13 @@ export default function LockedScreen() {
       <div className="locked-hero">
         {/* A little pile of the pieces you'll be looking for (public/fragments) */}
         <div className="start-pile" aria-hidden="true">
-          <span className="start-patch is-rings taped" style={{ '--tape-rot': '-14deg' }} />
-          <span className="start-patch is-stripes taped" style={{ '--tape-rot': '10deg', '--delay': '150ms' }} />
-          <span className="start-patch is-check taped" style={{ '--tape-rot': '-4deg', '--delay': '300ms' }} />
+          {START_PILE.map(([src, x, y, rot], i) => (
+            <span
+              key={src}
+              className="start-patch taped"
+              style={{ backgroundImage: `url(${src})`, '--x': x, top: y, rotate: `${rot}deg`, '--tape-rot': `${-rot * 1.4}deg`, '--delay': `${i * 110}ms` }}
+            />
+          ))}
         </div>
         <h1 className="visually-hidden">{meta.title} – locked</h1>
         <p className="start-title">someone left you a message.</p>

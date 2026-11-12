@@ -735,39 +735,18 @@ html.is-typing .chat-bar {
 }
 
 .start-patch {
+  --size: 86px;
   position: absolute;
+  left: calc(var(--x, 0) * (100% - var(--size)));
   display: block;
+  width: var(--size);
+  height: calc(var(--size) * 0.95);
+  border: 3px solid var(--white);
   border-radius: 3px;
+  background: center / cover no-repeat;
   box-shadow: var(--hard-shadow-soft);
   animation: drop-in 620ms var(--ease-pop) both;
   animation-delay: var(--delay, 0ms);
-}
-
-.start-patch.is-rings {
-  top: 22px;
-  left: -6px;
-  width: 118px;
-  height: 116px;
-  background: url('/fragments/real-3.jpg') center / cover;
-  rotate: 11deg;
-}
-
-.start-patch.is-stripes {
-  top: 4px;
-  right: 0;
-  width: 118px;
-  height: 112px;
-  background: url('/fragments/fake-2.svg') center / cover;
-  rotate: -9deg;
-}
-
-.start-patch.is-check {
-  bottom: 0;
-  left: 34%;
-  width: 108px;
-  height: 100px;
-  background: url('/fragments/real-2.jpg') center / cover;
-  rotate: 4deg;
 }
 
 .start-title {
@@ -2050,4 +2029,51 @@ html.is-typing .chat-bar {
   .stash-layer {
     animation: none;
   }
+}
+
+/* ---------- Finale: a collage of photos of the artist, under the artwork ---------- */
+.artist-collage {
+  margin: var(--space-5) 0 var(--space-2);
+}
+
+.artist-collage-title {
+  margin: 0 0 var(--space-3);
+  color: var(--primary);
+  font-size: 24px;
+  rotate: -1.5deg;
+}
+
+.artist-collage-grid {
+  columns: 3;
+  column-gap: 6px;
+}
+
+.artist-photo {
+  position: relative;
+  display: block;
+  margin: 0 0 -6px;
+  padding: 5px 5px 14px;
+  border: 1.5px solid var(--navy);
+  background: var(--white);
+  box-shadow: var(--hard-shadow-soft);
+  break-inside: avoid;
+  rotate: var(--tilt, 0deg);
+  animation: drop-in 560ms var(--ease-pop) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.artist-photo:nth-child(even) {
+  z-index: 1;
+}
+
+.artist-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: grayscale(0.15) contrast(1.02);
+}
+
+.artist-collage + .finale-lookup,
+.finale-reveal .artist-collage ~ .finale-lookup {
+  margin-top: var(--space-5);
 }

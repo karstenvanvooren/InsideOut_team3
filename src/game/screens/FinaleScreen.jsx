@@ -120,6 +120,7 @@ function Reveal({ pieces, onDone }) {
         <div className={`finale-reveal ${done ? 'is-visible' : ''}`} aria-live="polite">
           {done && (
             <>
+              <ArtistCollage photos={finale.photos} />
               <h1 className="big-title finale-lookup">{lookUp.title ?? 'look up.'}</h1>
               <p className="hand finale-hand">{lookUp.text ?? '(your pieces are on the wall in front of you. can you find them?)'}</p>
               <p className="finale-count">
@@ -133,6 +134,27 @@ function Reveal({ pieces, onDone }) {
         </div>
       </div>
     </div>
+  )
+}
+
+/** Under the artwork: a collage of photos of the artist herself (story.json → finale.photos). */
+function ArtistCollage({ photos = [] }) {
+  if (!photos.length) return null
+  return (
+    <section className="artist-collage" aria-label="Photos of Louise Bourgeois">
+      <p className="hand artist-collage-title">(this is her. Louise Bourgeois, 1911–2010)</p>
+      <div className="artist-collage-grid">
+        {photos.map((photo, i) => (
+          <figure
+            key={photo.src}
+            className={`artist-photo ${i % 3 === 1 ? 'taped' : ''}`}
+            style={{ '--tilt': `${[-4, 3, -2, 5, -3, 2][i % 6]}deg`, '--delay': `${200 + i * 90}ms` }}
+          >
+            <img src={photo.src} alt={photo.alt} loading="lazy" />
+          </figure>
+        ))}
+      </div>
+    </section>
   )
 }
 

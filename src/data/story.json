@@ -808,7 +808,50 @@
     "lookUp": {
       "title": "look up.",
       "text": "(your pieces are on the wall in front of you. can you find them?)"
-    }
+    },
+    "photos": [
+      {
+        "src": "/artist/louise-1.jpg",
+        "alt": "Portrait of Louise Bourgeois, her hands at her chin"
+      },
+      {
+        "src": "/artist/louise-2.jpg",
+        "alt": "Louise Bourgeois under one of her spider sculptures"
+      },
+      {
+        "src": "/artist/louise-3.jpg",
+        "alt": "Louise Bourgeois in a chair, wearing a feathered hat"
+      },
+      {
+        "src": "/artist/louise-4.jpg",
+        "alt": "Young Louise Bourgeois with long hair, at work"
+      },
+      {
+        "src": "/artist/louise-5.jpg",
+        "alt": "Louise Bourgeois in a fur coat, holding a sculpture"
+      },
+      {
+        "src": "/artist/louise-6.jpg",
+        "alt": "Louise Bourgeois in front of one of her drawings"
+      },
+      {
+        "src": "/artist/louise-7.jpg",
+        "alt": "Young Louise Bourgeois in her studio"
+      },
+      {
+        "src": "/artist/louise-8.jpg",
+        "alt": "Louise Bourgeois in a fur coat"
+      },
+      {
+        "src": "/artist/louise-9.jpg",
+        "alt": "Louise Bourgeois with her sculptures"
+      },
+      {
+        "src": "/artist/louise-10.jpg",
+        "alt": "Louise Bourgeois in her studio, next to a painting"
+      }
+    ],
+    "_photos_todo": "Photo credits: add the photographer of each picture (alt texts are only descriptions)."
   },
   "_chat_note": "locations[].chat = what Sfumato texts before each riddle (riddle as chat). Keep it short and don't give the answer away.",
   "rewards": {
