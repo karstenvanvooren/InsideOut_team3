@@ -2014,15 +2014,21 @@ html.is-typing .chat-bar {
   animation: stash-in 280ms var(--ease-out, ease-out) both;
 }
 
+/* opacity only: a transform would make the layer the box for position: fixed children */
 @keyframes stash-in {
   from {
     opacity: 0;
-    transform: translateY(18px);
   }
 }
 
+/* inside the scrolling layer the fade sticks to the layer's bottom edge (just above the nav) */
 .stash-layer .page-fade {
-  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+  position: sticky;
+  bottom: 0;
+  left: auto;
+  right: auto;
+  display: block;
+  margin-top: -80px;
 }
 
 @media (prefers-reduced-motion: reduce) {
